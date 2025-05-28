@@ -6,6 +6,95 @@
     <title>Flight Briefing</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e90ff, #ff7f50);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1em;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #fff;
+        }
+
+        main {
+            flex: 1;
+            padding: 2em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        section {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 1em 0;
+            padding: 1.5em;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        section h2 {
+            text-align: center;
+            margin-bottom: 1em;
+        }
+
+        label {
+            display: block;
+            margin: 0.5em 0 0.2em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.5em;
+            margin-bottom: 1em;
+            border-radius: 5px;
+            border: none;
+            font-size: 1em;
+        }
+
+        .flight {
+            margin-bottom: 1.5em;
+        }
+
+        button {
+            background: #ff7f50;
+            border: none;
+            padding: 0.7em 1.5em;
+            border-radius: 5px;
+            font-size: 1.2em;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #ff4500;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.7);
+            text-align: center;
+            padding: 1em;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -47,7 +136,11 @@
                 <select id="destination4" class="airport-select"></select>
             </div>
         </section>
+        <button id="submit">Submit</button>
     </main>
+    <footer>
+        © 2025 Flight Briefing Tool. All rights reserved.
+    </footer>
     <script src="script.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
