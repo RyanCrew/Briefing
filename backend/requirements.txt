@@ -1,0 +1,5 @@
+# Contenido del archivo requirements.txt
+fastapi
+pillow
+pytesseract
+uvicorn
