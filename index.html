@@ -69,8 +69,19 @@
             font-size: 1em;
         }
 
-        .flight {
-            margin-bottom: 1.5em;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+
+        table, th, td {
+            border: 1px solid #fff;
+        }
+
+        th, td {
+            padding: 0.5em;
+            text-align: center;
         }
 
         button {
@@ -107,34 +118,93 @@
         </section>
         <section id="flightDetails">
             <h2>Flight Details</h2>
-            <div class="flight">
-                <label for="departure1">Departure Airport:</label>
-                <select id="departure1" class="airport-select"></select>
-
-                <label for="destination1">Destination Airport:</label>
-                <select id="destination1" class="airport-select"></select>
-            </div>
-            <div class="flight">
-                <label for="departure2">Departure Airport:</label>
-                <select id="departure2" class="airport-select"></select>
-
-                <label for="destination2">Destination Airport:</label>
-                <select id="destination2" class="airport-select"></select>
-            </div>
-            <div class="flight">
-                <label for="departure3">Departure Airport:</label>
-                <select id="departure3" class="airport-select"></select>
-
-                <label for="destination3">Destination Airport:</label>
-                <select id="destination3" class="airport-select"></select>
-            </div>
-            <div class="flight">
-                <label for="departure4">Departure Airport:</label>
-                <select id="departure4" class="airport-select"></select>
-
-                <label for="destination4">Destination Airport:</label>
-                <select id="destination4" class="airport-select"></select>
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Flight</th>
+                        <th>Departure Airport</th>
+                        <th>Destination Airport</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Flight 1</td>
+                        <td>
+                            <select id="departure1" class="airport-select">
+                                <option value="JFK">JFK - John F. Kennedy International</option>
+                                <option value="LAX">LAX - Los Angeles International</option>
+                                <option value="ORD">ORD - O'Hare International</option>
+                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="destination1" class="airport-select">
+                                <option value="JFK">JFK - John F. Kennedy International</option>
+                                <option value="LAX">LAX - Los Angeles International</option>
+                                <option value="ORD">ORD - O'Hare International</option>
+                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Flight 2</td>
+                        <td>
+                            <select id="departure2" class="airport-select">
+                                <option value="JFK">JFK - John F. Kennedy International</option>
+                                <option value="LAX">LAX - Los Angeles International</option>
+                                <option value="ORD">ORD - O'Hare International</option>
+                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="destination2" class="airport-select">
+                                <option value="JFK">JFK - John F. Kennedy International</option>
+                                <option value="LAX">LAX - Los Angeles International</option>
+                                <option value="ORD">ORD - O'Hare International</option>
+                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Flight 3</td>
+                        <td>
+                            <select id="departure3" class="airport-select">
+                                <option value="JFK">JFK - John F. Kennedy International</option>
+                                <option value="LAX">LAX - Los Angeles International</option>
+                                <option value="ORD">ORD - O'Hare International</option>
+                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="destination3" class="airport-select">
+                                <option value="JFK">JFK - John F. Kennedy International</option>
+                                <option value="LAX">LAX - Los Angeles International</option>
+                                <option value="ORD">ORD - O'Hare International</option>
+                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Flight 4</td>
+                        <td>
+                            <select id="departure4" class="airport-select">
+                                <option value="JFK">JFK - John F. Kennedy International</option>
+                                <option value="LAX">LAX - Los Angeles International</option>
+                                <option value="ORD">ORD - O'Hare International</option>
+                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="destination4" class="airport-select">
+                                <option value="JFK">JFK - John F. Kennedy International</option>
+                                <option value="LAX">LAX - Los Angeles International</option>
+                                <option value="ORD">ORD - O'Hare International</option>
+                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </section>
         <button id="submit">Submit</button>
     </main>
