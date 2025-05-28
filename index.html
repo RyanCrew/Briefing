@@ -62,11 +62,11 @@
 
         input, select {
             width: 100%;
-            padding: 0.5em;
+            padding: 0.3em;
             margin-bottom: 1em;
             border-radius: 5px;
             border: none;
-            font-size: 1em;
+            font-size: 0.9em;
         }
 
         table {
@@ -84,19 +84,36 @@
             text-align: center;
         }
 
-        button {
-            background: #ff7f50;
-            border: none;
-            padding: 0.7em 1.5em;
-            border-radius: 5px;
-            font-size: 1.2em;
-            color: white;
-            cursor: pointer;
-            transition: background 0.3s;
+        table input {
+            width: calc(100% - 10px);
+            padding: 0.3em;
+            font-size: 0.9em;
+            box-sizing: border-box;
         }
 
-        button:hover {
-            background: #ff4500;
+        .additional-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1em;
+        }
+
+        .additional-info div {
+            flex: 1;
+            margin: 0 0.5em;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 0.5em;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .additional-info div input {
+            width: 90%;
+            margin: 0 auto;
+            padding: 0.3em;
+            font-size: 0.9em;
+            box-sizing: border-box;
+            text-align: center;
         }
 
         footer {
@@ -121,92 +138,58 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Flight</th>
+                        <th>#</th>
                         <th>Departure Airport</th>
+                        <th>Flight Time</th>
                         <th>Destination Airport</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Flight 1</td>
-                        <td>
-                            <select id="departure1" class="airport-select">
-                                <option value="JFK">JFK - John F. Kennedy International</option>
-                                <option value="LAX">LAX - Los Angeles International</option>
-                                <option value="ORD">ORD - O'Hare International</option>
-                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select id="destination1" class="airport-select">
-                                <option value="JFK">JFK - John F. Kennedy International</option>
-                                <option value="LAX">LAX - Los Angeles International</option>
-                                <option value="ORD">ORD - O'Hare International</option>
-                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
-                            </select>
-                        </td>
+                        <td>1</td>
+                        <td><input type="text" id="departure1" placeholder="Enter Departure"></td>
+                        <td><input type="text" id="flightTime1" placeholder="Flight Time"></td>
+                        <td><input type="text" id="destination1" placeholder="Enter Destination"></td>
                     </tr>
                     <tr>
-                        <td>Flight 2</td>
-                        <td>
-                            <select id="departure2" class="airport-select">
-                                <option value="JFK">JFK - John F. Kennedy International</option>
-                                <option value="LAX">LAX - Los Angeles International</option>
-                                <option value="ORD">ORD - O'Hare International</option>
-                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select id="destination2" class="airport-select">
-                                <option value="JFK">JFK - John F. Kennedy International</option>
-                                <option value="LAX">LAX - Los Angeles International</option>
-                                <option value="ORD">ORD - O'Hare International</option>
-                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
-                            </select>
-                        </td>
+                        <td>2</td>
+                        <td><input type="text" id="departure2" placeholder="Enter Departure"></td>
+                        <td><input type="text" id="flightTime2" placeholder="Flight Time"></td>
+                        <td><input type="text" id="destination2" placeholder="Enter Destination"></td>
                     </tr>
                     <tr>
-                        <td>Flight 3</td>
-                        <td>
-                            <select id="departure3" class="airport-select">
-                                <option value="JFK">JFK - John F. Kennedy International</option>
-                                <option value="LAX">LAX - Los Angeles International</option>
-                                <option value="ORD">ORD - O'Hare International</option>
-                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select id="destination3" class="airport-select">
-                                <option value="JFK">JFK - John F. Kennedy International</option>
-                                <option value="LAX">LAX - Los Angeles International</option>
-                                <option value="ORD">ORD - O'Hare International</option>
-                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
-                            </select>
-                        </td>
+                        <td>3</td>
+                        <td><input type="text" id="departure3" placeholder="Enter Departure"></td>
+                        <td><input type="text" id="flightTime3" placeholder="Flight Time"></td>
+                        <td><input type="text" id="destination3" placeholder="Enter Destination"></td>
                     </tr>
                     <tr>
-                        <td>Flight 4</td>
-                        <td>
-                            <select id="departure4" class="airport-select">
-                                <option value="JFK">JFK - John F. Kennedy International</option>
-                                <option value="LAX">LAX - Los Angeles International</option>
-                                <option value="ORD">ORD - O'Hare International</option>
-                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select id="destination4" class="airport-select">
-                                <option value="JFK">JFK - John F. Kennedy International</option>
-                                <option value="LAX">LAX - Los Angeles International</option>
-                                <option value="ORD">ORD - O'Hare International</option>
-                                <option value="ATL">ATL - Hartsfield-Jackson Atlanta International</option>
-                            </select>
-                        </td>
+                        <td>4</td>
+                        <td><input type="text" id="departure4" placeholder="Enter Departure"></td>
+                        <td><input type="text" id="flightTime4" placeholder="Flight Time"></td>
+                        <td><input type="text" id="destination4" placeholder="Enter Destination"></td>
                     </tr>
                 </tbody>
             </table>
+            <div class="additional-info">
+                <div>
+                    <label for="totalPax">Total Pax</label>
+                    <input type="text" id="totalPax" placeholder="Enter Total Pax">
+                </div>
+                <div>
+                    <label for="fwd">FWD</label>
+                    <input type="text" id="fwd" placeholder="Enter FWD Pax">
+                </div>
+                <div>
+                    <label for="aft">AFT</label>
+                    <input type="text" id="aft" placeholder="Enter AFT Pax">
+                </div>
+                <div>
+                    <label for="prm">PRM</label>
+                    <input type="text" id="prm" placeholder="Enter PRM Pax">
+                </div>
+            </div>
         </section>
-        <button id="submit">Submit</button>
     </main>
     <footer>
         © 2025 Flight Briefing Tool. All rights reserved.
