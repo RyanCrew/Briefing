@@ -1,15 +1,14 @@
+
+<xaiartifact_id="e4b7c9f2-5a3d-4c-8e9a-2b3f0aa1c2e5" title="package.json" contentType="application/json">
 {
-  "name": "inflight-report",
+  "name": "inflight-report-app",
   "version": "1.0.0",
-  "description": "Inflight report form with Tailwind CSS",
-  "main": "index.html",
+  "description": "Inflight report form application",
   "scripts": {
     "build": "npx tailwindcss -i ./input.css -o ./output.css --minify"
   },
-  "dependencies": {},
   "devDependencies": {
-    "tailwindcss": "^3.4.14"
-  },
-  "author": "",
-  "license": "ISC"
+    "tailwindcss": "^3.2.4"
+  }
 }
+</xaiartifact>
