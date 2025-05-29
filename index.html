@@ -73,6 +73,9 @@
             color: #fff;
             font-size: 1.2rem;
         }
+        .date-ac-label {
+            font-size: 1rem;
+        }
         input {
             width: 100%;
             padding: 0.7rem;
@@ -86,6 +89,18 @@
             -webkit-appearance: none;
             touch-action: manipulation;
         }
+        .date-ac-input {
+            padding: 0.4rem;
+            font-size: 0.9rem;
+        }
+        .captain-fo-input {
+            padding: 0.6rem;
+        }
+        .crew-input {
+            padding: 0.4rem;
+            font-size: 0.9rem;
+            min-width: 5rem;
+        }
         select {
             width: 100%;
             padding: 0.7rem;
@@ -97,9 +112,9 @@
             color: #000;
         }
         .small-input {
-            padding: 0.5rem;
+            padding: 0.4rem;
             font-size: 0.9rem;
-            min-width: 6rem;
+            min-width: 5rem;
         }
         .duty-free-input {
             padding: 0.5rem;
@@ -112,14 +127,22 @@
             border-collapse: collapse;
             margin: 1rem 0;
             table-layout: auto;
+            font-size: 0.9rem;
         }
         table, th, td {
             border: 1px solid #fff;
         }
         th, td {
-            padding: 0.9rem;
+            padding: 0.6rem;
             text-align: center;
             color: #fff;
+        }
+        .flight-number-cell {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .flight-number-cell:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
         table input {
             width: 100%;
@@ -130,9 +153,9 @@
             color: #000 !important;
         }
         table .small-input {
-            padding: 0.5rem;
+            padding: 0.4rem;
             font-size: 0.9rem;
-            min-width: 6rem;
+            min-width: 5rem;
         }
         table .duty-free-input {
             padding: 0.5rem;
@@ -171,6 +194,12 @@
         button:hover {
             background: #ff7f50;
         }
+        .add-crew-button {
+            width: auto;
+            padding: 0.6rem 1rem;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
         footer {
             background: rgba(0, 0, 0, 0.7);
             text-align: center;
@@ -182,6 +211,9 @@
             -webkit-overflow-scrolling: touch;
         }
         .hidden {
+            display: none;
+        }
+        .extra-crew {
             display: none;
         }
         @media (min-width: 768px) {
@@ -207,25 +239,15 @@
                 <!-- Flight Information -->
                 <details class="form-section" open>
                     <summary>Flight Information</summary>
-                    <div class="grid grid-cols-1 gap-3" id="flightInfoHeader">
+                    <div class="grid grid-cols-2 gap-2" id="flightInfoHeader">
                         <div>
-                            <label>Date</label>
-                            <input type="date" id="date" required class="small-input" autocomplete="off">
+                            <label class="date-ac-label">Date</label>
+                            <input type="date" id="date" required class="small-input date-ac-input" autocomplete="off">
                         </div>
                         <div>
-                            <label>A/C Ref (EI-)</label>
-                            <input type="text" id="acRef" placeholder="EI-" required class="small-input" autocomplete="off">
+                            <label class="date-ac-label">A/C Reg</label>
+                            <input type="text" id="acReg" placeholder="EI-" required class="small-input date-ac-input" autocomplete="off">
                         </div>
-                    </div>
-                    <div>
-                        <label>Select Flight</label>
-                        <select id="flightSelector">
-                            <option value="all">All Flights</option>
-                            <option value="1">Flight 1</option>
-                            <option value="2">Flight 2</option>
-                            <option value="3">Flight 3</option>
-                            <option value="4">Flight 4</option>
-                        </select>
                     </div>
                     <div class="table-wrapper">
                         <table id="flightTable">
@@ -245,7 +267,7 @@
                             </thead>
                             <tbody id="flightsTableBody">
                                 <tr data-flight="1">
-                                    <td>1</td>
+                                    <td class="flight-number-cell" onclick="toggleFlightView('1')">1</td>
                                     <td><input type="text" class="route" placeholder="e.g., ALC-MAD" required autocomplete="off"></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1234" required autocomplete="off"></td>
                                     <td><input type="time" class="departure" required></td>
@@ -257,7 +279,7 @@
                                     <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required autocomplete="off"></td>
                                 </tr>
                                 <tr data-flight="2">
-                                    <td>2</td>
+                                    <td class="flight-number-cell" onclick="toggleFlightView('2')">2</td>
                                     <td><input type="text" class="route" placeholder="e.g., MAD-ALC" required autocomplete="off"></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1235" required autocomplete="off"></td>
                                     <td><input type="time" class="departure" required></td>
@@ -269,7 +291,7 @@
                                     <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required autocomplete="off"></td>
                                 </tr>
                                 <tr data-flight="3">
-                                    <td>3</td>
+                                    <td class="flight-number-cell" onclick="toggleFlightView('3')">3</td>
                                     <td><input type="text" class="route" placeholder="e.g., ALC-STN" required autocomplete="off"></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1236" required autocomplete="off"></td>
                                     <td><input type="time" class="departure" required></td>
@@ -281,7 +303,7 @@
                                     <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required autocomplete="off"></td>
                                 </tr>
                                 <tr data-flight="4">
-                                    <td>4</td>
+                                    <td class="flight-number-cell" onclick="toggleFlightView('4')">4</td>
                                     <td><input type="text" class="route" placeholder="e.g., STN-ALC" required autocomplete="off"></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1237" required autocomplete="off"></td>
                                     <td><input type="time" class="departure" required></td>
@@ -300,14 +322,14 @@
                 <!-- Crew Information -->
                 <details class="form-section" id="crewSection">
                     <summary>Crew Information</summary>
-                    <div class="grid grid-cols-1 gap-3">
+                    <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label>Captain</label>
-                            <input type="text" id="captain" required autocomplete="off">
+                            <input type="text" id="captain" required class="captain-fo-input" autocomplete="off">
                         </div>
                         <div>
                             <label>First Officer</label>
-                            <input type="text" id="firstOfficer" required autocomplete="off">
+                            <input type="text" id="firstOfficer" required class="captain-fo-input" autocomplete="off">
                         </div>
                     </div>
                     <table id="crewTable">
@@ -321,36 +343,37 @@
                         <tbody>
                             <tr>
                                 <td>No. 1</td>
-                                <td><input type="text" class="crewcode" id="crewcode1" required autocomplete="off"></td>
-                                <td><input type="text" class="crewName" required autocomplete="off"></td>
+                                <td><input type="text" class="crewcode crew-input" id="crewcode1" required autocomplete="off"></td>
+                                <td><input type="text" class="crewName crew-input" required autocomplete="off"></td>
                             </tr>
                             <tr>
                                 <td>No. 2</td>
-                                <td><input type="text" class="crewcode" id="crewcode2" required autocomplete="off"></td>
-                                <td><input type="text" class="crewName" required autocomplete="off"></td>
+                                <td><input type="text" class="crewcode crew-input" id="crewcode2" required autocomplete="off"></td>
+                                <td><input type="text" class="crewName crew-input" required autocomplete="off"></td>
                             </tr>
                             <tr>
                                 <td>No. 3</td>
-                                <td><input type="text" class="crewcode" id="crewcode3" autocomplete="off"></td>
-                                <td><input type="text" class="crewName" autocomplete="off"></td>
+                                <td><input type="text" class="crewcode crew-input" id="crewcode3" autocomplete="off"></td>
+                                <td><input type="text" class="crewName crew-input" autocomplete="off"></td>
                             </tr>
                             <tr>
                                 <td>No. 4</td>
-                                <td><input type="text" class="crewcode" id="crewcode4" autocomplete="off"></td>
-                                <td><input type="text" class="crewName" autocomplete="off"></td>
+                                <td><input type="text" class="crewcode crew-input" id="crewcode4" autocomplete="off"></td>
+                                <td><input type="text" class="crewName crew-input" autocomplete="off"></td>
                             </tr>
-                            <tr>
+                            <tr class="extra-crew" id="extraCrew1">
                                 <td>Extra 1</td>
-                                <td><input type="text" class="crewcode" autocomplete="off"></td>
-                                <td><input type="text" class="crewName" autocomplete="off"></td>
+                                <td><input type="text" class="crewcode crew-input" autocomplete="off"></td>
+                                <td><input type="text" class="crewName crew-input" autocomplete="off"></td>
                             </tr>
-                            <tr>
+                            <tr class="extra-crew" id="extraCrew2">
                                 <td>Extra 2</td>
-                                <td><input type="text" class="crewcode" autocomplete="off"></td>
-                                <td><input type="text" class="crewName" autocomplete="off"></td>
+                                <td><input type="text" class="crewcode crew-input" autocomplete="off"></td>
+                                <td><input type="text" class="crewName crew-input" autocomplete="off"></td>
                             </tr>
                         </tbody>
                     </table>
+                    <button type="button" class="add-crew-button" onclick="addExtraCrew()">Add Extra Crew</button>
                 </details>
 
                 <!-- Product Stock -->
@@ -432,7 +455,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Marl. Gold</td>
+                                <td>Marlboro Gold</td>
                                 <td><input type="number" min="0" class="open duty-free-input" required></td>
                                 <td><input type="number" min="0" class="close duty-free-input" required></td>
                                 <td class="difference-cell"></td>
@@ -450,7 +473,7 @@
                                 <td class="difference-cell"></td>
                             </tr>
                             <tr>
-                                <td>Amber Lighter</td>
+                                <td>Amber Leaf</td>
                                 <td><input type="number" min="0" class="open duty-free-input" required></td>
                                 <td><input type="number" min="0" class="close duty-free-input" required></td>
                                 <td class="difference-cell"></td>
@@ -462,22 +485,22 @@
                 <!-- Sales and Totals -->
                 <details class="form-section" id="salesSection">
                     <summary>Sales and Totals</summary>
-                    <div class="grid grid-cols-1 gap-3">
+                    <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label id="salesLabel1">Sales Crewcode 1</label>
-                            <input type="number" id="sales1" min="0" required>
+                            <input type="number" step="0.01" id="sales1" min="0" required>
                         </div>
                         <div>
                             <label id="salesLabel2">Sales Crewcode 2</label>
-                            <input type="number" id="sales2" min="0" required>
+                            <input type="number" step="0.01" id="sales2" min="0" required>
                         </div>
                         <div>
                             <label id="salesLabel3">Sales Crewcode 3</label>
-                            <input type="number" id="sales3" min="0" required>
+                            <input type="number" step="0.01" id="sales3" min="0" required>
                         </div>
                         <div>
                             <label id="salesLabel4">Sales Crewcode 4</label>
-                            <input type="number" id="sales4" min="0" required>
+                            <input type="number" step="0.01" id="sales4" min="0" required>
                         </div>
                         <div>
                             <label>Total Sales</label>
@@ -485,7 +508,7 @@
                         </div>
                         <div>
                             <label>Total Pax</label>
-                            <input type="number" id="totalPax" min="0" required>
+                            <input type="number" id="totalPax" readonly style="background: rgba(255, 255, 255, 0.3); color: #000;">
                         </div>
                         <div>
                             <label>Total Overall</label>
@@ -503,9 +526,11 @@
     </footer>
 
     <script>
+        let activeFlight = null;
+        let extraCrewCount = 0;
+
         // Toggle flight visibility
-        function toggleFlightView() {
-            const selector = document.getElementById('flightSelector');
+        function toggleFlightView(flightNumber) {
             const flightRows = document.querySelectorAll('#flightsTableBody tr');
             const flightInfoHeader = document.getElementById('flightInfoHeader');
             const productStockSection = document.getElementById('productStockSection');
@@ -513,31 +538,42 @@
             const salesSection = document.getElementById('salesSection');
             const crewSection = document.getElementById('crewSection');
 
-            selector.addEventListener('change', () => {
-                const selectedFlight = selector.value;
-
-                // Reset visibility
+            if (activeFlight === flightNumber) {
+                // Show all flights
+                activeFlight = null;
                 flightRows.forEach(row => row.classList.remove('hidden'));
                 flightInfoHeader.classList.remove('hidden');
                 productStockSection.classList.remove('hidden');
                 dutyFreeStockSection.classList.remove('hidden');
                 salesSection.classList.remove('hidden');
                 crewSection.classList.remove('hidden');
+            } else {
+                // Show only selected flight
+                activeFlight = flightNumber;
+                flightRows.forEach(row => {
+                    if (row.getAttribute('data-flight') === flightNumber) {
+                        row.classList.remove('hidden');
+                    } else {
+                        row.classList.add('hidden');
+                    }
+                });
+                flightInfoHeader.classList.add('hidden');
+                productStockSection.classList.add('hidden');
+                dutyFreeStockSection.classList.add('hidden');
+                salesSection.classList.add('hidden');
+                crewSection.classList.remove('hidden');
+            }
+        }
 
-                if (selectedFlight !== 'all') {
-                    // Hide all rows except the selected flight
-                    flightRows.forEach(row => {
-                        if (row.getAttribute('data-flight') !== selectedFlight) {
-                            row.classList.add('hidden');
-                        }
-                    });
-                    // Hide other sections except Crew Information
-                    flightInfoHeader.classList.add('hidden');
-                    productStockSection.classList.add('hidden');
-                    dutyFreeStockSection.classList.add('hidden');
-                    salesSection.classList.add('hidden');
+        // Add extra crew
+        function addExtraCrew() {
+            if (extraCrewCount < 2) {
+                extraCrewCount++;
+                document.getElementById(`extraCrew${extraCrewCount}`).classList.remove('extra-crew');
+                if (extraCrewCount === 2) {
+                    document.querySelector('.add-crew-button').classList.add('hidden');
                 }
-            });
+            }
         }
 
         // Calculate differences for product and duty-free stock
@@ -596,10 +632,28 @@
             ];
             const totalSales = document.getElementById('totalSales');
             const updateTotal = () => {
-                const total = salesInputs.reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
-                totalSales.value = total;
+                const total = salesInputs.reduce((sum, input) => {
+                    const value = parseFloat(input.value) || 0;
+                    return sum + value;
+                }, 0);
+                totalSales.value = total.toFixed(2);
             };
             salesInputs.forEach(input => input.addEventListener('input', updateTotal));
+            updateTotal();
+        }
+
+        // Calculate total pax
+        function calculateTotalPax() {
+            const paxInputs = document.querySelectorAll('.finalPax');
+            const totalPax = document.getElementById('totalPax');
+            const updateTotal = () => {
+                const total = Array.from(paxInputs).reduce((sum, input) => {
+                    const value = parseInt(input.value) || 0;
+                    return sum + value;
+                }, 0);
+                totalPax.value = total;
+            };
+            paxInputs.forEach(input => input.addEventListener('input', updateTotal));
             updateTotal();
         }
 
@@ -609,7 +663,7 @@
             const requiredFields = document.querySelectorAll('input[required]');
             let allFilled = true;
             requiredFields.forEach(field => {
-                if (!field.value && !field.closest('.hidden')) {
+                if (!field.value && !field.closest('.hidden') && !field.closest('.extra-crew')) {
                     allFilled = false;
                     field.style.border = '1px solid #ff4d4d';
                 } else {
@@ -620,7 +674,7 @@
                 alert('Form submitted successfully!');
                 const formData = {
                     date: document.getElementById('date').value,
-                    acRef: document.getElementById('acRef').value,
+                    acReg: document.getElementById('acReg').value,
                     flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
                         route: row.querySelector('.route').value,
                         flightNumber: row.querySelector('.flightNumber').value,
@@ -632,7 +686,11 @@
                         aft: row.querySelector('.aft').value,
                         wheelchair: row.querySelector('.wheelchair').value
                     })),
-                    crew: Array.from(document.querySelectorAll('#crewTable tr')).map(row => ({
+                    captain: document.getElementById('captain').value,
+                    firstOfficer: document.getElementById('firstOfficer').value,
+                    crew: Array.from(document.querySelectorAll('#crewTable tr:not(.extra-crew)')).concat(
+                        Array.from(document.querySelectorAll('#crewTable tr.extra-crew')).filter(row => !row.classList.contains('extra-crew'))
+                    ).map(row => ({
                         crewcode: row.querySelector('.crewcode').value,
                         name: row.querySelector('.crewName').value
                     })),
@@ -666,11 +724,11 @@
         });
 
         // Initialize functions
-        toggleFlightView();
         calculateDifference('productTable');
         calculateDifference('dutyFreeTable');
         updateSalesLabels();
         calculateTotalSales();
+        calculateTotalPax();
     </script>
 </body>
 </html>
