@@ -1,155 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inflight Report Form</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #1e90ff, #ff7f50);
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        header {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 1em;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-            color: #fff;
-        }
-        main {
-            flex: 1;
-            padding: 2em;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .form-container {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 1.5em;
-            width: 100%;
-            max-width: 800px;
-        }
-        .form-section {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin: 1em 0;
-            padding: 1.5em;
-        }
-        .form-section h2 {
-            text-align: center;
-            margin-bottom: 1em;
-            color: #fff;
-        }
-        label {
-            display: block;
-            margin: 0.5em 0 0.2em;
-            color: #fff;
-        }
-        input {
-            width: 100%;
-            padding: 0.3em;
-            margin-bottom: 1em;
-            border-radius: 5px;
-            border: none;
-            font-size: 0.9em;
-            box-sizing: border-box;
-        }
-        .small-input {
-            padding: 0.2em;
-            font-size: 0.8em;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1em 0;
-        }
-        table, th, td {
-            border: 1px solid #fff;
-        }
-        th, td {
-            padding: 0.5em;
-            text-align: center;
-            color: #fff;
-        }
-        table input {
-            width: calc(100% - 10px);
-            padding: 0.3em;
-            font-size: 0.9em;
-            box-sizing: border-box;
-        }
-        table .small-input {
-            padding: 0.2em;
-            font-size: 0.8em;
-        }
-        .difference-cell {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        button {
-            width: 100%;
-            padding: 0.5em;
-            background: #1e90ff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        button:hover {
-            background: #ff7f50;
-        }
-        .required-note {
-            text-align: center;
-            color: #ff4d4d;
-            margin-bottom: 1em;
-        }
-        footer {
-            background: rgba(0, 0, 0, 0.7);
-            text-align: center;
-            padding: 1em;
-            font-size: 0.9em;
-            color: #fff;
-        }
-        .table-wrapper {
-            overflow-x: auto;
-        }
-    </style>
-</head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Inflight Report</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                margin: 0;
+                padding: 0;
+                background: linear-gradient(135deg, #1e90ff, #ff7f50);
+                color: #fff;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                -webkit-font-smoothing: antialiased;
+            }
+            header {
+                background: rgba(0, 0, 0, 0.7);
+                padding: 1rem;
+                text-align: center;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                position: sticky;
+                top: 0;
+                z-index: 10;
+            }
+            header h1 {
+                margin: 0;
+                font-size: 1.8rem;
+                color: #fff;
+            }
+            main {
+                flex: 1;
+                padding: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .form-container {
+                background: rgba(255, 255, 255, 0.2);
+                backdrop-filter: blur(10px);
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                padding: 1.5rem;
+                width: 100%;
+                max-width: 600px;
+            }
+            details.form-section {
+                background: rgba(255, 255, 255, 0.2);
+                backdrop-filter: blur(10px);
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                margin: 0.75rem 0;
+                padding: 1rem;
+            }
+            details[open] summary {
+                margin-bottom: 1rem;
+            }
+            summary {
+                font-size: 1.2rem;
+                font-weight: bold;
+                color: #fff;
+                cursor: pointer;
+                padding: 0.5rem;
+                user-select: none;
+                touch-action: manipulation;
+            }
+            label {
+                display: block;
+                margin: 0.5rem 0 0.3rem;
+                color: #fff;
+                font-size: 1.1rem;
+            }
+            input {
+                width: 100%;
+                padding: 0.6rem;
+                margin-bottom: 1rem;
+                border-radius: 8px;
+                border: none;
+                font-size: 0.9rem;
+                box-sizing: border-box;
+                background: #fff;
+                color: #000;
+                -webkit-appearance: none;
+                touch-action: manipulation;
+            }
+            .small-input {
+                padding: 0.4rem;
+                font-size: 0.85rem;
+                min-width: 6rem;
+            }
+            table {
+                width: 100%;
+                min-width: 100%;
+                border-collapse: collapse;
+                margin: 1rem 0;
+                table-layout: auto;
+            }
+            table, th, td {
+                border: 1px solid #fff;
+            }
+            th, td {
+                padding: 0.8rem;
+                text-align: center;
+                color: #fff;
+            }
+            table input {
+                width: 100%;
+                padding: 0.6rem;
+                font-size: 0.9rem;
+                box-sizing: border-box;
+                background: #fff;
+                color: #000;
+            }
+            table .small-input {
+                padding: 0.4rem;
+                font-size: 0.85rem;
+                min-width: 6rem;
+            }
+            table .flight-number-input {
+                min-width: 7rem;
+            }
+            table .flight-time-input {
+                min-width: 5rem;
+            }
+            table .final-pax-input {
+                min-width: 4rem;
+            }
+            table .fwd-input, table .aft-input {
+                min-width: 3.5rem;
+            }
+            .difference-cell {
+                background: rgba(255, 255, 255, 0.3);
+                color: #000;
+            }
+            button {
+                width: 100%;
+                padding: 0.8rem;
+                background: #1e90ff;
+                color: #fff;
+                border: none;
+                border-radius: 8px;
+                font-size: 1.1rem;
+                cursor: pointer;
+                transition: background 0.2s;
+                touch-action: manipulation;
+                min-height: 44px;
+            }
+            button:hover {
+                background: #ff7f50;
+            }
+            .required-note {
+                text-align: center;
+                color: #ff4d4d;
+                margin-bottom: 1rem;
+                font-size: 1rem;
+            }
+            footer {
+                background: rgba(0, 0, 0, 0.7);
+                text-align: center;
+                padding: 1rem;
+                font-size: 0.9rem;
+                color: #fff;
+            }
+            .table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            @media (min-width: 768px) {
+                header h1 {
+                    font-size: 2.2rem;
+                }
+                main {
+                    padding: 2rem;
+                }
+                .form-container {
+                    max-width: 800px;
+                }
+            }
+        </style>
+    </head>
 <body>
     <header>
         <h1>Inflight Report Form</h1>
     </header>
     <main>
         <div class="form-container">
-            <p class="required-note">All sections must be completed</p>
-            <form id="inflightForm" class="space-y-4">
+            <p class="required-note">All required fields must be completed</p>
+            <form id="inflightForm" class="space-y-2">
                 <!-- Flight Information -->
-                <div class="form-section">
-                    <h2>Flight Information</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <details class="form-section" open>
+                    <summary>Flight Information</summary>
+                    <div class="grid grid-cols-1 gap-3">
                         <div>
                             <label>Date</label>
-                            <input type="date" id="date" required class="small-input">
+                            <input type="date" id="date" required class="small-input" autocomplete="off">
                         </div>
                         <div>
                             <label>A/C Ref (EI-)</label>
-                            <input type="text" id="acRef" placeholder="EI-" required class="small-input">
+                            <input type="text" id="acRef" placeholder="EI-" required class="small-input" autocomplete="off">
                         </div>
                     </div>
                     <div class="table-wrapper">
@@ -158,81 +208,81 @@
                                 <tr>
                                     <th></th>
                                     <th>Route</th>
-                                    <th>Flight Number</th>
-                                    <th>Departure</th>
-                                    <th>Arrival</th>
-                                    <th>Flight Time</th>
-                                    <th>Final Pax</th>
+                                    <th>Flight No.</th>
+                                    <th>Dep</th>
+                                    <th>Arr</th>
+                                    <th>Time</th>
+                                    <th>Pax</th>
                                     <th>FWD</th>
                                     <th>AFT</th>
-                                    <th>Wheelchair</th>
+                                    <th>W/C</th>
                                 </tr>
                             </thead>
-                            <tbody id="flightsTable">
+                            <tbody id="flightsTableBody">
                                 <tr>
                                     <td>1</td>
-                                    <td><input type="text" class="route" placeholder="e.g., ALC-MAD" required></td>
-                                    <td><input type="text" class="flightNumber" placeholder="e.g., FR1234" required></td>
+                                    <td><input type="text" class="route" placeholder="e.g., ALC-MAD" required autocomplete="off"></td>
+                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1234" required autocomplete="off"></td>
                                     <td><input type="time" class="departure" required></td>
                                     <td><input type="time" class="arrival" required></td>
-                                    <td><input type="text" class="flightTime" placeholder="e.g., 1:30" required></td>
-                                    <td><input type="number" min="0" class="finalPax" required></td>
-                                    <td><input type="number" min="0" class="fwd" required></td>
-                                    <td><input type="number" min="0" class="aft" required></td>
-                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required></td>
+                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" required autocomplete="off"></td>
+                                    <td><input type="number" min="0" class="finalPax final-pax-input" required></td>
+                                    <td><input type="number" min="0" class="fwd fwd-input" required></td>
+                                    <td><input type="number" min="0" class="aft aft-input" required></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required autocomplete="off"></td>
                                 </tr>
                                 <tr>
                                     <td>2</td>
-                                    <td><input type="text" class="route" placeholder="e.g., MAD-ALC" required></td>
-                                    <td><input type="text" class="flightNumber" placeholder="e.g., FR1235" required></td>
+                                    <td><input type="text" class="route" placeholder="e.g., MAD-ALC" required autocomplete="off"></td>
+                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1235" required autocomplete="off"></td>
                                     <td><input type="time" class="departure" required></td>
                                     <td><input type="time" class="arrival" required></td>
-                                    <td><input type="text" class="flightTime" placeholder="e.g., 1:30" required></td>
-                                    <td><input type="number" min="0" class="finalPax" required></td>
-                                    <td><input type="number" min="0" class="fwd" required></td>
-                                    <td><input type="number" min="0" class="aft" required></td>
-                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required></td>
+                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" required autocomplete="off"></td>
+                                    <td><input type="number" min="0" class="finalPax final-pax-input" required></td>
+                                    <td><input type="number" min="0" class="fwd fwd-input" required></td>
+                                    <td><input type="number" min="0" class="aft aft-input" required></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required autocomplete="off"></td>
                                 </tr>
                                 <tr>
                                     <td>3</td>
-                                    <td><input type="text" class="route" placeholder="e.g., ALC-STN" required></td>
-                                    <td><input type="text" class="flightNumber" placeholder="e.g., FR1236" required></td>
+                                    <td><input type="text" class="route" placeholder="e.g., ALC-STN" required autocomplete="off"></td>
+                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1236" required autocomplete="off"></td>
                                     <td><input type="time" class="departure" required></td>
                                     <td><input type="time" class="arrival" required></td>
-                                    <td><input type="text" class="flightTime" placeholder="e.g., 1:30" required></td>
-                                    <td><input type="number" min="0" class="finalPax" required></td>
-                                    <td><input type="number" min="0" class="fwd" required></td>
-                                    <td><input type="number" min="0" class="aft" required></td>
-                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required></td>
+                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" required autocomplete="off"></td>
+                                    <td><input type="number" min="0" class="finalPax final-pax-input" required></td>
+                                    <td><input type="number" min="0" class="fwd fwd-input" required></td>
+                                    <td><input type="number" min="0" class="aft aft-input" required></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required autocomplete="off"></td>
                                 </tr>
                                 <tr>
                                     <td>4</td>
-                                    <td><input type="text" class="route" placeholder="e.g., STN-ALC" required></td>
-                                    <td><input type="text" class="flightNumber" placeholder="e.g., FR1237" required></td>
+                                    <td><input type="text" class="route" placeholder="e.g., STN-ALC" required autocomplete="off"></td>
+                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1237" required autocomplete="off"></td>
                                     <td><input type="time" class="departure" required></td>
                                     <td><input type="time" class="arrival" required></td>
-                                    <td><input type="text" class="flightTime" placeholder="e.g., 1:30" required></td>
-                                    <td><input type="number" min="0" class="finalPax" required></td>
-                                    <td><input type="number" min="0" class="fwd" required></td>
-                                    <td><input type="number" min="0" class="aft" required></td>
-                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required></td>
+                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" required autocomplete="off"></td>
+                                    <td><input type="number" min="0" class="finalPax final-pax-input" required></td>
+                                    <td><input type="number" min="0" class="fwd fwd-input" required></td>
+                                    <td><input type="number" min="0" class="aft aft-input" required></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required autocomplete="off"></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </details>
 
                 <!-- Crew Information -->
-                <div class="form-section">
-                    <h2>Crew Information</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <details class="form-section">
+                    <summary>Crew Information</summary>
+                    <div class="grid grid-cols-1 gap-3">
                         <div>
                             <label>Captain</label>
-                            <input type="text" id="captain" required>
+                            <input type="text" id="captain" required autocomplete="off">
                         </div>
                         <div>
                             <label>First Officer</label>
-                            <input type="text" id="firstOfficer" required>
+                            <input type="text" id="firstOfficer" required autocomplete="off">
                         </div>
                     </div>
                     <table id="crewTable">
@@ -246,48 +296,48 @@
                         <tbody>
                             <tr>
                                 <td>No. 1</td>
-                                <td><input type="text" class="crewcode" required></td>
-                                <td><input type="text" class="crewName" required></td>
+                                <td><input type="text" class="crewcode" required autocomplete="off"></td>
+                                <td><input type="text" class="crewName" required autocomplete="off"></td>
                             </tr>
                             <tr>
                                 <td>No. 2</td>
-                                <td><input type="text" class="crewcode" required></td>
-                                <td><input type="text" class="crewName" required></td>
+                                <td><input type="text" class="crewcode" required autocomplete="off"></td>
+                                <td><input type="text" class="crewName" required autocomplete="off"></td>
                             </tr>
                             <tr>
                                 <td>No. 3</td>
-                                <td><input type="text" class="crewcode"></td>
-                                <td><input type="text" class="crewName"></td>
+                                <td><input type="text" class="crewcode" autocomplete="off"></td>
+                                <td><input type="text" class="crewName" autocomplete="off"></td>
                             </tr>
                             <tr>
                                 <td>No. 4</td>
-                                <td><input type="text" class="crewcode"></td>
-                                <td><input type="text" class="crewName"></td>
+                                <td><input type="text" class="crewcode" autocomplete="off"></td>
+                                <td><input type="text" class="crewName" autocomplete="off"></td>
                             </tr>
                             <tr>
                                 <td>Extra 1</td>
-                                <td><input type="text" class="crewcode"></td>
-                                <td><input type="text" class="crewName"></td>
+                                <td><input type="text" class="crewcode" autocomplete="off"></td>
+                                <td><input type="text" class="crewName" autocomplete="off"></td>
                             </tr>
                             <tr>
                                 <td>Extra 2</td>
-                                <td><input type="text" class="crewcode"></td>
-                                <td><input type="text" class="crewName"></td>
+                                <td><input type="text" class="crewcode" autocomplete="off"></td>
+                                <td><input type="text" class="crewName" autocomplete="off"></td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                </details>
 
                 <!-- Product Stock -->
-                <div class="form-section">
-                    <h2>Product Stock</h2>
+                <details class="form-section">
+                    <summary>Product Stock</summary>
                     <table id="productTable">
                         <thead>
                             <tr>
                                 <th>Product</th>
                                 <th>Open</th>
                                 <th>Close</th>
-                                <th>Difference</th>
+                                <th>Diff</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -329,12 +379,12 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                </details>
 
                 <!-- Sales and Totals -->
-                <div class="form-section">
-                    <h2>Sales and Totals</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <details class="form-section">
+                    <summary>Sales and Totals</summary>
+                    <div class="grid grid-cols-1 gap-3">
                         <div>
                             <label>Sales 1</label>
                             <input type="number" id="sales1" min="0" required>
@@ -353,7 +403,7 @@
                         </div>
                         <div>
                             <label>Total Sales</label>
-                            <input type="number" id="totalSales" readonly style="background: rgba(255, 255, 255, 0.3);">
+                            <input type="number" id="totalSales" readonly style="background: rgba(255, 255, 255, 0.3); color: #000;">
                         </div>
                         <div>
                             <label>Total Pax</label>
@@ -361,17 +411,17 @@
                         </div>
                         <div>
                             <label>Total Overall</label>
-                            <input type="number" id="totalOverall" readonly style="background: rgba(255, 255, 255, 0.3);">
+                            <input type="number" id="totalOverall" readonly style="background: rgba(255, 255, 255, 0.3); color: #000;">
                         </div>
                     </div>
-                </div>
+                </details>
 
                 <button type="submit">Submit Report</button>
             </form>
         </div>
     </main>
     <footer>
-        <p>Inflight Report Form &copy; 2025</p>
+        <p>Inflight Report Form © 2025</p>
     </footer>
 
     <script>
@@ -428,11 +478,10 @@
             });
             if (allFilled) {
                 alert('Form submitted successfully!');
-                // Collect form data
                 const formData = {
                     date: document.getElementById('date').value,
                     acRef: document.getElementById('acRef').value,
-                    flights: Array.from(document.querySelectorAll('#flightsTable tr')).map(row => ({
+                    flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
                         route: row.querySelector('.route').value,
                         flightNumber: row.querySelector('.flightNumber').value,
                         departure: row.querySelector('.departure').value,
