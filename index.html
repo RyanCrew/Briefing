@@ -20,7 +20,7 @@
         }
         header {
             background: rgba(0,0,0,0.7);
-            padding: 1rem;
+            padding: 0.8rem;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             position: fixed;
@@ -30,13 +30,12 @@
         }
         header h1 {
             margin: 0;
-            font-size: 1.8rem;
-            color: inherit;
+            font-size: 1.6rem;
         }
         main {
             flex: 1;
-            padding: 0.25rem;
-            margin-top: 4.5rem;
+            padding: 0.2rem;
+            margin-top: 4rem;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -44,70 +43,69 @@
         .form-container {
             background: rgba(255,255,255,0.2);
             backdrop-filter: blur(10px);
-            border-radius: 12px;
+            border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 0.75rem;
+            padding: 0.5rem;
             width: 100%;
             max-width: 98vw;
         }
         details.form-section {
             background: rgba(255,255,255,0.2);
-            border-radius: 12px;
+            border-radius: 10px;
             box-shadow: 0 4px 2px rgba(0,0,0,0.1);
-            margin: 0.75rem 0;
-            padding: 0.75rem;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
         }
         details[open] summary {
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
         }
         summary {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            color: #fff;
             cursor: pointer;
-            padding: 0.5rem;
+            padding: 0.4rem;
             user-select: none;
             touch-action: manipulation;
         }
         .stock-tabs {
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
+            gap: 0.4rem;
+            margin-bottom: 0.8rem;
         }
         .stock-tab {
             flex: 1;
-            padding: 0.75rem;
+            padding: 0.6rem;
             background: rgba(255,255,255,0.2);
             color: #fff;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
             cursor: pointer;
             text-align: center;
             touch-action: manipulation;
-            min-height: 44px;
+            min-height: 40px;
         }
         .stock-tab.active {
             background: #ff7f50;
         }
         label {
             display: block;
-            margin: 0.5rem 0 0.3rem;
+            margin: 0.3rem 0 0.2rem;
             color: #fff;
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
         .date-ac-label {
-            font-size: 0.9rem;
-            margin-bottom: 0.2rem;
+            font-size: 0.7rem;
+            margin-bottom: 0.1rem;
             white-space: nowrap;
         }
         input {
             width: 100%;
-            padding: 0.7rem;
-            margin-bottom: 0.5rem;
-            border-radius: 8px;
+            padding: 0.5rem;
+            margin-bottom: 0.3rem;
+            border-radius: 6px;
             border: none;
-            font-size: 1rem;
+            font-size: 0.9rem;
             box-sizing: border-box;
             background: #fff;
             color: #000 !important;
@@ -115,21 +113,19 @@
             touch-action: manipulation;
         }
         .date-ac-input {
-            padding: 0.4rem;
-            font-size: 0.9rem;
-            min-height: 44px;
+            padding: 0.2rem;
+            font-size: 0.75rem;
+            min-height: 40px;
             min-width: 0;
-            max-width: 45%;
         }
         .captain-fo-input {
-            padding: 0.6rem;
-            min-width: 6rem;
+            padding: 0.4rem;
+            min-width: 5rem;
         }
         .sales-input {
-            padding: 0.3rem;
-            font-size: 0.8rem;
-            min-height: 44px;
-            min-width: 80px;
+            padding: 0.2rem;
+            font-size: 0.75rem;
+            min-height: 40px;
         }
         .sales-wrapper {
             position: relative;
@@ -138,59 +134,58 @@
         }
         .sales-euro {
             position: absolute;
-            right: 0.3rem;
+            right: 0.2rem;
             top: 50%;
             transform: translateY(-50%);
             color: #000;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
         }
         .crew-input {
-            padding: 0.4rem;
-            font-size: 0.9rem;
-            min-width: 5rem;
+            padding: 0.3rem;
+            font-size: 0.8rem;
+            min-width: 4rem;
         }
         select {
             width: 100%;
-            padding: 0.7rem;
-            margin-bottom: 0.5rem;
-            border-radius: 8px;
+            padding: 0.5rem;
+            margin-bottom: 0.3rem;
+            border-radius: 6px;
             border: none;
-            font-size: 1rem;
+            font-size: 0.9rem;
             background: #fff;
             color: #000;
         }
         .small-input {
-            padding: 0.4rem;
-            font-size: 0.9rem;
-            min-width: 5rem;
+            padding: 0.3rem;
+            font-size: 0.8rem;
+            min-width: 4rem;
         }
         .route-input {
-            min-width: 6rem;
+            min-width: 5rem;
         }
         .duty-free-input,.seal-input {
-            padding: 0.5rem;
-            font-size: 0.9rem;
-            min-width: 3.5rem;
+            padding: 0.4rem;
+            font-size: 0.8rem;
+            min-width: 3rem;
         }
         table {
             width: 100%;
-            min-width: 100%;
             border-collapse: collapse;
-            margin: 1rem 0;
+            margin: 0.8rem 0;
             table-layout: auto;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             display: table;
             visibility: visible;
         }
         .stock-table {
-            display: block !important;
-            visibility: visible !important;
+            display: block;
+            visibility: visible;
         }
         table,th,td {
             border: 1px solid #fff;
         }
         th,td {
-            padding: 0.6rem;
+            padding: 0.4rem;
             text-align: center;
             color: #fff;
         }
@@ -203,33 +198,33 @@
         }
         table input {
             width: 100%;
-            padding: 0.7rem;
-            font-size: 1rem;
+            padding: 0.5rem;
+            font-size: 0.9rem;
             box-sizing: border-box;
             background: #fff;
             color: #000 !important;
         }
         table .small-input {
-            padding: 0.4rem;
-            font-size: 0.9rem;
-            min-width: 5rem;
-        }
-        table .duty-free-input {
-            padding: 0.5rem;
-            font-size: 0.9rem;
-            min-width: 3.5rem;
-        }
-        table .flight-number-input {
-            min-width: 7rem;
-        }
-        table .flight-time-input {
-            min-width: 5rem;
-        }
-        table .final-pax-input {
+            padding: 0.3rem;
+            font-size: 0.8rem;
             min-width: 4rem;
         }
+        table .duty-free-input {
+            padding: 0.4rem;
+            font-size: 0.8rem;
+            min-width: 3rem;
+        }
+        table .flight-number-input {
+            min-width: 6rem;
+        }
+        table .flight-time-input {
+            min-width: 4rem;
+        }
+        table .final-pax-input {
+            min-width: 3rem;
+        }
         table .fwd-input,table .aft-input {
-            min-width: 3.5rem;
+            min-width: 3rem;
         }
         .difference-cell {
             background: rgba(255,255,255,0.3);
@@ -237,26 +232,26 @@
         }
         button {
             width: 100%;
-            padding: 0.9rem;
+            padding: 0.8rem;
             background: #1e90ff;
             color: #fff;
             border: none;
-            border-radius: 8px;
-            font-size: 1.2rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: background 0.2s;
             touch-action: manipulation;
-            min-height: 44px;
+            min-height: 40px;
         }
         button:hover {
             background: #ff7f50;
         }
         .add-crew-button,.remove-crew-button {
             width: auto;
-            padding: 0.6rem 1rem;
-            font-size: 1rem;
-            margin: 0.5rem 0.5rem 0 0;
-            min-height: 36px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+            margin: 0.3rem 0.3rem 0 0;
+            min-height: 32px;
         }
         .remove-crew-button {
             background: #ff4d4d;
@@ -267,8 +262,8 @@
         footer {
             background: rgba(0,0,0,0.7);
             text-align: center;
-            padding: 1rem;
-            font-size: 0.9rem;
+            padding: 0.8rem;
+            font-size: 0.8rem;
         }
         .table-wrapper {
             overflow-x: auto;
@@ -277,28 +272,29 @@
         .flight-info-header {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            padding: 2px;
         }
         .sales-grid {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
         .sales-label {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             margin-bottom: 0.1rem;
             white-space: nowrap;
-        }
-        .hidden {
-            display: none !important;
         }
         .extra-crew {
             display: none;
         }
+        .border-red-500 {
+            border: 1px solid #ff4d4d;
+        }
         @media (min-width: 768px) {
             header h1 {
-                font-size: 2.2rem;
+                font-size: 2rem;
             }
             main {
-                padding: 0.5rem;
+                padding: 0.4rem;
             }
             .form-container {
                 max-width: 95vw;
@@ -312,18 +308,18 @@
     </header>
     <main>
         <div class="form-container">
-            <form id="inflightForm" class="space-y-2">
+            <form id="inflightForm" class="space-y-1">
                 <!-- Flight Information -->
                 <details class="form-section" open>
                     <summary>Flight Information</summary>
-                    <div class="flex flex-nowrap gap-2 flight-info-header" id="flightInfoHeader">
-                        <div class="flex-1">
+                    <div class="flight-info-header" id="flightInfoHeader" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                        <div>
                             <label class="date-ac-label">Date</label>
-                            <input type="date" id="date" required class="date-ac-input" autocomplete="off">
+                            <input type="date" id="date" class="date-ac-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
                         </div>
-                        <div class="flex-1">
+                        <div>
                             <label class="date-ac-label">A/C Reg</label>
-                            <input type="text" id="acReg" placeholder="EI-" required class="date-ac-input" autocomplete="off">
+                            <input type="text" id="acReg" placeholder="EI-" class="date-ac-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
                         </div>
                     </div>
                     <div class="table-wrapper">
@@ -345,51 +341,51 @@
                             <tbody id="flightsTableBody">
                                 <tr data-flight="1">
                                     <td class="flight-number-cell" onclick="toggleFlightView('1')">1</td>
-                                    <td><input type="text" class="route route-input" placeholder="e.g., ALC-MAD" required autocomplete="off"></td>
-                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1234" required autocomplete="off"></td>
-                                    <td><input type="time" class="departure" required></td>
-                                    <td><input type="time" class="arrival" required></td>
-                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" required autocomplete="off"></td>
-                                    <td><input type="number" min="0" class="finalPax final-pax-input" required></td>
-                                    <td><input type="number" min="0" class="fwd fwd-input" required></td>
-                                    <td><input type="number" min="0" class="aft aft-input" required></td>
-                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required autocomplete="off"></td>
+                                    <td><input type="text" class="route route-input" placeholder="e.g., ALC-MAD" autocomplete="off"></td>
+                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1234" autocomplete="off"></td>
+                                    <td><input type="time" class="departure"></td>
+                                    <td><input type="time" class="arrival"></td>
+                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off"></td>
+                                    <td><input type="number" min="0" class="finalPax final-pax-input"></td>
+                                    <td><input type="number" min="0" class="fwd fwd-input"></td>
+                                    <td><input type="number" min="0" class="aft aft-input"></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off"></td>
                                 </tr>
                                 <tr data-flight="2">
                                     <td class="flight-number-cell" onclick="toggleFlightView('2')">2</td>
-                                    <td><input type="text" class="route route-input" placeholder="e.g., MAD-ALC" required autocomplete="off"></td>
-                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1235" required autocomplete="off"></td>
-                                    <td><input type="time" class="departure" required></td>
-                                    <td><input type="time" class="arrival" required></td>
-                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" required autocomplete="off"></td>
-                                    <td><input type="number" min="0" class="finalPax final-pax-input" required></td>
-                                    <td><input type="number" min="0" class="fwd fwd-input" required></td>
-                                    <td><input type="number" min="0" class="aft aft-input" required></td>
-                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required autocomplete="off"></td>
+                                    <td><input type="text" class="route route-input" placeholder="e.g., MAD-ALC" autocomplete="off"></td>
+                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1235" autocomplete="off"></td>
+                                    <td><input type="time" class="departure"></td>
+                                    <td><input type="time" class="arrival"></td>
+                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off"></td>
+                                    <td><input type="number" min="0" class="finalPax final-pax-input"></td>
+                                    <td><input type="number" min="0" class="fwd fwd-input"></td>
+                                    <td><input type="number" min="0" class="aft aft-input"></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off"></td>
                                 </tr>
                                 <tr data-flight="3">
                                     <td class="flight-number-cell" onclick="toggleFlightView('3')">3</td>
-                                    <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" required autocomplete="off"></td>
-                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1236" required autocomplete="off"></td>
-                                    <td><input type="time" class="departure" required></td>
-                                    <td><input type="time" class="arrival" required></td>
-                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" required autocomplete="off"></td>
-                                    <td><input type="number" min="0" class="finalPax final-pax-input" required></td>
-                                    <td><input type="number" min="0" class="fwd fwd-input" required></td>
-                                    <td><input type="number" min="0" class="aft aft-input" required></td>
-                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required autocomplete="off"></td>
+                                    <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off"></td>
+                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1236" autocomplete="off"></td>
+                                    <td><input type="time" class="departure"></td>
+                                    <td><input type="time" class="arrival"></td>
+                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off"></td>
+                                    <td><input type="number" min="0" class="finalPax final-pax-input"></td>
+                                    <td><input type="number" min="0" class="fwd fwd-input"></td>
+                                    <td><input type="number" min="0" class="aft aft-input"></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off"></td>
                                 </tr>
                                 <tr data-flight="4">
                                     <td class="flight-number-cell" onclick="toggleFlightView('4')">4</td>
-                                    <td><input type="text" class="route route-input" placeholder="e.g., STN-ALC" required autocomplete="off"></td>
-                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1237" required autocomplete="off"></td>
-                                    <td><input type="time" class="departure" required></td>
-                                    <td><input type="time" class="arrival" required></td>
-                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" required autocomplete="off"></td>
-                                    <td><input type="number" min="0" class="finalPax final-pax-input" required></td>
-                                    <td><input type="number" min="0" class="fwd fwd-input" required></td>
-                                    <td><input type="number" min="0" class="aft aft-input" required></td>
-                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required autocomplete="off"></td>
+                                    <td><input type="text" class="route route-input" placeholder="e.g., STN-ALC" autocomplete="off"></td>
+                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1237" autocomplete="off"></td>
+                                    <td><input type="time" class="departure"></td>
+                                    <td><input type="time" class="arrival"></td>
+                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off"></td>
+                                    <td><input type="number" min="0" class="finalPax final-pax-input"></td>
+                                    <td><input type="number" min="0" class="fwd fwd-input"></td>
+                                    <td><input type="number" min="0" class="aft aft-input"></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -399,14 +395,14 @@
                 <!-- Crew Information -->
                 <details class="form-section" id="crewSection">
                     <summary>Crew Information</summary>
-                    <div class="grid grid-cols-2 gap-2">
+                    <div class="grid grid-cols-2 gap-1">
                         <div>
                             <label>Captain</label>
-                            <input type="text" id="captain" required class="captain-fo-input" autocomplete="off">
+                            <input type="text" id="captain" class="captain-fo-input" autocomplete="off">
                         </div>
                         <div>
                             <label>First Officer</label>
-                            <input type="text" id="firstOfficer" required class="captain-fo-input" autocomplete="off">
+                            <input type="text" id="firstOfficer" class="captain-fo-input" autocomplete="off">
                         </div>
                     </div>
                     <table id="crewTable">
@@ -421,14 +417,14 @@
                         <tbody>
                             <tr>
                                 <td>No. 1</td>
-                                <td><input type="text" class="crewcode crew-input" id="crewcode1" required autocomplete="off"></td>
-                                <td><input type="text" class="crewName crew-input" required autocomplete="off"></td>
+                                <td><input type="text" class="crewcode crew-input" id="crewcode1" autocomplete="off"></td>
+                                <td><input type="text" class="crewName crew-input" autocomplete="off"></td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td>No. 2</td>
-                                <td><input type="text" class="crewcode crew-input" id="crewcode2" required autocomplete="off"></td>
-                                <td><input type="text" class="crewName crew-input" required autocomplete="off"></td>
+                                <td><input type="text" class="crewcode crew-input" id="crewcode2" autocomplete="off"></td>
+                                <td><input type="text" class="crewName crew-input" autocomplete="off"></td>
                                 <td></td>
                             </tr>
                             <tr>
@@ -480,55 +476,55 @@
                             <tbody>
                                 <tr>
                                     <td>H&C Panini</td>
-                                    <td><input type="number" min="0" class="open small-input" required></td>
-                                    <td><input type="number" min="0" class="close small-input" required></td>
+                                    <td><input type="number" min="0" class="open small-input"></td>
+                                    <td><input type="number" min="0" class="close small-input"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
                                     <td>C&M Panini</td>
-                                    <td><input type="number" min="0" class="open small-input" required></td>
-                                    <td><input type="number" min="0" class="close small-input" required></td>
+                                    <td><input type="number" min="0" class="open small-input"></td>
+                                    <td><input type="number" min="0" class="close small-input"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
                                     <td>H&C Croissant</td>
-                                    <td><input type="number" min="0" class="open small-input" required></td>
-                                    <td><input type="number" min="0" class="close small-input" required></td>
+                                    <td><input type="number" min="0" class="open small-input"></td>
+                                    <td><input type="number" min="0" class="close small-input"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
                                     <td>C&M Croissant</td>
-                                    <td><input type="number" min="0" class="open small-input" required></td>
-                                    <td><input type="number" min="0" class="close small-input" required></td>
+                                    <td><input type="number" min="0" class="open small-input"></td>
+                                    <td><input type="number" min="0" class="close small-input"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
                                     <td>Cheese T</td>
-                                    <td><input type="number" min="0" class="open small-input" required></td>
-                                    <td><input type="number" min="0" class="close small-input" required></td>
+                                    <td><input type="number" min="0" class="open small-input"></td>
+                                    <td><input type="number" min="0" class="close small-input"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
                                     <td>Pizza</td>
-                                    <td><input type="number" min="0" class="open small-input" required></td>
-                                    <td><input type="number" min="0" class="close small-input" required></td>
+                                    <td><input type="number" min="0" class="open small-input"></td>
+                                    <td><input type="number" min="0" class="close small-input"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
                                     <td>Bacon B</td>
-                                    <td><input type="number" min="0" class="open small-input" required></td>
-                                    <td><input type="number" min="0" class="close small-input" required></td>
+                                    <td><input type="number" min="0" class="open small-input"></td>
+                                    <td><input type="number" min="0" class="close small-input"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
                                     <td>F Sandwich</td>
-                                    <td><input type="number" min="0" class="open small-input" required></td>
-                                    <td><input type="number" min="0" class="close small-input" required></td>
+                                    <td><input type="number" min="0" class="open small-input"></td>
+                                    <td><input type="number" min="0" class="close small-input"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                             </tbody>
                         </table>
-                        <div class="grid grid-cols-3 gap-2">
+                        <div class="grid grid-cols-3 gap-1">
                             <div>
                                 <label for="yellowSeal">Yellow Seal</label>
                                 <input type="text" id="yellowSeal" class="seal-input" placeholder="e.g., Y12345" autocomplete="off">
@@ -543,7 +539,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="dutyFreeStockTable" class="stock-table hidden">
+                    <div id="dutyFreeStockTable" class="stock-table" style="display: none;">
                         <table id="dutyFreeTable">
                             <thead>
                                 <tr>
@@ -556,31 +552,31 @@
                             <tbody>
                                 <tr>
                                     <td>Marlboro Gold</td>
-                                    <td><input type="number" min="0" class="open duty-free-input" required></td>
-                                    <td><input type="number" min="0" class="close duty-free-input" required></td>
+                                    <td><input type="number" min="0" class="open duty-free-input"></td>
+                                    <td><input type="number" min="0" class="close duty-free-input"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
                                     <td>Marlboro Red</td>
-                                    <td><input type="number" min="0" class="open duty-free-input" required></td>
-                                    <td><input type="number" min="0" class="close duty-free-input" required></td>
+                                    <td><input type="number" min="0" class="open duty-free-input"></td>
+                                    <td><input type="number" min="0" class="close duty-free-input"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
                                     <td>Lambert</td>
-                                    <td><input type="number" min="0" class="open duty-free-input" required></td>
-                                    <td><input type="number" min="0" class="close duty-free-input" required></td>
+                                    <td><input type="number" min="0" class="open duty-free-input"></td>
+                                    <td><input type="number" min="0" class="close duty-free-input"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
                                     <td>Amber Leaf</td>
-                                    <td><input type="number" min="0" class="open duty-free-input" required></td>
-                                    <td><input type="number" min="0" class="close duty-free-input" required></td>
+                                    <td><input type="number" min="0" class="open duty-free-input"></td>
+                                    <td><input type="number" min="0" class="close duty-free-input"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                             </tbody>
                         </table>
-                        <div class="mt-4">
+                        <div class="mt-3">
                             <label for="dutyFreeMetalSeal">Metal Seal</label>
                             <input type="text" id="dutyFreeMetalSeal" class="seal-input" placeholder="e.g., M44556" autocomplete="off">
                         </div>
@@ -591,52 +587,52 @@
                 <details class="form-section" id="salesSection">
                     <summary>Sales and Totals</summary>
                     <div class="sales-grid">
-                        <div class="flex flex-nowrap gap-2 overflow-x-auto">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px;">
                             <div>
                                 <label id="salesLabel1" for="salesCrew1" class="sales-label">Sales Crew 1</label>
                                 <div class="sales-wrapper">
-                                    <input type="number" id="salesCrew1" step="0.01" min="0" required class="sales-input">
+                                    <input type="number" id="salesCrew1" step="0.01" min="0" class="sales-input" style="font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
                                 </div>
                             </div>
                             <div>
                                 <label id="salesLabel2" for="salesCrew2" class="sales-label">Sales Crew 2</label>
                                 <div class="sales-wrapper">
-                                    <input type="number" id="salesCrew2" step="0.01" min="0" required class="sales-input">
+                                    <input type="number" id="salesCrew2" step="0.01" min="0" class="sales-input" style="font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
                                 </div>
                             </div>
                             <div>
                                 <label id="salesLabel3" for="salesCrew3" class="sales-label">Sales Crew 3</label>
                                 <div class="sales-wrapper">
-                                    <input type="number" id="salesCrew3" step="0.01" min="0" required class="sales-input">
+                                    <input type="number" id="salesCrew3" step="0.01" min="0" class="sales-input" style="font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
                                 </div>
                             </div>
                             <div>
                                 <label id="salesLabel4" for="salesCrew4" class="sales-label">Sales Crew 4</label>
                                 <div class="sales-wrapper">
-                                    <input type="number" id="salesCrew4" step="0.01" min="0" required class="sales-input">
+                                    <input type="number" id="salesCrew4" step="0.01" min="0" class="sales-input" style="font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="grid grid-cols-3 gap-2 mt-2">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 4px;">
                             <div>
                                 <label for="totalSales" class="sales-label">Total Sales</label>
                                 <div class="sales-wrapper">
-                                    <input type="number" id="totalSales" readonly class="sales-input" style="background: rgba(255,255,255,0.3); color: #000;">
+                                    <input type="number" id="totalSales" readonly class="sales-input" style="background: rgba(227,227,227,0.8); color: #000; font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
                                 </div>
                             </div>
                             <div>
                                 <label for="totalPax" class="sales-label">Total Pax</label>
-                                <input type="number" id="totalPax" readonly class="sales-input" style="background: rgba(255,255,255,0.3); color: #000;">
+                                <input type="number" id="totalPax" readonly class="sales-input" style="background: rgba(227,227,227,0.8); color: #000; font-size: 12px; height: 40px;">
                             </div>
                             <div>
                                 <label for="overallAverage" class="sales-label">Avg/Pax</label>
                                 <div class="sales-wrapper">
-                                    <input type="number" id="overallAverage" readonly class="sales-input" style="background: rgba(255,255,255,0.3); color: #000;">
+                                    <input type="number" id="overallAverage" readonly class="sales-input" style="background: rgba(227,227,227,0.8); color: #000; font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
                                 </div>
                             </div>
@@ -660,237 +656,245 @@
 
         // Toggle flight visibility
         function toggleFlightView(flightNumber) {
-            const flightRows = document.querySelectorAll('#flightsTableBody tr');
-            const flightInfoHeader = document.getElementById('flightInfoHeader');
-            const stockSection = document.getElementById('stockSection');
-            const salesSection = document.getElementById('salesSection');
-            const crewSection = document.getElementById('crewSection');
-
-            if (!flightRows || !flightInfoHeader || !stockSection || !salesSection || !crewSection) {
-                alert('Error: Flight toggle elements missing. Please try reloading the page.');
-                return;
-            }
-            if (activeFlight === flightNumber) {
-                activeFlight = null;
-                flightRows.forEach(row => row.style.display = '');
-                flightInfoHeader.style.display = 'flex';
-                stockSection.style.display = '';
-                salesSection.style.display = '';
-                crewSection.style kissing = '';
-            } else {
-                activeFlight = flightNumber;
-                flightRows.forEach(row => {
-                    row.style.display = row.getAttribute('data-flight') === flightNumber ? '' : 'none';
-                });
-                flightInfoHeader.style.display = 'none';
-                stockSection.style.display = 'none';
-                salesSection.style.display = 'none';
-                crewSection.style.display = '';
+            try {
+                const flightRows = document.querySelectorAll('#flightsTableBody tr');
+                const flightInfoHeader = document.getElementById('flightInfoHeader');
+                const stockSection = document.getElementById('stockSection');
+                const salesSection = document.getElementById('salesSection');
+                const crewSection = document.getElementById('crewSection');
+                if (!flightRows || !flightInfoHeader || !stockSection || !salesSection || !crewSection) {
+                    alert('Error: Flight toggle elements missing.');
+                    return;
+                }
+                if (activeFlight === flightNumber) {
+                    activeFlight = null;
+                    flightRows.forEach(row => row.style.display = '');
+                    flightInfoHeader.style.display = '';
+                    stockSection.style.display = '';
+                    salesSection.style.display = '';
+                    crewSection.style.display = '';
+                } else {
+                    activeFlight = flightNumber;
+                    flightRows.forEach(row => {
+                        row.style.display = row.getAttribute('data-flight') === flightNumber ? '' : 'none';
+                    });
+                    flightInfoHeader.style.display = 'none';
+                    stockSection.style.display = 'none';
+                    salesSection.style.display = 'none';
+                    crewSection.style.display = '';
+                }
+            } catch (e) {
+                alert('Error toggling flight: ' + e.message);
             }
         }
 
         // Add extra crew
         function addExtraCrew() {
-            if (extraCrewCount >= 2) {
-                alert('Maximum of 2 extra crew members reached.');
-                return;
-            }
-            extraCrewCount++;
-            const extraRow = document.getElementById(`extraCrew${extraCrewCount}`);
-            if (!extraRow) {
-                alert('Error: Extra crew row not found.');
-                extraCrewCount--;
-                return;
-            }
-            extraRow.style.display = 'table-row';
-            if (extraCrewCount === 2) {
-                const addButton = document.querySelector('.add-crew-button');
-                if (addButton) addButton.style.display = 'none';
+            try {
+                if (extraCrewCount >= 2) {
+                    alert('Maximum of 2 extra crew members reached.');
+                    return;
+                }
+                extraCrewCount++;
+                const extraRow = document.getElementById(`extraCrew${extraCrewCount}`);
+                if (!extraRow) {
+                    alert(`Error: Extra crew row ${extraCrewCount} not found.`);
+                    extraCrewCount--;
+                    return;
+                }
+                extraRow.style.display = 'table-row';
+                alert(`Extra crew row ${extraCrewCount} added`);
+                if (extraCrewCount === 2) {
+                    const addButton = document.querySelector('.add-crew-button');
+                    if (addButton) addButton.style.display = 'none';
+                }
+            } catch (e) {
+                alert('Error adding crew: ' + e.message);
             }
         }
 
         // Remove extra crew
         function removeExtraCrew(index) {
-            const extraRow = document.getElementById(`extraCrew${index}`);
-            if (!extraRow) {
-                alert('Error: Extra crew row not found.');
-                return;
+            try {
+                const extraRow = document.getElementById(`extraCrew${index}`);
+                if (!extraRow) {
+                    alert(`Error: Extra crew row ${index} not found.`);
+                    return;
+                }
+                extraRow.style.display = 'none';
+                extraRow.querySelectorAll('input').forEach(input => input.value = '');
+                extraCrewCount--;
+                const addButton = document.querySelector('.add-crew-button');
+                if (addButton) addButton.style.display = 'inline-block';
+            } catch (e) {
+                alert('Error removing crew: ' + e.message);
             }
-            extraRow.style.display = 'none';
-            extraRow.querySelectorAll('input').forEach(input => input.value = '');
-            extraCrewCount--;
-            const addButton = document.querySelector('.add-crew-button');
-            if (addButton) addButton.style.display = 'inline-block';
         }
 
         // Toggle stock view
         function toggleStockView(type) {
-            const tables = {
-                product: document.getElementById('productStockTable'),
-                dutyFree: document.getElementById('dutyFreeStockTable')
-            };
-            const tabs = {
-                product: document.getElementById('productStockTab'),
-                dutyFree: document.getElementById('dutyFreeStockTab')
-            };
-
-            if (!tables.product || !tables.dutyFree || !tabs.product || !tabs.dutyFree) {
-                alert('Error: Stock table or tab missing.');
-                return;
+            try {
+                const productTable = document.getElementById('productStockTable');
+                const dutyFreeTable = document.getElementById('dutyFreeStockTable');
+                const productTab = document.getElementById('productStockTab');
+                const dutyFreeTab = document.getElementById('dutyFreeStockTab');
+                if (!productTable || !dutyFreeTable || !productTab || !dutyFreeTab) {
+                    alert('Error: Stock table or tab missing.');
+                    return;
+                }
+                productTable.style.display = type === 'product' ? 'block' : 'none';
+                dutyFreeTable.style.display = type === 'dutyFree' ? 'block' : 'none';
+                productTab.classList.toggle('active', type === 'product');
+                dutyFreeTab.classList.toggle('active', type === 'dutyFree');
+                activeStockTab = type;
+                const stockSection = document.getElementById('stockSection');
+                if (stockSection && !stockSection.hasAttribute('open')) {
+                    stockSection.setAttribute('open', '');
+                }
+                alert('Stock view toggled: ' + type);
+            } catch (e) {
+                alert('Error toggling stock: ' + e.message);
             }
-
-            const stockSection = document.getElementById('stockSection');
-            if (stockSection && !stockSection.hasAttribute('open')) {
-                stockSection.setAttribute('open', '');
-            }
-
-            tables.product.style.display = type === 'product' ? 'block' : 'none';
-            tables.dutyFree.style.display = type === 'dutyFree' ? 'block' : 'none';
-            tables.dutyFree.classList.toggle('hidden', type !== 'dutyFree');
-            tables.product.classList.toggle('hidden', type !== 'product');
-
-            tabs.product.classList.toggle('active', type === 'product');
-            tabs.dutyFree.classList.toggle('active', type === 'dutyFree');
-
-            activeStockTab = type;
         }
 
         // Calculate sold quantities
         function calculateDifference(tableId) {
-            const table = document.getElementById(tableId);
-            if (!table) {
-                alert(`Error: Table ${tableId} not found.`);
-                return;
-            }
-            const rows = table.getElementsByTagName('tr');
-            for (let row of rows) {
-                const openInput = row.querySelector('.open');
-                const closeInput = row.querySelector('.close');
-                const soldCell = row.querySelector('.difference-cell');
-                if (openInput && closeInput && soldCell) {
-                    const updateSold = () => {
-                        const openVal = parseInt(openInput.value) || 0;
-                        const closeVal = parseInt(closeInput.value) || 0;
-                        soldCell.textContent = openVal - closeVal;
-                    };
-                    openInput.addEventListener('input', updateSold);
-                    closeInput.addEventListener('input', updateSold);
-                    updateSold();
+            try {
+                const table = document.getElementById(tableId);
+                if (!table) {
+                    alert(`Error: Table ${tableId} not found.`);
+                    return;
                 }
+                const rows = table.getElementsByTagName('tr');
+                for (let row of rows) {
+                    const openInput = row.querySelector('.open');
+                    const closeInput = row.querySelector('.close');
+                    const soldCell = row.querySelector('.difference-cell');
+                    if (openInput && closeInput && soldCell) {
+                        const updateSold = () => {
+                            const openVal = parseInt(openInput.value) || 0;
+                            const closeVal = parseInt(closeInput.value) || 0;
+                            soldCell.textContent = openVal - closeVal;
+                        };
+                        openInput.addEventListener('input', updateSold);
+                        closeInput.addEventListener('input', updateSold);
+                        updateSold();
+                    }
+                }
+            } catch (e) {
+                alert('Error calculating difference: ' + e.message);
             }
         }
 
         // Update sales labels
         function updateSalesLabels() {
-            const crewInputs = [
-                document.getElementById('crewcode1'),
-                document.getElementById('crewcode2'),
-                document.getElementById('crewcode3'),
-                document.getElementById('crewcode4')
-            ];
-            const salesLabels = [
-                document.getElementById('salesLabel1'),
-                document.getElementById('salesLabel2'),
-                document.getElementById('salesLabel3'),
-                document.getElementById('salesLabel4')
-            ];
-
-            crewInputs.forEach((input, index) => {
-                if (input && salesLabels[index]) {
-                    const updateLabel = () => {
-                        const code = input.value.trim() || `Crew ${index + 1}`;
-                        salesLabels[index].textContent = `Sales ${code}`;
-                    };
-                    input.addEventListener('input', updateLabel);
-                    updateLabel();
-                }
-            });
+            try {
+                const crewInputs = [
+                    document.getElementById('crewcode1'),
+                    document.getElementById('crewcode2'),
+                    document.getElementById('crewcode3'),
+                    document.getElementById('crewcode4')
+                ];
+                const salesLabels = [
+                    document.getElementById('salesLabel1'),
+                    document.getElementById('salesLabel2'),
+                    document.getElementById('salesLabel3'),
+                    document.getElementById('salesLabel4')
+                ];
+                crewInputs.forEach((input, index) => {
+                    if (input && salesLabels[index]) {
+                        const updateLabel = () => {
+                            const code = input.value.trim() || `Crew ${index + 1}`;
+                            salesLabels[index].textContent = `Sales ${code}`;
+                        };
+                        input.addEventListener('input', updateLabel);
+                        updateLabel();
+                    }
+                });
+            } catch (e) {
+                alert('Error updating sales labels: ' + e.message);
+            }
         }
 
         // Calculate total sales and average
         function calculateTotalSales() {
-            const salesInputs = [
-                document.getElementById('salesCrew1'),
-                document.getElementById('salesCrew2'),
-                document.getElementById('salesCrew3'),
-                document.getElementById('salesCrew4')
-            ];
-            const totalSales = document.getElementById('totalSales');
-            const totalPax = document.getElementById('totalPax');
-            const overallAverage = document.getElementById('overallAverage');
-
-            const updateTotal = () => {
-                const total = salesInputs.reduce((sum, input) => {
-                    const value = parseFloat(input.value) || 0;
-                    return sum + value;
-                }, 0);
-                if (totalSales) totalSales.value = total.toFixed(2);
-
-                const paxCount = parseInt(totalPax.value) || 0;
-                if (overallAverage) {
-                    overallAverage.value = paxCount > 0 ? (total / paxCount).toFixed(2) : '0.00';
-                }
-            };
-
-            salesInputs.forEach(input => {
-                if (input) input.addEventListener('input', updateTotal);
-            });
-            updateTotal();
+            try {
+                const salesInputs = [
+                    document.getElementById('salesCrew1'),
+                    document.getElementById('salesCrew2'),
+                    document.getElementById('salesCrew3'),
+                    document.getElementById('salesCrew4')
+                ];
+                const totalSales = document.getElementById('totalSales');
+                const totalPax = document.getElementById('totalPax');
+                const overallAverage = document.getElementById('overallAverage');
+                const updateTotal = () => {
+                    const total = salesInputs.reduce((sum, input) => {
+                        const value = parseFloat(input.value) || 0;
+                        return sum + value;
+                    }, 0);
+                    if (totalSales) totalSales.value = total.toFixed(2);
+                    const paxCount = parseInt(totalPax.value) || 1;
+                    if (overallAverage) {
+                        overallAverage.value = (total / paxCount).toFixed(2);
+                    }
+                };
+                salesInputs.forEach(input => {
+                    if (input) input.addEventListener('input', updateTotal);
+                });
+                updateTotal();
+            } catch (e) {
+                alert('Error calculating total sales: ' + e.message);
+            }
         }
 
-        // Calculate total pax
+        // Calculate totalSales pax
         function calculateTotalPax() {
-            const paxInputs = document.querySelectorAll('.final-pax-input');
-            const totalPax = document.getElementById('totalPax');
-
-            const updateTotal = () => {
-                const total = Array.from(paxInputs).reduce((sum, input) => {
-                    const value = parseInt(input.value) || 0;
-                    return sum + value;
-                }, 0);
-                if (totalPax) totalPax.value = total;
-                calculateTotalSales();
-            };
-
-            paxInputs.forEach(input => {
-                input.addEventListener('input', updateTotal);
-            });
-            updateTotal();
+            try {
+                const paxInputs = document.querySelectorAll('.final-pax-input');
+                const totalSales = document.getElementById('totalPax');
+                const updateTotal = () => {
+                    const totalPax = Array.from(paxInputs).reduce((sum, input) => {
+                        const value = parseInt(input.value) || 0;
+                        return sum + value;
+                    }, 0);
+                    if (totalPax) totalPax.value = totalPax;
+                    calculateTotalSales();
+                };
+                paxInputs.forEach(input => {
+                    input.addEventListener('input', updateTotal);
+                });
+                updateTotal();
+            } catch (err) {
+                alert('Error calculating total pax: ' + err.message);
+            }
         }
 
         // Generate PDF report
         function generatePDF(formData) {
             const doc = new jsPDF();
             let y = 10;
-
-            // Title
-            doc.setFont('helvetica', 'bold');
             doc.setFontSize(16);
             doc.text('Inflight Report', 10, y);
             y += 10;
-
-            // Flight Information
             doc.setFontSize(12);
             doc.text(`Date: ${formData.date || 'N/A'}`, 10, y);
             doc.text(`A/C Reg: ${formData.acReg || 'N/A'}`, 100, y);
             y += 10;
-
-            doc.setFont('helvetica', 'bold');
             doc.text('Flight Information', 10, y);
             y += 5;
-            doc.setFont('helvetica', 'normal');
             const flightHeaders = ['#', 'Route', 'Flight No.', 'Dep', 'Arr', 'Time', 'Pax', 'FWD', 'AFT', 'W/C'];
             const flightData = formData.flights.map((f, i) => [
                 i + 1,
-                f.route || '',
-                f.flightNumber || '',
-                f.departure || '',
-                f.arrival || '',
-                f.flightTime || '',
+                f.route || 'N/A',
+                f.flightNumber || 'N/A',
+                f.departure || 'N/A',
+                f.arrival || 'N/A',
+                f.time || 'N/A',
                 f.finalPax || '0',
                 f.fwd || '0',
                 f.aft || '0',
-                f.wheelchair || ''
+                f.wheelchair || 'N/A'
             ]);
             doc.autoTable({
                 head: [flightHeaders],
@@ -901,23 +905,18 @@
                 margin: { left: 10, right: 10 }
             });
             y = doc.lastAutoTable.finalY + 10;
-
-            // Crew Information
-            doc.setFont('helvetica', 'bold');
             doc.text('Crew Information', 10, y);
             y += 5;
-            doc.setFont('helvetica', 'normal');
             doc.text(`Captain: ${formData.captain || 'N/A'}`, 10, y);
             doc.text(`First Officer: ${formData.firstOfficer || 'N/A'}`, 100, y);
             y += 10;
-            const crewHeaders = ['Crew', 'Crewcode', 'Name'];
             const crewData = formData.crew.map((c, i) => [
                 c.crewcode ? `No. ${i + 1}` : `Extra ${i - 3}`,
-                c.crewcode || '',
-                c.name || ''
+                c.crewcode || 'N/A',
+                c.name || 'N/A'
             ]);
             doc.autoTable({
-                head: [crewHeaders],
+                head: [['Crew', 'Crewcode', 'Name']],
                 body: crewData,
                 startY: y,
                 theme: 'grid',
@@ -925,21 +924,16 @@
                 margin: { left: 10, right: 10 }
             });
             y = doc.lastAutoTable.finalY + 10;
-
-            // Product Stock
-            doc.setFont('helvetica', 'bold');
             doc.text('Product Stock', 10, y);
             y += 5;
-            doc.setFont('helvetica', 'normal');
-            const productHeaders = ['Product', 'Open', 'Close', 'Sold'];
             const productData = formData.products.items.map(p => [
-                p.product || '',
+                p.product || 'N/A',
                 p.open || '0',
                 p.close || '0',
                 p.sold || '0'
             ]);
             doc.autoTable({
-                head: [productHeaders],
+                head: [['Product', 'Open', 'Close', 'Sold']],
                 body: productData,
                 startY: y,
                 theme: 'grid',
@@ -951,23 +945,18 @@
             doc.text(`Green Seal: ${formData.products.seals.green || 'N/A'}`, 70, y);
             doc.text(`Metal Seal: ${formData.products.seals.metal || 'N/A'}`, 130, y);
             y += 10;
-
-            // Duty-Free Stock
-            doc.setFont('helvetica', 'bold');
             doc.text('Duty-Free Stock', 10, y);
             y += 5;
-            doc.setFont('helvetica', 'normal');
-            const dutyFreeHeaders = ['Product', 'Open', 'Close', 'Sold'];
             const dutyFreeData = formData.dutyFreeProducts.items.map(p => [
-                p.product || '',
+                p.product || 'N/A',
                 p.open || '0',
                 p.close || '0',
                 p.sold || '0'
             ]);
             doc.autoTable({
-                head: [dutyFreeHeaders],
+                head: [['Duty-Free', 'Open', 'Close', 'Sold']],
                 body: dutyFreeData,
-                startY: true,
+                startY: y,
                 theme: 'grid',
                 headStyles: { fillColor: [30, 144, 255] },
                 margin: { left: 10, right: 10 }
@@ -975,13 +964,8 @@
             y = doc.lastAutoTable.finalY + 5;
             doc.text(`Metal Seal: ${formData.dutyFreeProducts.seal || 'N/A'}`, 10, y);
             y += 10;
-
-            // Sales and Totals
-            doc.setFont('helvetica', 'bold');
             doc.text('Sales and Totals', 10, y);
             y += 5;
-            doc.setFont('helvetica', 'normal');
-            const salesHeaders = ['Crew', 'Sales (€)'];
             const salesData = [
                 [`Crew 1 (${document.getElementById('crewcode1').value || 'N/A'})`, formData.sales.salesCrew1 || '0.00'],
                 [`Crew 2 (${document.getElementById('crewcode2').value || 'N/A'})`, formData.sales.salesCrew2 || '0.00'],
@@ -989,129 +973,110 @@
                 [`Crew 4 (${document.getElementById('crewcode4').value || 'N/A'})`, formData.sales.salesCrew4 || '0.00']
             ];
             doc.autoTable({
-                head: [salesHeaders],
+                head: [['Crew', 'Sales (€)']],
                 body: salesData,
                 startY: y,
                 theme: 'grid',
                 headStyles: { fillColor: [30, 144, 255] },
-                margin: { left: 10', right: 10' }
+                margin: { left: 10, right: 10 }
             });
             y = doc.lastAutoTable.finalY + 5;
             doc.text(`Total Sales: ${formData.sales.totalSales || '0.00'} €`, 10, y);
             doc.text(`Total Pax: ${formData.totalPax || '0'}`, 70, y);
-            doc.text(`Avg/Pax: ${formData.sales.overallAverage || '0.00'} €`, 130, y);
-
+            doc.text(`Overall Average: ${formData.sales.overallAverage || '0.00'} €`, 130, y);
             return doc;
         }
 
         // Form submission
         function handleFormSubmission() {
-            const form = document.getElementById('inflightForm');
-            if (!form) {
-                alert('Error: Form element missing.');
-                return;
-            }
-
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const requiredFields = document.querySelectorAll('input[required]');
-                let allFilled = true;
-                requiredFields.forEach(field => {
-                    const parentTable = field.closest('#productStockTable, #dutyFreeStockTable');
-                    if (!field.value && (!parentTable || parentTable.style.display !== 'none') && !field.closest('.extra-crew')) {
-                        allFilled = false;
-                        field.classList.add('border-red-500');
-                    } else {
-                        field.classList.remove('border-red');
-500                    }
-                });
-
-                if (!allFilled) {
-                    alert('Please fill all required fields.');
+            try {
+                const form = document.getElementById('inflightForm');
+                if (!form) {
+                    alert('Error: Form element missing.');
                     return;
                 }
-
-                // Collect form data
-                const formData = {
-                    date: document.getElementById('date').value,
-                    acReg: document.getElementById('acReg').value,
-                    flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
-                        route: row.querySelector('.route').value,
-                        flightNumberRow.querySelector('.flightNumber').value,
-                        departure: row.querySelector('.departure').value,
-                        arrival: row.querySelector('.arrival').value,
-                        flightTime: row.querySelector('.flightTime').value,
-                        finalPax: row.querySelector('.finalPax').value,
-                        final: row.querySelector('.fwd').value,
-                        aft: row.querySelector('.aft').value,
-                        wheelchair: row.querySelector('.wheelchair').value
-                    })),
-                    captain: document.getElementById('captain').value,
-                    firstOfficer: document.getElementById('firstOfficer').value,
-                    crew: Array.from(document.querySelectorAll('#crewTable tr')).filter(row => {
-                        return !row.classList.contains('extra-crew') || row.style.display !== 'none';
-                    }).map(row => ({
-                        crewcode: row.querySelector('.crewcode').value,
-                        name: row.querySelector('.crewName').value
-                    })),
-                    products: {
-                        items: Array.from(document.querySelectorAll('#productTable tr')).map(row => ({
-                            product: row.cells[0].textContent,
-                            open: row.querySelector('.open').value,
-                            close: row.querySelector('.close').value,
-                            sold: row.querySelector('.difference-cell').textContent
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = {
+                        date: document.getElementById('date').value || 'N/A',
+                        acReg: document.getElementById('acReg').value || 'N/A',
+                        flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
+                            route: row.querySelector('.route').value || 'N/A',
+                            flightNumber: row.querySelector('.flightNumber').value || 'N/A',
+                            departure: row.querySelector('.departure').value || 'N/A',
+                            arrival: row.querySelector('.arrival').value || 'N/A',
+                            time: row.querySelector('.flightTime').value || 'N/A',
+                            finalPax: row.querySelector('.finalPax').value || '0',
+                            fwd: row.querySelector('.fwd').value || '0',
+                            aft: row.querySelector('.aft').value || '0',
+                            wheelchair: row.querySelector('.wheelchair').value || 'N/A'
                         })),
-                        seals: {
-                            yellow: document.getElementById('yellowSeal').value,
-                            green: document.getElementById('greenSeal').value,
-                            metal: document.getElementById('metalSeal').value
-                        }
-                    },
-                    dutyFreeProducts: {
-                        items: Array.from(document.querySelectorAll('#dutyFreeTable tr')).map(row => ({
-                            product: row.cells[0].textContent,
-                            open: row.querySelector('.open').value,
-                            close: row.querySelector('.close').value,
-                            sold: row.querySelector('.difference-cell').textContent
+                        captain: document.getElementById('captain').value || 'N/A',
+                        firstOfficer: document.getElementById('firstOfficer').value || 'N/A',
+                        crew: Array.from(document.querySelectorAll('#crewTable tr')).filter(row => {
+                            return !row.classList.contains('extra-crew') || row.style.display !== 'none';
+                        }).map(row => ({
+                            crewcode: row.querySelector('.crewcode').value || 'N/A',
+                            name: row.querySelector('.crewName').value || 'N/A'
                         })),
-                        seal: document.getElementById('dutyFreeMetalSeal').value
-                    },
-                    sales: {
-                        salesCrew1: document.getElementById('salesCrew1').value,
-                        salesCrew2: document.getElementById('salesCrew2').value,
-                        salesCrew3: document.getElementById('salesCrew3').value,
-                        salesCrew4: document.getElementById('salesCrew4').value,
-                        totalSales: document.getElementById('totalSales').value,
-                        overallAverage: document.getElementById('overallAverage').value
-                    },
-                    totalPax: document.getElementById('totalPax').value
-                };
-
-                // Generate PDF
-                try {
-                    const doc = generatePDF(formData);
-                    const dateStr = formData.date.replace(/-/g, '');
-                    doc.save(`inflight_report_${dateStr}.pdf`);
-                    alert('Report generated successfully! PDF has been downloaded.');
-
-                    // Email option
-                    const emailSubject = `Inflight Report ${formData.date}`;
-                    const emailBody = JSON.stringify(formData, null, 2);
-                    const emailLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent('Please find the report data below. Attach the downloaded PDF manually:\n\n' + emailBody)}`;
-                    setTimeout(() => {
-                        if (confirm('Would you like to send the report via email? The PDF must be attached manually.')) {
-                            window.location.href = emailLink;
-                        }
-                    }, 500);
-                } catch (error) {
-                    alert('Error generating PDF: ' + error.message);
-                }
-            });
+                        products: {
+                            items: Array.from(document.querySelectorAll('#productTable tr')).map(row => ({
+                                product: row.cells[0].textContent || 'N/A',
+                                open: row.querySelector('.open').value || '0',
+                                close: row.querySelector('.close').value || '0',
+                                sold: row.querySelector('.difference-cell').textContent || '0'
+                            })),
+                            seals: {
+                                yellow: document.getElementById('yellowSeal').value || 'N/A',
+                                green: document.getElementById('greenSeal').value || 'N/A',
+                                metal: document.getElementById('metalSeal').value || 'N/A'
+                            }
+                        },
+                        dutyFreeProducts: {
+                            items: Array.from(document.querySelectorAll('#dutyFreeTable tr')).map(row => ({
+                                product: row.cells[0].textContent || 'N/A',
+                                open: row.querySelector('.open').value || '0',
+                                close: row.querySelector('.close').value || '0',
+                                sold: row.querySelector('.difference-cell').textContent || '0'
+                            })),
+                            seal: document.getElementById('dutyFreeMetalSeal').value || 'N/A'
+                        },
+                        sales: {
+                            salesCrew1: document.getElementById('salesCrew1').value || '0.00',
+                            salesCrew2: document.getElementById('salesCrew2').value || '0.00',
+                            salesCrew3: document.getElementById('salesCrew3').value || '0.00',
+                            salesCrew4: document.getElementById('salesCrew4').value || '0.00',
+                            totalSales: document.getElementById('totalSales').value || '0.00',
+                            overallAverage: document.getElementById('overallAverage').value || '0.00'
+                        },
+                        totalPax: document.getElementById('totalPax').value || '0'
+                    };
+                    try {
+                        const doc = generatePDF(formData);
+                        const dateStr = formData.date || '20250101';
+                        doc.save(`inflight_report_${dateStr}.pdf`);
+                        alert('Report generated! PDF downloaded.');
+                        const emailSubject = `Inflight Report ${formData.date || 'N/A'}`;
+                        const emailBody = JSON.stringify(formData, null, 2);
+                        const emailLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent('Attach the PDF manually:\n\n' + emailBody)}`;
+                        setTimeout(() => {
+                            if (confirm('Send report via email? Attach PDF manually.')) {
+                                window.location.href = emailLink;
+                            }
+                        }, 100);
+                    } catch (e) {
+                        alert(`Error: ${e.message}`);
+                    }
+                });
+            } catch (e) {
+                alert('Error setting up form: ' + e.message);
+            }
         }
 
         // Initialize form
         function initializeForm() {
             try {
+                alert('Form loaded, testing layouts');
                 calculateDifference('productTable');
                 calculateDifference('dutyFreeTable');
                 updateSalesLabels();
@@ -1119,8 +1084,8 @@
                 calculateTotalSales();
                 handleFormSubmission();
                 toggleStockView('product');
-            } catch (err) {
-                alert('Error initializing form: ' + err.message);
+            } catch (e) {
+                alert('Error initializing: ' + e.message);
             }
         }
 
@@ -1128,4 +1093,3 @@
     </script>
 </body>
 </html>
-</xaiartifact>
