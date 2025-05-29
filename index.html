@@ -1151,14 +1151,15 @@
                         // Generate PDF
                         const doc = generatePDF(formData);
                         const dateStr = formData.date.replace(/-/g, '') || '20250101';
-                        // Try direct save with delay
                         setTimeout(() => {
                             try {
                                 doc.save(`inflight_report_${dateStr}.pdf`);
+                                alert('¡Reporte generado y descargado!\n\nBusca el archivo inflight_report_' + dateStr + '.pdf en tu carpeta de descargas o Archivos.\n\nEn Android, normalmente está en "Descargas".\nEn iOS, puedes elegir carpeta o buscarlo en la app Archivos.');
                             } catch (saveErr) {
                                 console.error('Direct PDF save failed:', saveErr);
                                 // Fallback to Blob download
                                 downloadPDFBlob(doc, `inflight_report_${dateStr}.pdf`);
+                                alert('¡Reporte generado!\n\nSi no ves la descarga, revisa los permisos o intenta desde el navegador de tu sistema.');
                             }
                         }, 100);
 
@@ -1167,15 +1168,13 @@
 
                         // Prepare email
                         const emailSubject = `Inflight Report ${formData.date || 'N/A'}`;
-                        const emailBody = `Please attach the PDF (inflight_report_${dateStr}.pdf) and JSON (inflight_report_${dateStr}.json) manually.\n\nData:\n${JSON.stringify(formData, null, 2).substring(0, 1000)}...`;
+                        const emailBody = `Adjunta manualmente el PDF (inflight_report_${dateStr}.pdf) y JSON (inflight_report_${dateStr}.json).\n\nDatos:\n${JSON.stringify(formData, null, 2).substring(0, 1000)}...`;
                         const emailLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-
-                        alert('Report generated! PDF and JSON downloading.');
                         setTimeout(() => {
-                            if (confirm('Send report via email? Attach PDF and JSON manually.')) {
+                            if (confirm('¿Quieres enviar el reporte por email? Adjunta el PDF y JSON manualmente desde tu carpeta de descargas.')) {
                                 window.location.href = emailLink;
                             }
-                        }, 500);
+                        }, 700);
                     } catch (err) {
                         alert(`Error generating report: ${err.message}`);
                     }
