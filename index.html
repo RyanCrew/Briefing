@@ -554,7 +554,7 @@
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-top: 8px;">
                             <div>
                                 <label for="kettles" class="equipment-label">Kettles</label>
-                                <input type="number" id="kettles" min="1" max="5" class="small-input" style="width: 100%; max-width: 80px; font-size: 10px; height: 32px; padding: 0.3rem;" autocomplete="off">
+                            <input type="number" id="kettles" min="1" max="5" class="small-input" style="width: 100%; max-width: 80px; font-size: 10px; height: 32px; padding: 0.3rem;" autocomplete="off">
                             </div>
                             <div>
                                 <label for="cupholder" class="equipment-label">Cupholder</label>
@@ -1059,6 +1059,23 @@
             }
         }
 
+        // Fallback PDF download
+        function downloadPDFBlob(doc, filename) {
+            try {
+                const pdfBlob = doc.output('blob');
+                const url = URL.createObjectURL(pdfBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                alert(`Error in fallback PDF download: ${err.message}`);
+            }
+        }
+
         // Handle form submission
         function handleFormSubmission() {
             try {
@@ -1070,7 +1087,7 @@
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
                     const formData = {
-                        date: document.getElementById('date').value || 'N/A',
+                        date: document.getElementById('date').value || '',
                         acReg: document.getElementById('acReg').value || 'N/A',
                         flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
                             route: row.querySelector('.route').value || 'N/A',
@@ -1131,10 +1148,19 @@
                         totalPax: document.getElementById('totalPax').value || '0',
                     };
                     try {
-                        // Generate and save PDF
+                        // Generate PDF
                         const doc = generatePDF(formData);
                         const dateStr = formData.date.replace(/-/g, '') || '20250101';
-                        doc.save(`inflight_report_${dateStr}.pdf`);
+                        // Try direct save with delay
+                        setTimeout(() => {
+                            try {
+                                doc.save(`inflight_report_${dateStr}.pdf`);
+                            } catch (saveErr) {
+                                console.error('Direct PDF save failed:', saveErr);
+                                // Fallback to Blob download
+                                downloadPDFBlob(doc, `inflight_report_${dateStr}.pdf`);
+                            }
+                        }, 100);
 
                         // Download JSON
                         downloadJSON(formData, dateStr);
@@ -1144,12 +1170,12 @@
                         const emailBody = `Please attach the PDF (inflight_report_${dateStr}.pdf) and JSON (inflight_report_${dateStr}.json) manually.\n\nData:\n${JSON.stringify(formData, null, 2).substring(0, 1000)}...`;
                         const emailLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
 
-                        alert('Report generated! PDF and JSON downloaded.');
+                        alert('Report generated! PDF and JSON downloading.');
                         setTimeout(() => {
                             if (confirm('Send report via email? Attach PDF and JSON manually.')) {
                                 window.location.href = emailLink;
                             }
-                        }, 100);
+                        }, 500);
                     } catch (err) {
                         alert(`Error generating report: ${err.message}`);
                     }
