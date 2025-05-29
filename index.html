@@ -104,7 +104,7 @@
             margin-bottom: 0.1rem;
             white-space: nowrap;
         }
-        input {
+        input, textarea {
             width: 100%;
             padding: 0.5rem;
             margin-bottom: 0.3rem;
@@ -116,6 +116,10 @@
             color: #000 !important;
             -webkit-appearance: none;
             touch-action: manipulation;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
         }
         .date-ac-input {
             padding: 0.2rem;
@@ -459,6 +463,10 @@
                         </tbody>
                     </table>
                     <button type="button" class="add-crew-button" onclick="addExtraCrew()">Add Extra Crew</button>
+                    <div style="margin-top: 0.8rem;">
+                        <label for="description">Description</label>
+                        <textarea id="description" rows="4" placeholder="Enter description (e.g., crew notes, incidents)" autocomplete="off"></textarea>
+                    </div>
                 </details>
 
                 <!-- Stock Section -->
@@ -949,6 +957,8 @@
                 margin: { left: 10, right: 10 },
             });
             y = doc.lastAutoTable.finalY + 10;
+            doc.text(`Description: ${formData.description || 'N/A'}`, 10, y);
+            y += 10;
             doc.text('Product Stock', 10, y);
             y += 5;
             const productHeaders = ['Product', 'Open', 'Close', 'Sold'];
@@ -1031,6 +1041,24 @@
             return doc;
         }
 
+        // Download JSON file
+        function downloadJSON(formData, dateStr) {
+            try {
+                const jsonStr = JSON.stringify(formData, null, 2);
+                const blob = new Blob([jsonStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `inflight_report_${dateStr}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                alert(`Error downloading JSON: ${err.message}`);
+            }
+        }
+
         // Handle form submission
         function handleFormSubmission() {
             try {
@@ -1063,6 +1091,7 @@
                                 crewcode: row.querySelector('.crewcode').value || 'N/A',
                                 name: row.querySelector('.crewName').value || 'N/A',
                             })),
+                        description: document.getElementById('description').value || 'N/A',
                         products: {
                             items: Array.from(document.querySelectorAll('#productTable tr')).map(row => ({
                                 product: row.cells[0].textContent || 'N/A',
@@ -1102,15 +1131,22 @@
                         totalPax: document.getElementById('totalPax').value || '0',
                     };
                     try {
+                        // Generate and save PDF
                         const doc = generatePDF(formData);
-                        const dateStr = formData.date || '20250101';
+                        const dateStr = formData.date.replace(/-/g, '') || '20250101';
                         doc.save(`inflight_report_${dateStr}.pdf`);
-                        alert('Report generated successfully! PDF has been downloaded.');
+
+                        // Download JSON
+                        downloadJSON(formData, dateStr);
+
+                        // Prepare email
                         const emailSubject = `Inflight Report ${formData.date || 'N/A'}`;
-                        const emailBody = JSON.stringify(formData, null, 2);
-                        const emailLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent('Please attach the PDF manually:\n\n' + emailBody)}`;
+                        const emailBody = `Please attach the PDF (inflight_report_${dateStr}.pdf) and JSON (inflight_report_${dateStr}.json) manually.\n\nData:\n${JSON.stringify(formData, null, 2).substring(0, 1000)}...`;
+                        const emailLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+
+                        alert('Report generated! PDF and JSON downloaded.');
                         setTimeout(() => {
-                            if (confirm('Would you like to send the report via email? Please attach the PDF manually.')) {
+                            if (confirm('Send report via email? Attach PDF and JSON manually.')) {
                                 window.location.href = emailLink;
                             }
                         }, 100);
