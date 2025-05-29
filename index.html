@@ -94,7 +94,7 @@
             color: #fff;
             font-size: 1rem;
         }
-        .date-ac-label {
+        .date-ac-label, .equipment-label {
             font-size: 0.7rem;
             margin-bottom: 0.1rem;
             white-space: nowrap;
@@ -395,14 +395,14 @@
                 <!-- Crew Information -->
                 <details class="form-section" id="crewSection">
                     <summary>Crew Information</summary>
-                    <div class="grid grid-cols-2 gap-1">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
                         <div>
                             <label>Captain</label>
-                            <input type="text" id="captain" class="captain-fo-input" autocomplete="off">
+                            <input type="text" id="captain" class="captain-fo-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
                         </div>
                         <div>
                             <label>First Officer</label>
-                            <input type="text" id="firstOfficer" class="captain-fo-input" autocomplete="off">
+                            <input type="text" id="firstOfficer" class="captain-fo-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
                         </div>
                     </div>
                     <table id="crewTable">
@@ -536,6 +536,24 @@
                             <div>
                                 <label for="metalSeal">Metal Seal</label>
                                 <input type="text" id="metalSeal" class="seal-input" placeholder="e.g., M11223" autocomplete="off">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-top: 8px;">
+                            <div>
+                                <label for="kettles" class="equipment-label">Kettles</label>
+                                <input type="number" id="kettles" min="0" class="small-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
+                            </div>
+                            <div>
+                                <label for="cupholder" class="equipment-label">Cupholder</label>
+                                <input type="number" id="cupholder" min="0" class="small-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
+                            </div>
+                            <div>
+                                <label for="babyWarmer" class="equipment-label">Baby B. Warmer</label>
+                                <input type="number" id="babyWarmer" min="0" class="small-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
+                            </div>
+                            <div>
+                                <label for="coolerBag" class="equipment-label">Cooler Bag</label>
+                                <input type="number" id="coolerBag" min="0" class="small-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -848,25 +866,25 @@
             }
         }
 
-        // Calculate totalSales pax
+        // Calculate total pax
         function calculateTotalPax() {
             try {
                 const paxInputs = document.querySelectorAll('.final-pax-input');
-                const totalSales = document.getElementById('totalPax');
+                const totalPax = document.getElementById('totalPax');
                 const updateTotal = () => {
-                    const totalPax = Array.from(paxInputs).reduce((sum, input) => {
+                    const total = Array.from(paxInputs).reduce((sum, input) => {
                         const value = parseInt(input.value) || 0;
                         return sum + value;
                     }, 0);
-                    if (totalPax) totalPax.value = totalPax;
+                    if (totalPax) totalPax.value = total;
                     calculateTotalSales();
                 };
                 paxInputs.forEach(input => {
                     input.addEventListener('input', updateTotal);
                 });
                 updateTotal();
-            } catch (err) {
-                alert('Error calculating total pax: ' + err.message);
+            } catch (e) {
+                alert('Error calculating total pax: ' + e.message);
             }
         }
 
@@ -910,13 +928,14 @@
             doc.text(`Captain: ${formData.captain || 'N/A'}`, 10, y);
             doc.text(`First Officer: ${formData.firstOfficer || 'N/A'}`, 100, y);
             y += 10;
+            const crewHeaders = ['Crew', 'Crewcode', 'Name'];
             const crewData = formData.crew.map((c, i) => [
                 c.crewcode ? `No. ${i + 1}` : `Extra ${i - 3}`,
                 c.crewcode || 'N/A',
                 c.name || 'N/A'
             ]);
             doc.autoTable({
-                head: [['Crew', 'Crewcode', 'Name']],
+                head: [crewHeaders],
                 body: crewData,
                 startY: y,
                 theme: 'grid',
@@ -926,6 +945,7 @@
             y = doc.lastAutoTable.finalY + 10;
             doc.text('Product Stock', 10, y);
             y += 5;
+            const productHeaders = ['Product', 'Open', 'Close', 'Sold'];
             const productData = formData.products.items.map(p => [
                 p.product || 'N/A',
                 p.open || '0',
@@ -933,7 +953,7 @@
                 p.sold || '0'
             ]);
             doc.autoTable({
-                head: [['Product', 'Open', 'Close', 'Sold']],
+                head: [productHeaders],
                 body: productData,
                 startY: y,
                 theme: 'grid',
@@ -945,6 +965,24 @@
             doc.text(`Green Seal: ${formData.products.seals.green || 'N/A'}`, 70, y);
             doc.text(`Metal Seal: ${formData.products.seals.metal || 'N/A'}`, 130, y);
             y += 10;
+            doc.text('Equipment', 10, y);
+            y += 5;
+            const equipmentHeaders = ['Item', 'Quantity'];
+            const equipmentData = [
+                ['Kettles', formData.products.equipment.kettles || '0'],
+                ['Cupholder', formData.products.equipment.cupholder || '0'],
+                ['Baby B. Warmer', formData.products.equipment.babyWarmer || '0'],
+                ['Cooler Bag', formData.products.equipment.coolerBag || '0']
+            ];
+            doc.autoTable({
+                head: [equipmentHeaders],
+                body: equipmentData,
+                startY: y,
+                theme: 'grid',
+                headStyles: { fillColor: [30, 144, 255] },
+                margin: { left: 10, right: 10 }
+            });
+            y = doc.lastAutoTable.finalY + 10;
             doc.text('Duty-Free Stock', 10, y);
             y += 5;
             const dutyFreeData = formData.dutyFreeProducts.items.map(p => [
@@ -954,7 +992,7 @@
                 p.sold || '0'
             ]);
             doc.autoTable({
-                head: [['Duty-Free', 'Open', 'Close', 'Sold']],
+                head: [['Product', 'Open', 'Close', 'Sold']],
                 body: dutyFreeData,
                 startY: y,
                 theme: 'grid',
@@ -1030,6 +1068,12 @@
                                 yellow: document.getElementById('yellowSeal').value || 'N/A',
                                 green: document.getElementById('greenSeal').value || 'N/A',
                                 metal: document.getElementById('metalSeal').value || 'N/A'
+                            },
+                            equipment: {
+                                kettles: document.getElementById('kettles').value || '0',
+                                cupholder: document.getElementById('cupholder').value || '0',
+                                babyWarmer: document.getElementById('babyWarmer').value || '0',
+                                coolerBag: document.getElementById('coolerBag').value || '0'
                             }
                         },
                         dutyFreeProducts: {
@@ -1076,7 +1120,7 @@
         // Initialize form
         function initializeForm() {
             try {
-                alert('Form loaded, testing layouts');
+                alert('Form loaded, equipment moved to Product Stock');
                 calculateDifference('productTable');
                 calculateDifference('dutyFreeTable');
                 updateSalesLabels();
