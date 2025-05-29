@@ -94,8 +94,13 @@
             color: #fff;
             font-size: 1rem;
         }
-        .date-ac-label, .equipment-label {
+        .date-ac-label {
             font-size: 0.7rem;
+            margin-bottom: 0.1rem;
+            white-space: nowrap;
+        }
+        .equipment-label {
+            font-size: 0.65rem;
             margin-bottom: 0.1rem;
             white-space: nowrap;
         }
@@ -541,19 +546,19 @@
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-top: 8px;">
                             <div>
                                 <label for="kettles" class="equipment-label">Kettles</label>
-                                <input type="number" id="kettles" min="0" class="small-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
+                                <input type="number" id="kettles" min="1" max="5" class="small-input" style="width: 100%; max-width: 80px; font-size: 10px; height: 32px; padding: 0.3rem;" autocomplete="off">
                             </div>
                             <div>
                                 <label for="cupholder" class="equipment-label">Cupholder</label>
-                                <input type="number" id="cupholder" min="0" class="small-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
+                                <input type="number" id="cupholder" min="1" max="5" class="small-input" style="width: 100%; max-width: 80px; font-size: 10px; height: 32px; padding: 0.3rem;" autocomplete="off">
                             </div>
                             <div>
                                 <label for="babyWarmer" class="equipment-label">Baby B. Warmer</label>
-                                <input type="number" id="babyWarmer" min="0" class="small-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
+                                <input type="number" id="babyWarmer" min="1" max="5" class="small-input" style="width: 100%; max-width: 80px; font-size: 10px; height: 32px; padding: 0.3rem;" autocomplete="off">
                             </div>
                             <div>
                                 <label for="coolerBag" class="equipment-label">Cooler Bag</label>
-                                <input type="number" id="coolerBag" min="0" class="small-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
+                                <input type="number" id="coolerBag" min="1" max="5" class="small-input" style="width: 100%; max-width: 80px; font-size: 10px; height: 32px; padding: 0.3rem;" autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -630,7 +635,7 @@
                             <div>
                                 <label id="salesLabel4" for="salesCrew4" class="sales-label">Sales Crew 4</label>
                                 <div class="sales-wrapper">
-                                    <input type="number" id="salesCrew4" step="0.01" min="0" class="sales-input" style="font-size: 12px; height: 40px;">
+                                    <input type="number" id="salesCrew4" step="0.01" min="0" class="sales-input outpost" style="font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
                                 </div>
                             </div>
@@ -639,18 +644,18 @@
                             <div>
                                 <label for="totalSales" class="sales-label">Total Sales</label>
                                 <div class="sales-wrapper">
-                                    <input type="number" id="totalSales" readonly class="sales-input" style="background: rgba(227,227,227,0.8); color: #000; font-size: 12px; height: 40px;">
+                                    <input type="number" id="totalSales" readonly class="sales-input" style="background: rgba(227, 227, 227, 0.7); color: #000; font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
                                 </div>
                             </div>
                             <div>
                                 <label for="totalPax" class="sales-label">Total Pax</label>
-                                <input type="number" id="totalPax" readonly class="sales-input" style="background: rgba(227,227,227,0.8); color: #000; font-size: 12px; height: 40px;">
+                                <input type="number" id="totalPax" readonly class="sales-input" style="background: rgba(227, 227, 227, 0.7); color: #000; font-size: 12px; height: 40px;">
                             </div>
                             <div>
                                 <label for="overallAverage" class="sales-label">Avg/Pax</label>
                                 <div class="sales-wrapper">
-                                    <input type="number" id="overallAverage" readonly class="sales-input" style="background: rgba(227,227,227,0.8); color: #000; font-size: 12px; height: 40px;">
+                                    <input type="number" id="overallAverage" readonly class="sales-input" style="background: rgba(227, 227, 227, 0.7); color: #000; font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
                                 </div>
                             </div>
@@ -677,17 +682,17 @@
             try {
                 const flightRows = document.querySelectorAll('#flightsTableBody tr');
                 const flightInfoHeader = document.getElementById('flightInfoHeader');
-                const stockSection = document.getElementById('stockSection');
-                const salesSection = document.getElementById('salesSection');
-                const crewSection = document.getElementById('crewSection');
+                const stockSection = document.querySelector('#stockSection');
+                const salesSection = document.querySelector('#salesSection');
+                const crewSection = document.querySelector('#crewSection');
                 if (!flightRows || !flightInfoHeader || !stockSection || !salesSection || !crewSection) {
-                    alert('Error: Flight toggle elements missing.');
+                    alert('Error: Missing required elements for flight toggle.');
                     return;
                 }
                 if (activeFlight === flightNumber) {
                     activeFlight = null;
-                    flightRows.forEach(row => row.style.display = '');
-                    flightInfoHeader.style.display = '';
+                    flightRows.forEach(row => (row.style.display = ''));
+                    flightInfoHeader.style.display = 'grid';
                     stockSection.style.display = '';
                     salesSection.style.display = '';
                     crewSection.style.display = '';
@@ -701,8 +706,8 @@
                     salesSection.style.display = 'none';
                     crewSection.style.display = '';
                 }
-            } catch (e) {
-                alert('Error toggling flight: ' + e.message);
+            } catch (err) {
+                alert(`Error toggling flight view: ${err.message}`);
             }
         }
 
@@ -721,13 +726,13 @@
                     return;
                 }
                 extraRow.style.display = 'table-row';
-                alert(`Extra crew row ${extraCrewCount} added`);
+                alert(`Extra crew member ${extraCrewCount} added.`);
                 if (extraCrewCount === 2) {
                     const addButton = document.querySelector('.add-crew-button');
                     if (addButton) addButton.style.display = 'none';
                 }
-            } catch (e) {
-                alert('Error adding crew: ' + e.message);
+            } catch (err) {
+                alert(`Error adding extra crew: ${err.message}`);
             }
         }
 
@@ -740,12 +745,12 @@
                     return;
                 }
                 extraRow.style.display = 'none';
-                extraRow.querySelectorAll('input').forEach(input => input.value = '');
+                extraRow.querySelectorAll('input').forEach(input => (input.value = ''));
                 extraCrewCount--;
                 const addButton = document.querySelector('.add-crew-button');
                 if (addButton) addButton.style.display = 'inline-block';
-            } catch (e) {
-                alert('Error removing crew: ' + e.message);
+            } catch (err) {
+                alert(`Error removing extra crew: ${err.message}`);
             }
         }
 
@@ -757,7 +762,7 @@
                 const productTab = document.getElementById('productStockTab');
                 const dutyFreeTab = document.getElementById('dutyFreeStockTab');
                 if (!productTable || !dutyFreeTable || !productTab || !dutyFreeTab) {
-                    alert('Error: Stock table or tab missing.');
+                    alert('Error: Stock table or tab elements missing.');
                     return;
                 }
                 productTable.style.display = type === 'product' ? 'block' : 'none';
@@ -769,83 +774,83 @@
                 if (stockSection && !stockSection.hasAttribute('open')) {
                     stockSection.setAttribute('open', '');
                 }
-                alert('Stock view toggled: ' + type);
-            } catch (e) {
-                alert('Error toggling stock: ' + e.message);
+                alert(`Switched to ${type} stock view.`);
+            } catch (err) {
+                alert(`Error toggling stock view: ${err.message}`);
             }
         }
 
-        // Calculate sold quantities
+        // Calculate differences for stock tables
         function calculateDifference(tableId) {
             try {
                 const table = document.getElementById(tableId);
                 if (!table) {
-                    alert(`Error: Table ${tableId} not found.`);
+                    alert(`Error: Table with ID '${tableId}' not found.`);
                     return;
                 }
                 const rows = table.getElementsByTagName('tr');
-                for (let row of rows) {
-                    const openInput = row.querySelector('.open');
-                    const closeInput = row.querySelector('.close');
-                    const soldCell = row.querySelector('.difference-cell');
+                for (const row of rows) {
+                    const openInput = row.querySelector('.open-amount');
+                    const closeInput = row.querySelector('.close-amount');
+                    const soldCell = row.querySelector('.sold-amount');
                     if (openInput && closeInput && soldCell) {
-                        const updateSold = () => {
+                        const updateSales = () => {
                             const openVal = parseInt(openInput.value) || 0;
                             const closeVal = parseInt(closeInput.value) || 0;
-                            soldCell.textContent = openVal - closeVal;
+                            soldCell.textContent = `${openVal - closeVal}`;
                         };
-                        openInput.addEventListener('input', updateSold);
-                        closeInput.addEventListener('input', updateSold);
-                        updateSold();
+                        openInput.addEventListener('input', updateSales);
+                        closeInput.addEventListener('input', updateSales);
+                        updateSales();
                     }
                 }
-            } catch (e) {
-                alert('Error calculating difference: ' + e.message);
+            } catch (err) {
+                alert(`Error calculating differences: ${err.message}`);
             }
         }
 
-        // Update sales labels
+        // Update sales labels based on crew codes
         function updateSalesLabels() {
             try {
                 const crewInputs = [
                     document.getElementById('crewcode1'),
                     document.getElementById('crewcode2'),
                     document.getElementById('crewcode3'),
-                    document.getElementById('crewcode4')
+                    document.getElementById('crewcode4'),
                 ];
                 const salesLabels = [
                     document.getElementById('salesLabel1'),
                     document.getElementById('salesLabel2'),
                     document.getElementById('salesLabel3'),
-                    document.getElementById('salesLabel4')
+                    document.getElementById('salesLabel4'),
                 ];
-                crewInputs.forEach((input, index) => {
-                    if (input && salesLabels[index]) {
+                crewInputs.forEach((input, idx) => {
+                    if (input && salesLabels[idx]) {
                         const updateLabel = () => {
-                            const code = input.value.trim() || `Crew ${index + 1}`;
-                            salesLabels[index].textContent = `Sales ${code}`;
+                            const code = input.value.trim() || `Crew ${idx + 1}`;
+                            salesLabels[idx].textContent = `Sales ${code}`;
                         };
                         input.addEventListener('input', updateLabel);
                         updateLabel();
                     }
                 });
-            } catch (e) {
-                alert('Error updating sales labels: ' + e.message);
+            } catch (err) {
+                alert(`Error updating sales labels: ${err.message}`);
             }
         }
 
-        // Calculate total sales and average
+        // Calculate total sales and average per passenger
         function calculateTotalSales() {
             try {
                 const salesInputs = [
                     document.getElementById('salesCrew1'),
                     document.getElementById('salesCrew2'),
                     document.getElementById('salesCrew3'),
-                    document.getElementById('salesCrew4')
+                    document.getElementById('salesCrew4'),
                 ];
-                const totalSales = document.getElementById('totalSales');
-                const totalPax = document.getElementById('totalPax');
-                const overallAverage = document.getElementById('overallAverage');
+                const totalSales = document.getElementById('totalSalesInput');
+                const totalPax = document.getElementById('totalPaxInput');
+                const overallAvg = document.getElementById('overallAverageInput');
                 const updateTotal = () => {
                     const total = salesInputs.reduce((sum, input) => {
                         const value = parseFloat(input.value) || 0;
@@ -853,38 +858,36 @@
                     }, 0);
                     if (totalSales) totalSales.value = total.toFixed(2);
                     const paxCount = parseInt(totalPax.value) || 1;
-                    if (overallAverage) {
-                        overallAverage.value = (total / paxCount).toFixed(2);
-                    }
+                    if (overallAvg) overallAvg.value = (total / paxCount).toFixed(2);
                 };
                 salesInputs.forEach(input => {
                     if (input) input.addEventListener('input', updateTotal);
                 });
                 updateTotal();
-            } catch (e) {
-                alert('Error calculating total sales: ' + e.message);
+            } catch (err) {
+                alert(`Error calculating total sales: ${err.message}`);
             }
         }
 
-        // Calculate total pax
+        // Calculate total passengers
         function calculateTotalPax() {
             try {
-                const paxInputs = document.querySelectorAll('.final-pax-input');
-                const totalPax = document.getElementById('totalPax');
+                const paxInputs = document.querySelectorAll('.pax-count');
+                const totalPaxInput = document.getElementById('totalPaxInput');
                 const updateTotal = () => {
                     const total = Array.from(paxInputs).reduce((sum, input) => {
                         const value = parseInt(input.value) || 0;
                         return sum + value;
                     }, 0);
-                    if (totalPax) totalPax.value = total;
+                    if (totalPaxInput) totalPaxInput.value = total;
                     calculateTotalSales();
                 };
                 paxInputs.forEach(input => {
                     input.addEventListener('input', updateTotal);
                 });
                 updateTotal();
-            } catch (e) {
-                alert('Error calculating total pax: ' + e.message);
+            } catch (err) {
+                alert(`Error calculating total passengers: ${err.message}`);
             }
         }
 
@@ -912,7 +915,7 @@
                 f.finalPax || '0',
                 f.fwd || '0',
                 f.aft || '0',
-                f.wheelchair || 'N/A'
+                f.wheelchair || 'N/A',
             ]);
             doc.autoTable({
                 head: [flightHeaders],
@@ -920,7 +923,7 @@
                 startY: y,
                 theme: 'grid',
                 headStyles: { fillColor: [30, 144, 255] },
-                margin: { left: 10, right: 10 }
+                margin: { left: 10, right: 10 },
             });
             y = doc.lastAutoTable.finalY + 10;
             doc.text('Crew Information', 10, y);
@@ -930,9 +933,9 @@
             y += 10;
             const crewHeaders = ['Crew', 'Crewcode', 'Name'];
             const crewData = formData.crew.map((c, i) => [
-                c.crewcode ? `No. ${i + 1}` : `Extra ${i - 3}`,
+                c.crewcode ? `Crew ${i + 1}` : `Extra ${i - 3}`,
                 c.crewcode || 'N/A',
-                c.name || 'N/A'
+                c.name || 'N/A',
             ]);
             doc.autoTable({
                 head: [crewHeaders],
@@ -940,7 +943,7 @@
                 startY: y,
                 theme: 'grid',
                 headStyles: { fillColor: [30, 144, 255] },
-                margin: { left: 10, right: 10 }
+                margin: { left: 10, right: 10 },
             });
             y = doc.lastAutoTable.finalY + 10;
             doc.text('Product Stock', 10, y);
@@ -950,7 +953,7 @@
                 p.product || 'N/A',
                 p.open || '0',
                 p.close || '0',
-                p.sold || '0'
+                p.sold || '0',
             ]);
             doc.autoTable({
                 head: [productHeaders],
@@ -958,7 +961,7 @@
                 startY: y,
                 theme: 'grid',
                 headStyles: { fillColor: [30, 144, 255] },
-                margin: { left: 10, right: 10 }
+                margin: { left: 10, right: 10 },
             });
             y = doc.lastAutoTable.finalY + 5;
             doc.text(`Yellow Seal: ${formData.products.seals.yellow || 'N/A'}`, 10, y);
@@ -972,7 +975,7 @@
                 ['Kettles', formData.products.equipment.kettles || '0'],
                 ['Cupholder', formData.products.equipment.cupholder || '0'],
                 ['Baby B. Warmer', formData.products.equipment.babyWarmer || '0'],
-                ['Cooler Bag', formData.products.equipment.coolerBag || '0']
+                ['Cooler Bag', formData.products.equipment.coolerBag || '0'],
             ];
             doc.autoTable({
                 head: [equipmentHeaders],
@@ -980,16 +983,16 @@
                 startY: y,
                 theme: 'grid',
                 headStyles: { fillColor: [30, 144, 255] },
-                margin: { left: 10, right: 10 }
+                margin: { left: 10, right: 10 },
             });
             y = doc.lastAutoTable.finalY + 10;
             doc.text('Duty-Free Stock', 10, y);
             y += 5;
-            const dutyFreeData = formData.dutyFreeProducts.items.map(p => [
-                p.product || 'N/A',
-                p.open || '0',
-                p.close || '0',
-                p.sold || '0'
+            const dutyFreeData = formData.dutyFreeProducts.items.map(row => [
+                row.product || 'N/A',
+                row.open || '0',
+                row.close || '0',
+                row.sold || '0',
             ]);
             doc.autoTable({
                 head: [['Product', 'Open', 'Close', 'Sold']],
@@ -997,7 +1000,7 @@
                 startY: y,
                 theme: 'grid',
                 headStyles: { fillColor: [30, 144, 255] },
-                margin: { left: 10, right: 10 }
+                margin: { left: 10, right: 10 },
             });
             y = doc.lastAutoTable.finalY + 5;
             doc.text(`Metal Seal: ${formData.dutyFreeProducts.seal || 'N/A'}`, 10, y);
@@ -1005,10 +1008,10 @@
             doc.text('Sales and Totals', 10, y);
             y += 5;
             const salesData = [
-                [`Crew 1 (${document.getElementById('crewcode1').value || 'N/A'})`, formData.sales.salesCrew1 || '0.00'],
-                [`Crew 2 (${document.getElementById('crewcode2').value || 'N/A'})`, formData.sales.salesCrew2 || '0.00'],
-                [`Crew 3 (${document.getElementById('crewcode3').value || 'N/A'})`, formData.sales.salesCrew3 || '0.00'],
-                [`Crew 4 (${document.getElementById('crewcode4').value || 'N/A'})`, formData.sales.salesCrew4 || '0.00']
+                [`Crew 1 (${document.getElementById('crewcode1').value || 'N/A'})`, sales.salesCrew1 || '0.00'],
+                [`Crew 2 (${document.getElementById('crewcode2').value || 'N/A'})`, sales.salesCrew2 || '0.00'],
+                [`Crew 3 (${document.getElementById('crewcode3').value || 'N/A'})`, sales.salesCrew3 || '0.00'],
+                [`Crew 4 (${document.getElementById('crewcode4').value || 'N/A'})`, sales.salesCrew4 || '0.00'],
             ];
             doc.autoTable({
                 head: [['Crew', 'Sales (€)']],
@@ -1016,21 +1019,21 @@
                 startY: y,
                 theme: 'grid',
                 headStyles: { fillColor: [30, 144, 255] },
-                margin: { left: 10, right: 10 }
+                margin: { left: 10, right: 10 },
             });
             y = doc.lastAutoTable.finalY + 5;
             doc.text(`Total Sales: ${formData.sales.totalSales || '0.00'} €`, 10, y);
             doc.text(`Total Pax: ${formData.totalPax || '0'}`, 70, y);
-            doc.text(`Overall Average: ${formData.sales.overallAverage || '0.00'} €`, 130, y);
+            doc.text(`Average/Pax: ${formData.sales.overallAverage || '0.00'} €`, 130, y);
             return doc;
         }
 
-        // Form submission
+        // Handle form submission
         function handleFormSubmission() {
             try {
                 const form = document.getElementById('inflightForm');
                 if (!form) {
-                    alert('Error: Form element missing.');
+                    alert('Error: Form element not found.');
                     return;
                 }
                 form.addEventListener('submit', function(e) {
@@ -1047,43 +1050,43 @@
                             finalPax: row.querySelector('.finalPax').value || '0',
                             fwd: row.querySelector('.fwd').value || '0',
                             aft: row.querySelector('.aft').value || '0',
-                            wheelchair: row.querySelector('.wheelchair').value || 'N/A'
+                            wheelchair: row.querySelector('.wheelchair').value || 'N/A',
                         })),
                         captain: document.getElementById('captain').value || 'N/A',
                         firstOfficer: document.getElementById('firstOfficer').value || 'N/A',
-                        crew: Array.from(document.querySelectorAll('#crewTable tr')).filter(row => {
-                            return !row.classList.contains('extra-crew') || row.style.display !== 'none';
-                        }).map(row => ({
-                            crewcode: row.querySelector('.crewcode').value || 'N/A',
-                            name: row.querySelector('.crewName').value || 'N/A'
-                        })),
+                        crew: Array.from(document.querySelectorAll('#crewTable tr'))
+                            .filter(row => !row.classList.contains('extra-crew') || row.style.display !== 'none')
+                            .map(row => ({
+                                crewcode: row.querySelector('.crewcode').value || 'N/A',
+                                name: row.querySelector('.crewName').value || 'N/A',
+                            })),
                         products: {
                             items: Array.from(document.querySelectorAll('#productTable tr')).map(row => ({
                                 product: row.cells[0].textContent || 'N/A',
                                 open: row.querySelector('.open').value || '0',
                                 close: row.querySelector('.close').value || '0',
-                                sold: row.querySelector('.difference-cell').textContent || '0'
+                                sold: row.querySelector('.difference-cell').textContent || '0',
                             })),
                             seals: {
                                 yellow: document.getElementById('yellowSeal').value || 'N/A',
                                 green: document.getElementById('greenSeal').value || 'N/A',
-                                metal: document.getElementById('metalSeal').value || 'N/A'
+                                metal: document.getElementById('metalSeal').value || 'N/A',
                             },
                             equipment: {
                                 kettles: document.getElementById('kettles').value || '0',
                                 cupholder: document.getElementById('cupholder').value || '0',
                                 babyWarmer: document.getElementById('babyWarmer').value || '0',
-                                coolerBag: document.getElementById('coolerBag').value || '0'
-                            }
+                                coolerBag: document.getElementById('coolerBag').value || '0',
+                            },
                         },
                         dutyFreeProducts: {
                             items: Array.from(document.querySelectorAll('#dutyFreeTable tr')).map(row => ({
                                 product: row.cells[0].textContent || 'N/A',
                                 open: row.querySelector('.open').value || '0',
                                 close: row.querySelector('.close').value || '0',
-                                sold: row.querySelector('.difference-cell').textContent || '0'
+                                sold: row.querySelector('.difference-cell').textContent || '0',
                             })),
-                            seal: document.getElementById('dutyFreeMetalSeal').value || 'N/A'
+                            seal: document.getElementById('dutyFreeMetalSeal').value || 'N/A',
                         },
                         sales: {
                             salesCrew1: document.getElementById('salesCrew1').value || '0.00',
@@ -1091,36 +1094,35 @@
                             salesCrew3: document.getElementById('salesCrew3').value || '0.00',
                             salesCrew4: document.getElementById('salesCrew4').value || '0.00',
                             totalSales: document.getElementById('totalSales').value || '0.00',
-                            overallAverage: document.getElementById('overallAverage').value || '0.00'
+                            overallAverage: document.getElementById('overallAverage').value || '0.00',
                         },
-                        totalPax: document.getElementById('totalPax').value || '0'
+                        totalPax: document.getElementById('totalPax').value || '0',
                     };
                     try {
                         const doc = generatePDF(formData);
                         const dateStr = formData.date || '20250101';
                         doc.save(`inflight_report_${dateStr}.pdf`);
-                        alert('Report generated! PDF downloaded.');
+                        alert('Report generated successfully! PDF has been downloaded.');
                         const emailSubject = `Inflight Report ${formData.date || 'N/A'}`;
                         const emailBody = JSON.stringify(formData, null, 2);
-                        const emailLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent('Attach the PDF manually:\n\n' + emailBody)}`;
+                        const emailLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent('Please attach the PDF manually:\n\n' + emailBody)}`;
                         setTimeout(() => {
-                            if (confirm('Send report via email? Attach PDF manually.')) {
+                            if (confirm('Would you like to send the report via email? Please attach the PDF manually.')) {
                                 window.location.href = emailLink;
                             }
                         }, 100);
-                    } catch (e) {
-                        alert(`Error: ${e.message}`);
+                    } catch (err) {
+                        alert(`Error generating report: ${err.message}`);
                     }
                 });
-            } catch (e) {
-                alert('Error setting up form: ' + e.message);
+            } catch (err) {
+                alert(`Error setting up form submission: ${err.message}`);
             }
         }
 
-        // Initialize form
+        // Initialize the form
         function initializeForm() {
             try {
-                alert('Form loaded, equipment moved to Product Stock');
                 calculateDifference('productTable');
                 calculateDifference('dutyFreeTable');
                 updateSalesLabels();
@@ -1128,8 +1130,8 @@
                 calculateTotalSales();
                 handleFormSubmission();
                 toggleStockView('product');
-            } catch (e) {
-                alert('Error initializing: ' + e.message);
+            } catch (err) {
+                alert(`Error initializing form: ${err.message}`);
             }
         }
 
@@ -1137,3 +1139,4 @@
     </script>
 </body>
 </html>
+```
