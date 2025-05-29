@@ -1,186 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Inflight Report</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <style>
-            body {
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                margin: 0;
-                padding: 0;
-                background: linear-gradient(135deg, #1e90ff, #ff7f50);
-                color: #fff;
-                display: flex;
-                flex-direction: column;
-                min-height: 100vh;
-                -webkit-font-smoothing: antialiased;
-            }
-            header {
-                background: rgba(0, 0, 0, 0.7);
-                padding: 1rem;
-                text-align: center;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                position: sticky;
-                top: 0;
-                z-index: 10;
-            }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inflight Report Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e90ff, #ff7f50);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        header {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #fff;
+        }
+        main {
+            flex: 1;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 600px;
+        }
+        details.form-section {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 0.75rem 0;
+            padding: 1rem;
+        }
+        details[open] summary {
+            margin-bottom: 1rem;
+        }
+        summary {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            padding: 0.5rem;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        label {
+            display: block;
+            margin: 0.5rem 0 0.3rem;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+        input {
+            width: 100%;
+            padding: 0.6rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            background: #fff;
+            color: #000 !important;
+            -webkit-appearance: none;
+            touch-action: manipulation;
+        }
+        .small-input {
+            padding: 0.4rem;
+            font-size: 0.85rem;
+            min-width: 6rem;
+        }
+        table {
+            width: 100%;
+            min-width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            table-layout: auto;
+        }
+        table, th, td {
+            border: 1px solid #fff;
+        }
+        th, td {
+            padding: 0.8rem;
+            text-align: center;
+            color: #fff;
+        }
+        table input {
+            width: 100%;
+            padding: 0.6rem;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            background: #fff;
+            color: #000 !important;
+        }
+        table .small-input {
+            padding: 0.4rem;
+            font-size: 0.85rem;
+            min-width: 6rem;
+        }
+        table .flight-number-input {
+            min-width: 7rem;
+        }
+        table .flight-time-input {
+            min-width: 5rem;
+        }
+        table .final-pax-input {
+            min-width: 4rem;
+        }
+        table .fwd-input, table .aft-input {
+            min-width: 3.5rem;
+        }
+        .difference-cell {
+            background: rgba(255, 255, 255, 0.3);
+            color: #000;
+        }
+        button {
+            width: 100%;
+            padding: 0.8rem;
+            background: #1e90ff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            touch-action: manipulation;
+            min-height: 44px;
+        }
+        button:hover {
+            background: #ff7f50;
+        }
+        .required-note {
+            text-align: center;
+            color: #ff4d4d;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        footer {
+            background: rgba(0, 0, 0, 0.7);
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        @media (min-width: 768px) {
             header h1 {
-                margin: 0;
-                font-size: 1.8rem;
-                color: #fff;
+                font-size: 2.2rem;
             }
             main {
-                flex: 1;
-                padding: 1.5rem;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
+                padding: 2rem;
             }
             .form-container {
-                background: rgba(255, 255, 255, 0.2);
-                backdrop-filter: blur(10px);
-                border-radius: 12px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                padding: 1.5rem;
-                width: 100%;
-                max-width: 600px;
+                max-width: 800px;
             }
-            details.form-section {
-                background: rgba(255, 255, 255, 0.2);
-                backdrop-filter: blur(10px);
-                border-radius: 12px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                margin: 0.75rem 0;
-                padding: 1rem;
-            }
-            details[open] summary {
-                margin-bottom: 1rem;
-            }
-            summary {
-                font-size: 1.2rem;
-                font-weight: bold;
-                color: #fff;
-                cursor: pointer;
-                padding: 0.5rem;
-                user-select: none;
-                touch-action: manipulation;
-            }
-            label {
-                display: block;
-                margin: 0.5rem 0 0.3rem;
-                color: #fff;
-                font-size: 1.1rem;
-            }
-            input {
-                width: 100%;
-                padding: 0.6rem;
-                margin-bottom: 1rem;
-                border-radius: 8px;
-                border: none;
-                font-size: 0.9rem;
-                box-sizing: border-box;
-                background: #fff;
-                color: #000;
-                -webkit-appearance: none;
-                touch-action: manipulation;
-            }
-            .small-input {
-                padding: 0.4rem;
-                font-size: 0.85rem;
-                min-width: 6rem;
-            }
-            table {
-                width: 100%;
-                min-width: 100%;
-                border-collapse: collapse;
-                margin: 1rem 0;
-                table-layout: auto;
-            }
-            table, th, td {
-                border: 1px solid #fff;
-            }
-            th, td {
-                padding: 0.8rem;
-                text-align: center;
-                color: #fff;
-            }
-            table input {
-                width: 100%;
-                padding: 0.6rem;
-                font-size: 0.9rem;
-                box-sizing: border-box;
-                background: #fff;
-                color: #000;
-            }
-            table .small-input {
-                padding: 0.4rem;
-                font-size: 0.85rem;
-                min-width: 6rem;
-            }
-            table .flight-number-input {
-                min-width: 7rem;
-            }
-            table .flight-time-input {
-                min-width: 5rem;
-            }
-            table .final-pax-input {
-                min-width: 4rem;
-            }
-            table .fwd-input, table .aft-input {
-                min-width: 3.5rem;
-            }
-            .difference-cell {
-                background: rgba(255, 255, 255, 0.3);
-                color: #000;
-            }
-            button {
-                width: 100%;
-                padding: 0.8rem;
-                background: #1e90ff;
-                color: #fff;
-                border: none;
-                border-radius: 8px;
-                font-size: 1.1rem;
-                cursor: pointer;
-                transition: background 0.2s;
-                touch-action: manipulation;
-                min-height: 44px;
-            }
-            button:hover {
-                background: #ff7f50;
-            }
-            .required-note {
-                text-align: center;
-                color: #ff4d4d;
-                margin-bottom: 1rem;
-                font-size: 1rem;
-            }
-            footer {
-                background: rgba(0, 0, 0, 0.7);
-                text-align: center;
-                padding: 1rem;
-                font-size: 0.9rem;
-                color: #fff;
-            }
-            .table-wrapper {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            @media (min-width: 768px) {
-                header h1 {
-                    font-size: 2.2rem;
-                }
-                main {
-                    padding: 2rem;
-                }
-                .form-container {
-                    max-width: 800px;
-                }
-            }
-        </style>
-    </head>
+        }
+    </style>
+</head>
 <body>
     <header>
         <h1>Inflight Report Form</h1>
