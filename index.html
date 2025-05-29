@@ -554,7 +554,7 @@
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-top: 8px;">
                             <div>
                                 <label for="kettles" class="equipment-label">Kettles</label>
-                            <input type="number" id="kettles" min="1" max="5" class="small-input" style="width: 100%; max-width: 80px; font-size: 10px; height: 32px; padding: 0.3rem;" autocomplete="off">
+                                <input type="number" id="kettles" min="1" max="5" class="small-input" style="width: 100%; max-width: 80px; font-size: 10px; height: 32px; padding: 0.3rem;" autocomplete="off">
                             </div>
                             <div>
                                 <label for="cupholder" class="equipment-label">Cupholder</label>
@@ -950,7 +950,7 @@
             ]);
             doc.autoTable({
                 head: [crewHeaders],
-                body: crewData,
+                body: cabe,
                 startY: y,
                 theme: 'grid',
                 headStyles: { fillColor: [30, 144, 255] },
@@ -1041,6 +1041,39 @@
             return doc;
         }
 
+        // Mock server upload (replace with real server endpoint)
+        async function uploadPDFToServer(pdfData, filename) {
+            try {
+                // Simulate server upload (replace with real fetch POST)
+                console.log(`Uploading PDF: ${filename}`);
+                // Mock response (replace with actual server response)
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve({
+                            success: true,
+                            url: `https://mock-server.com/pdf/${filename}`,
+                        });
+                    }, 500);
+                });
+            } catch (err) {
+                throw new Error(`Failed to upload PDF: ${err.message}`);
+            }
+        }
+
+        // Trigger download from URL
+        function triggerDownloadFromURL(url, filename) {
+            try {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } catch (err) {
+                throw new Error(`Failed to trigger download: ${err.message}`);
+            }
+        }
+
         // Download JSON file
         function downloadJSON(formData, dateStr) {
             try {
@@ -1059,23 +1092,6 @@
             }
         }
 
-        // Fallback PDF download
-        function downloadPDFBlob(doc, filename) {
-            try {
-                const pdfBlob = doc.output('blob');
-                const url = URL.createObjectURL(pdfBlob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            } catch (err) {
-                alert(`Error in fallback PDF download: ${err.message}`);
-            }
-        }
-
         // Handle form submission
         function handleFormSubmission() {
             try {
@@ -1084,7 +1100,7 @@
                     alert('Error: Form element not found.');
                     return;
                 }
-                form.addEventListener('submit', function(e) {
+                form.addEventListener('submit', async function(e) {
                     e.preventDefault();
                     const formData = {
                         date: document.getElementById('date').value || '',
@@ -1148,35 +1164,45 @@
                         totalPax: document.getElementById('totalPax').value || '0',
                     };
                     try {
+                        const dateStr = formData.date.replace(/-/g, '') || '20250101';
+                        const filename = `inflight_report_${dateStr}.pdf`;
+
                         // Generate PDF
                         const doc = generatePDF(formData);
-                        const dateStr = formData.date.replace(/-/g, '') || '20250101';
-                        setTimeout(() => {
-                            try {
-                                doc.save(`inflight_report_${dateStr}.pdf`);
-                                alert('¡Reporte generado y descargado!\n\nBusca el archivo inflight_report_' + dateStr + '.pdf en tu carpeta de descargas o Archivos.\n\nEn Android, normalmente está en "Descargas".\nEn iOS, puedes elegir carpeta o buscarlo en la app Archivos.');
-                            } catch (saveErr) {
-                                console.error('Direct PDF save failed:', saveErr);
-                                // Fallback to Blob download
-                                downloadPDFBlob(doc, `inflight_report_${dateStr}.pdf`);
-                                alert('¡Reporte generado!\n\nSi no ves la descarga, revisa los permisos o intenta desde el navegador de tu sistema.');
-                            }
-                        }, 100);
+                        const pdfBase64 = doc.output('datauristring').split(',')[1]; // Get base64 part
 
-                        // Download JSON
+                        // Upload to mock server (replace with real endpoint)
+                        const response = await uploadPDFToServer(pdfBase64, filename);
+                        if (!response.success) {
+                            throw new Error('Server upload failed');
+                        }
+
+                        // Trigger download from server URL
+                        triggerDownloadFromURL(response.url, filename);
+
+                        // Download JSON locally
                         downloadJSON(formData, dateStr);
 
                         // Prepare email
                         const emailSubject = `Inflight Report ${formData.date || 'N/A'}`;
-                        const emailBody = `Adjunta manualmente el PDF (inflight_report_${dateStr}.pdf) y JSON (inflight_report_${dateStr}.json).\n\nDatos:\n${JSON.stringify(formData, null, 2).substring(0, 1000)}...`;
+                        const emailBody = `Please attach the PDF (inflight_report_${dateStr}.pdf) and JSON (inflight_report_${dateStr}.json) manually.\n\nData:\n${JSON.stringify(formData, null, 2).substring(0, 1000)}...`;
                         const emailLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+
+                        alert('Report generated! PDF downloading from server, JSON downloading locally.');
                         setTimeout(() => {
-                            if (confirm('¿Quieres enviar el reporte por email? Adjunta el PDF y JSON manualmente desde tu carpeta de descargas.')) {
+                            if (confirm('Send report via email? Attach PDF and JSON manually.')) {
                                 window.location.href = emailLink;
                             }
-                        }, 700);
+                        }, 500);
                     } catch (err) {
-                        alert(`Error generating report: ${err.message}`);
+                        alert(`Error generating report: ${err.message}. Try emailing the report.`);
+                        // Fallback: Prompt for email
+                        const emailSubject = `Inflight Report ${formData.date || 'N/A'}`;
+                        const emailBody = `PDF download failed. Please generate the report again or contact support.\n\nData:\n${JSON.stringify(formData, null, 2).substring(0, 1000)}...`;
+                        const emailLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+                        if (confirm('PDF failed to download. Send report via email instead?')) {
+                            window.location.href = emailLink;
+                        }
                     }
                 });
             } catch (err) {
