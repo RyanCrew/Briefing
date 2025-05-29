@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inflight Report Form</title>
     <link href="./output.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -96,12 +97,14 @@
             font-size: 1.2rem;
         }
         .date-ac-label {
-            font-size: 1rem;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+            white-space: nowrap;
         }
         input {
             width: 100%;
             padding: 0.7rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             border-radius: 8px;
             border: none;
             font-size: 1rem;
@@ -114,10 +117,19 @@
         .date-ac-input {
             padding: 0.4rem;
             font-size: 0.9rem;
+            min-height: 44px;
+            min-width: 0;
+            max-width: 45%;
         }
-        .captain-fo-input,.sales-input {
+        .captain-fo-input {
             padding: 0.6rem;
             min-width: 6rem;
+        }
+        .sales-input {
+            padding: 0.3rem;
+            font-size: 0.8rem;
+            min-height: 44px;
+            min-width: 80px;
         }
         .sales-wrapper {
             position: relative;
@@ -126,11 +138,11 @@
         }
         .sales-euro {
             position: absolute;
-            right: 0.5rem;
+            right: 0.3rem;
             top: 50%;
             transform: translateY(-50%);
             color: #000;
-            font-size: 1rem;
+            font-size: 0.8rem;
         }
         .crew-input {
             padding: 0.4rem;
@@ -140,7 +152,7 @@
         select {
             width: 100%;
             padding: 0.7rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             border-radius: 8px;
             border: none;
             font-size: 1rem;
@@ -262,6 +274,19 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
+        .flight-info-header {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .sales-grid {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .sales-label {
+            font-size: 0.8rem;
+            margin-bottom: 0.1rem;
+            white-space: nowrap;
+        }
         .hidden {
             display: none !important;
         }
@@ -291,14 +316,14 @@
                 <!-- Flight Information -->
                 <details class="form-section" open>
                     <summary>Flight Information</summary>
-                    <div class="grid grid-cols-2 gap-2" id="flightInfoHeader">
-                        <div>
+                    <div class="flex flex-nowrap gap-2 flight-info-header" id="flightInfoHeader">
+                        <div class="flex-1">
                             <label class="date-ac-label">Date</label>
-                            <input type="date" id="date" required class="small-input date-ac-input" autocomplete="off">
+                            <input type="date" id="date" required class="date-ac-input" autocomplete="off">
                         </div>
-                        <div>
+                        <div class="flex-1">
                             <label class="date-ac-label">A/C Reg</label>
-                            <input type="text" id="acReg" placeholder="EI-" required class="small-input date-ac-input" autocomplete="off">
+                            <input type="text" id="acReg" placeholder="EI-" required class="date-ac-input" autocomplete="off">
                         </div>
                     </div>
                     <div class="table-wrapper">
@@ -449,7 +474,7 @@
                                     <th>Product</th>
                                     <th>Open</th>
                                     <th>Close</th>
-                                    <th>Diff</th>
+                                    <th>Sold</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -525,7 +550,7 @@
                                     <th>Product</th>
                                     <th>Open</th>
                                     <th>Close</th>
-                                    <th>Diff</th>
+                                    <th>Sold</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -565,51 +590,55 @@
                 <!-- Sales and Totals -->
                 <details class="form-section" id="salesSection">
                     <summary>Sales and Totals</summary>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label id="salesLabel1" for="sales1">Sales Crewcode 1</label>
-                            <div class="sales-wrapper">
-                                <input type="number" id="sales1" step="0.01" min="0" required class="sales-input">
-                                <span class="sales-euro">€</span>
+                    <div class="sales-grid">
+                        <div class="flex flex-nowrap gap-2 overflow-x-auto">
+                            <div>
+                                <label id="salesLabel1" for="salesCrew1" class="sales-label">Sales Crew 1</label>
+                                <div class="sales-wrapper">
+                                    <input type="number" id="salesCrew1" step="0.01" min="0" required class="sales-input">
+                                    <span class="sales-euro">€</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label id="salesLabel2" for="salesCrew2" class="sales-label">Sales Crew 2</label>
+                                <div class="sales-wrapper">
+                                    <input type="number" id="salesCrew2" step="0.01" min="0" required class="sales-input">
+                                    <span class="sales-euro">€</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label id="salesLabel3" for="salesCrew3" class="sales-label">Sales Crew 3</label>
+                                <div class="sales-wrapper">
+                                    <input type="number" id="salesCrew3" step="0.01" min="0" required class="sales-input">
+                                    <span class="sales-euro">€</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label id="salesLabel4" for="salesCrew4" class="sales-label">Sales Crew 4</label>
+                                <div class="sales-wrapper">
+                                    <input type="number" id="salesCrew4" step="0.01" min="0" required class="sales-input">
+                                    <span class="sales-euro">€</span>
+                                </div>
                             </div>
                         </div>
-                        <div>
-                            <label id="salesLabel2" for="sales2">Sales Crewcode 2</label>
-                            <div class="sales-wrapper">
-                                <input type="number" id="sales2" step="0.01" min="0" required class="sales-input">
-                                <span class="sales-euro">€</span>
+                        <div class="grid grid-cols-3 gap-2 mt-2">
+                            <div>
+                                <label for="totalSales" class="sales-label">Total Sales</label>
+                                <div class="sales-wrapper">
+                                    <input type="number" id="totalSales" readonly class="sales-input" style="background: rgba(255,255,255,0.3); color: #000;">
+                                    <span class="sales-euro">€</span>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <label id="salesLabel3" for="sales3">Sales Crewcode 3</label>
-                            <div class="sales-wrapper">
-                                <input type="number" id="sales3" step="0.01" min="0" required class="sales-input">
-                                <span class="sales-euro">€</span>
+                            <div>
+                                <label for="totalPax" class="sales-label">Total Pax</label>
+                                <input type="number" id="totalPax" readonly class="sales-input" style="background: rgba(255,255,255,0.3); color: #000;">
                             </div>
-                        </div>
-                        <div>
-                            <label id="salesLabel4" for="sales4">Sales Crewcode 4</label>
-                            <div class="sales-wrapper">
-                                <input type="number" id="sales4" step="0.01" min="0" required class="sales-input">
-                                <span class="sales-euro">€</span>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="totalSales">Total Sales</label>
-                            <div class="sales-wrapper">
-                                <input type="number" id="totalSales" readonly class="sales-input" style="background: rgba(255,255,255,0.3); color: #000;">
-                                <span class="sales-euro">€</span>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="totalPax">Total Pax</label>
-                            <input type="number" id="totalPax" readonly style="background: rgba(255,255,255,0.3); color: #000;">
-                        </div>
-                        <div>
-                            <label for="overallAverage">Overall Average</label>
-                            <div class="sales-wrapper">
-                                <input type="number" id="overallAverage" readonly class="sales-input" style="background: rgba(255,255,255,0.3); color: #000;">
-                                <span class="sales-euro">€</span>
+                            <div>
+                                <label for="overallAverage" class="sales-label">Avg/Pax</label>
+                                <div class="sales-wrapper">
+                                    <input type="number" id="overallAverage" readonly class="sales-input" style="background: rgba(255,255,255,0.3); color: #000;">
+                                    <span class="sales-euro">€</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -627,6 +656,7 @@
         let activeFlight = null;
         let extraCrewCount = 0;
         let activeStockTab = 'product';
+        const { jsPDF } = window.jspdf;
 
         // Toggle flight visibility
         function toggleFlightView(flightNumber) {
@@ -640,14 +670,13 @@
                 alert('Error: Flight toggle elements missing. Please try reloading the page.');
                 return;
             }
-
             if (activeFlight === flightNumber) {
                 activeFlight = null;
                 flightRows.forEach(row => row.style.display = '');
-                flightInfoHeader.style.display = '';
+                flightInfoHeader.style.display = 'flex';
                 stockSection.style.display = '';
                 salesSection.style.display = '';
-                crewSection.style.display = '';
+                crewSection.style kissing = '';
             } else {
                 activeFlight = flightNumber;
                 flightRows.forEach(row => {
@@ -669,7 +698,7 @@
             extraCrewCount++;
             const extraRow = document.getElementById(`extraCrew${extraCrewCount}`);
             if (!extraRow) {
-                alert('Error: Extra crew row not found. Please try reloading the page.');
+                alert('Error: Extra crew row not found.');
                 extraCrewCount--;
                 return;
             }
@@ -684,7 +713,7 @@
         function removeExtraCrew(index) {
             const extraRow = document.getElementById(`extraCrew${index}`);
             if (!extraRow) {
-                alert('Error: Extra crew row not found. Please try reloading the page.');
+                alert('Error: Extra crew row not found.');
                 return;
             }
             extraRow.style.display = 'none';
@@ -706,57 +735,54 @@
             };
 
             if (!tables.product || !tables.dutyFree || !tabs.product || !tabs.dutyFree) {
-                alert('Error: Stock table or tab elements missing. Please try reloading the page.');
+                alert('Error: Stock table or tab missing.');
                 return;
             }
 
-            // Ensure stock section is open
             const stockSection = document.getElementById('stockSection');
             if (stockSection && !stockSection.hasAttribute('open')) {
                 stockSection.setAttribute('open', '');
             }
 
-            // Toggle visibility
             tables.product.style.display = type === 'product' ? 'block' : 'none';
             tables.dutyFree.style.display = type === 'dutyFree' ? 'block' : 'none';
             tables.dutyFree.classList.toggle('hidden', type !== 'dutyFree');
             tables.product.classList.toggle('hidden', type !== 'product');
 
-            // Update active tab
             tabs.product.classList.toggle('active', type === 'product');
             tabs.dutyFree.classList.toggle('active', type === 'dutyFree');
 
             activeStockTab = type;
         }
 
-        // Calculate differences for stock tables
+        // Calculate sold quantities
         function calculateDifference(tableId) {
             const table = document.getElementById(tableId);
             if (!table) {
-                alert(`Error: Table ${tableId} not found. Please try reloading the page.`);
+                alert(`Error: Table ${tableId} not found.`);
                 return;
             }
             const rows = table.getElementsByTagName('tr');
             for (let row of rows) {
                 const openInput = row.querySelector('.open');
                 const closeInput = row.querySelector('.close');
-                const differenceCell = row.querySelector('.difference-cell');
-                if (openInput && closeInput && differenceCell) {
-                    const updateDifference = () => {
+                const soldCell = row.querySelector('.difference-cell');
+                if (openInput && closeInput && soldCell) {
+                    const updateSold = () => {
                         const openVal = parseInt(openInput.value) || 0;
                         const closeVal = parseInt(closeInput.value) || 0;
-                        differenceCell.textContent = openVal - closeVal;
+                        soldCell.textContent = openVal - closeVal;
                     };
-                    openInput.addEventListener('input', updateDifference);
-                    closeInput.addEventListener('input', updateDifference);
-                    updateDifference();
+                    openInput.addEventListener('input', updateSold);
+                    closeInput.addEventListener('input', updateSold);
+                    updateSold();
                 }
             }
         }
 
-        // Update sales labels based on crewcodes
+        // Update sales labels
         function updateSalesLabels() {
-            const crewcodes = [
+            const crewInputs = [
                 document.getElementById('crewcode1'),
                 document.getElementById('crewcode2'),
                 document.getElementById('crewcode3'),
@@ -769,10 +795,10 @@
                 document.getElementById('salesLabel4')
             ];
 
-            crewcodes.forEach((input, index) => {
+            crewInputs.forEach((input, index) => {
                 if (input && salesLabels[index]) {
                     const updateLabel = () => {
-                        const code = input.value.trim() || `Crewcode ${index + 1}`;
+                        const code = input.value.trim() || `Crew ${index + 1}`;
                         salesLabels[index].textContent = `Sales ${code}`;
                     };
                     input.addEventListener('input', updateLabel);
@@ -781,13 +807,13 @@
             });
         }
 
-        // Calculate total sales and overall average
+        // Calculate total sales and average
         function calculateTotalSales() {
             const salesInputs = [
-                document.getElementById('sales1'),
-                document.getElementById('sales2'),
-                document.getElementById('sales3'),
-                document.getElementById('sales4')
+                document.getElementById('salesCrew1'),
+                document.getElementById('salesCrew2'),
+                document.getElementById('salesCrew3'),
+                document.getElementById('salesCrew4')
             ];
             const totalSales = document.getElementById('totalSales');
             const totalPax = document.getElementById('totalPax');
@@ -832,13 +858,160 @@
             updateTotal();
         }
 
-        // Form submission handling
+        // Generate PDF report
+        function generatePDF(formData) {
+            const doc = new jsPDF();
+            let y = 10;
+
+            // Title
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(16);
+            doc.text('Inflight Report', 10, y);
+            y += 10;
+
+            // Flight Information
+            doc.setFontSize(12);
+            doc.text(`Date: ${formData.date || 'N/A'}`, 10, y);
+            doc.text(`A/C Reg: ${formData.acReg || 'N/A'}`, 100, y);
+            y += 10;
+
+            doc.setFont('helvetica', 'bold');
+            doc.text('Flight Information', 10, y);
+            y += 5;
+            doc.setFont('helvetica', 'normal');
+            const flightHeaders = ['#', 'Route', 'Flight No.', 'Dep', 'Arr', 'Time', 'Pax', 'FWD', 'AFT', 'W/C'];
+            const flightData = formData.flights.map((f, i) => [
+                i + 1,
+                f.route || '',
+                f.flightNumber || '',
+                f.departure || '',
+                f.arrival || '',
+                f.flightTime || '',
+                f.finalPax || '0',
+                f.fwd || '0',
+                f.aft || '0',
+                f.wheelchair || ''
+            ]);
+            doc.autoTable({
+                head: [flightHeaders],
+                body: flightData,
+                startY: y,
+                theme: 'grid',
+                headStyles: { fillColor: [30, 144, 255] },
+                margin: { left: 10, right: 10 }
+            });
+            y = doc.lastAutoTable.finalY + 10;
+
+            // Crew Information
+            doc.setFont('helvetica', 'bold');
+            doc.text('Crew Information', 10, y);
+            y += 5;
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Captain: ${formData.captain || 'N/A'}`, 10, y);
+            doc.text(`First Officer: ${formData.firstOfficer || 'N/A'}`, 100, y);
+            y += 10;
+            const crewHeaders = ['Crew', 'Crewcode', 'Name'];
+            const crewData = formData.crew.map((c, i) => [
+                c.crewcode ? `No. ${i + 1}` : `Extra ${i - 3}`,
+                c.crewcode || '',
+                c.name || ''
+            ]);
+            doc.autoTable({
+                head: [crewHeaders],
+                body: crewData,
+                startY: y,
+                theme: 'grid',
+                headStyles: { fillColor: [30, 144, 255] },
+                margin: { left: 10, right: 10 }
+            });
+            y = doc.lastAutoTable.finalY + 10;
+
+            // Product Stock
+            doc.setFont('helvetica', 'bold');
+            doc.text('Product Stock', 10, y);
+            y += 5;
+            doc.setFont('helvetica', 'normal');
+            const productHeaders = ['Product', 'Open', 'Close', 'Sold'];
+            const productData = formData.products.items.map(p => [
+                p.product || '',
+                p.open || '0',
+                p.close || '0',
+                p.sold || '0'
+            ]);
+            doc.autoTable({
+                head: [productHeaders],
+                body: productData,
+                startY: y,
+                theme: 'grid',
+                headStyles: { fillColor: [30, 144, 255] },
+                margin: { left: 10, right: 10 }
+            });
+            y = doc.lastAutoTable.finalY + 5;
+            doc.text(`Yellow Seal: ${formData.products.seals.yellow || 'N/A'}`, 10, y);
+            doc.text(`Green Seal: ${formData.products.seals.green || 'N/A'}`, 70, y);
+            doc.text(`Metal Seal: ${formData.products.seals.metal || 'N/A'}`, 130, y);
+            y += 10;
+
+            // Duty-Free Stock
+            doc.setFont('helvetica', 'bold');
+            doc.text('Duty-Free Stock', 10, y);
+            y += 5;
+            doc.setFont('helvetica', 'normal');
+            const dutyFreeHeaders = ['Product', 'Open', 'Close', 'Sold'];
+            const dutyFreeData = formData.dutyFreeProducts.items.map(p => [
+                p.product || '',
+                p.open || '0',
+                p.close || '0',
+                p.sold || '0'
+            ]);
+            doc.autoTable({
+                head: [dutyFreeHeaders],
+                body: dutyFreeData,
+                startY: true,
+                theme: 'grid',
+                headStyles: { fillColor: [30, 144, 255] },
+                margin: { left: 10, right: 10 }
+            });
+            y = doc.lastAutoTable.finalY + 5;
+            doc.text(`Metal Seal: ${formData.dutyFreeProducts.seal || 'N/A'}`, 10, y);
+            y += 10;
+
+            // Sales and Totals
+            doc.setFont('helvetica', 'bold');
+            doc.text('Sales and Totals', 10, y);
+            y += 5;
+            doc.setFont('helvetica', 'normal');
+            const salesHeaders = ['Crew', 'Sales (€)'];
+            const salesData = [
+                [`Crew 1 (${document.getElementById('crewcode1').value || 'N/A'})`, formData.sales.salesCrew1 || '0.00'],
+                [`Crew 2 (${document.getElementById('crewcode2').value || 'N/A'})`, formData.sales.salesCrew2 || '0.00'],
+                [`Crew 3 (${document.getElementById('crewcode3').value || 'N/A'})`, formData.sales.salesCrew3 || '0.00'],
+                [`Crew 4 (${document.getElementById('crewcode4').value || 'N/A'})`, formData.sales.salesCrew4 || '0.00']
+            ];
+            doc.autoTable({
+                head: [salesHeaders],
+                body: salesData,
+                startY: y,
+                theme: 'grid',
+                headStyles: { fillColor: [30, 144, 255] },
+                margin: { left: 10', right: 10' }
+            });
+            y = doc.lastAutoTable.finalY + 5;
+            doc.text(`Total Sales: ${formData.sales.totalSales || '0.00'} €`, 10, y);
+            doc.text(`Total Pax: ${formData.totalPax || '0'}`, 70, y);
+            doc.text(`Avg/Pax: ${formData.sales.overallAverage || '0.00'} €`, 130, y);
+
+            return doc;
+        }
+
+        // Form submission
         function handleFormSubmission() {
             const form = document.getElementById('inflightForm');
             if (!form) {
-                alert('Error: Form element missing. Please try reloading the page.');
+                alert('Error: Form element missing.');
                 return;
             }
+
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const requiredFields = document.querySelectorAll('input[required]');
@@ -847,86 +1020,112 @@
                     const parentTable = field.closest('#productStockTable, #dutyFreeStockTable');
                     if (!field.value && (!parentTable || parentTable.style.display !== 'none') && !field.closest('.extra-crew')) {
                         allFilled = false;
-                        field.style.border = '1px solid #ff4d4d';
+                        field.classList.add('border-red-500');
                     } else {
-                        field.style.border = 'none';
-                    }
+                        field.classList.remove('border-red');
+500                    }
                 });
-                if (allFilled) {
-                    alert('Form submitted successfully!');
-                    const formData = {
-                        date: document.getElementById('date').value,
-                        acReg: document.getElementById('acReg').value,
-                        flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
-                            route: row.querySelector('.route').value,
-                            flightNumber: row.querySelector('.flightNumber').value,
-                            departure: row.querySelector('.departure').value,
-                            arrival: row.querySelector('.arrival').value,
-                            flightTime: row.querySelector('.flightTime').value,
-                            finalPax: row.querySelector('.finalPax').value,
-                            fwd: row.querySelector('.fwd').value,
-                            aft: row.querySelector('.aft').value,
-                            wheelchair: row.querySelector('.wheelchair').value
-                        })),
-                        captain: document.getElementById('captain').value,
-                        firstOfficer: document.getElementById('firstOfficer').value,
-                        crew: Array.from(document.querySelectorAll('#crewTable tr')).filter(row => {
-                            return !row.classList.contains('extra-crew') || row.style.display !== 'none';
-                        }).map(row => ({
-                            crewcode: row.querySelector('.crewcode').value,
-                            name: row.querySelector('.crewName').value
-                        })),
-                        products: {
-                            items: Array.from(document.querySelectorAll('#productTable tr')).map(row => ({
-                                product: row.cells[0].textContent,
-                                open: row.querySelector('.open').value,
-                                close: row.querySelector('.close').value,
-                                difference: row.querySelector('.difference-cell').textContent
-                            })),
-                            seals: {
-                                yellow: document.getElementById('yellowSeal').value,
-                                green: document.getElementById('greenSeal').value,
-                                metal: document.getElementById('metalSeal').value
-                            }
-                        },
-                        dutyFreeProducts: {
-                            items: Array.from(document.querySelectorAll('#dutyFreeTable tr')).map(row => ({
-                                product: row.cells[0].textContent,
-                                open: row.querySelector('.open').value,
-                                close: row.querySelector('.close').value,
-                                difference: row.querySelector('.difference-cell').textContent
-                            })),
-                            seal: document.getElementById('dutyFreeMetalSeal').value
-                        },
-                        sales: {
-                            sales1: document.getElementById('sales1').value,
-                            sales2: document.getElementById('sales2').value,
-                            sales3: document.getElementById('sales3').value,
-                            sales4: document.getElementById('sales4').value,
-                            totalSales: document.getElementById('totalSales').value,
-                            overallAverage: document.getElementById('overallAverage').value
-                        },
-                        totalPax: document.getElementById('totalPax').value
-                    };
-                    alert('Data submitted: ' + JSON.stringify(formData, null, 2));
-                } else {
+
+                if (!allFilled) {
                     alert('Please fill all required fields.');
+                    return;
+                }
+
+                // Collect form data
+                const formData = {
+                    date: document.getElementById('date').value,
+                    acReg: document.getElementById('acReg').value,
+                    flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
+                        route: row.querySelector('.route').value,
+                        flightNumberRow.querySelector('.flightNumber').value,
+                        departure: row.querySelector('.departure').value,
+                        arrival: row.querySelector('.arrival').value,
+                        flightTime: row.querySelector('.flightTime').value,
+                        finalPax: row.querySelector('.finalPax').value,
+                        final: row.querySelector('.fwd').value,
+                        aft: row.querySelector('.aft').value,
+                        wheelchair: row.querySelector('.wheelchair').value
+                    })),
+                    captain: document.getElementById('captain').value,
+                    firstOfficer: document.getElementById('firstOfficer').value,
+                    crew: Array.from(document.querySelectorAll('#crewTable tr')).filter(row => {
+                        return !row.classList.contains('extra-crew') || row.style.display !== 'none';
+                    }).map(row => ({
+                        crewcode: row.querySelector('.crewcode').value,
+                        name: row.querySelector('.crewName').value
+                    })),
+                    products: {
+                        items: Array.from(document.querySelectorAll('#productTable tr')).map(row => ({
+                            product: row.cells[0].textContent,
+                            open: row.querySelector('.open').value,
+                            close: row.querySelector('.close').value,
+                            sold: row.querySelector('.difference-cell').textContent
+                        })),
+                        seals: {
+                            yellow: document.getElementById('yellowSeal').value,
+                            green: document.getElementById('greenSeal').value,
+                            metal: document.getElementById('metalSeal').value
+                        }
+                    },
+                    dutyFreeProducts: {
+                        items: Array.from(document.querySelectorAll('#dutyFreeTable tr')).map(row => ({
+                            product: row.cells[0].textContent,
+                            open: row.querySelector('.open').value,
+                            close: row.querySelector('.close').value,
+                            sold: row.querySelector('.difference-cell').textContent
+                        })),
+                        seal: document.getElementById('dutyFreeMetalSeal').value
+                    },
+                    sales: {
+                        salesCrew1: document.getElementById('salesCrew1').value,
+                        salesCrew2: document.getElementById('salesCrew2').value,
+                        salesCrew3: document.getElementById('salesCrew3').value,
+                        salesCrew4: document.getElementById('salesCrew4').value,
+                        totalSales: document.getElementById('totalSales').value,
+                        overallAverage: document.getElementById('overallAverage').value
+                    },
+                    totalPax: document.getElementById('totalPax').value
+                };
+
+                // Generate PDF
+                try {
+                    const doc = generatePDF(formData);
+                    const dateStr = formData.date.replace(/-/g, '');
+                    doc.save(`inflight_report_${dateStr}.pdf`);
+                    alert('Report generated successfully! PDF has been downloaded.');
+
+                    // Email option
+                    const emailSubject = `Inflight Report ${formData.date}`;
+                    const emailBody = JSON.stringify(formData, null, 2);
+                    const emailLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent('Please find the report data below. Attach the downloaded PDF manually:\n\n' + emailBody)}`;
+                    setTimeout(() => {
+                        if (confirm('Would you like to send the report via email? The PDF must be attached manually.')) {
+                            window.location.href = emailLink;
+                        }
+                    }, 500);
+                } catch (error) {
+                    alert('Error generating PDF: ' + error.message);
                 }
             });
         }
 
         // Initialize form
         function initializeForm() {
-            calculateDifference('productTable');
-            calculateDifference('dutyFreeTable');
-            updateSalesLabels();
-            calculateTotalPax();
-            calculateTotalSales();
-            handleFormSubmission();
-            toggleStockView('product');
+            try {
+                calculateDifference('productTable');
+                calculateDifference('dutyFreeTable');
+                updateSalesLabels();
+                calculateTotalPax();
+                calculateTotalSales();
+                handleFormSubmission();
+                toggleStockView('product');
+            } catch (err) {
+                alert('Error initializing form: ' + err.message);
+            }
         }
 
         document.addEventListener('DOMContentLoaded', initializeForm);
     </script>
 </body>
 </html>
+</xaiartifact>
