@@ -67,6 +67,27 @@
             user-select: none;
             touch-action: manipulation;
         }
+        .stock-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .stock-tab {
+            flex: 1;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-align: center;
+            touch-action: manipulation;
+            min-height: 44px;
+        }
+        .stock-tab.active {
+            background: #ff7f50;
+        }
         label {
             display: block;
             margin: 0.5rem 0 0.3rem;
@@ -93,8 +114,22 @@
             padding: 0.4rem;
             font-size: 0.9rem;
         }
-        .captain-fo-input {
+        .captain-fo-input, .sales-input {
             padding: 0.6rem;
+            min-width: 6rem;
+        }
+        .sales-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .sales-euro {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #000;
+            font-size: 1rem;
         }
         .crew-input {
             padding: 0.4rem;
@@ -115,6 +150,9 @@
             padding: 0.4rem;
             font-size: 0.9rem;
             min-width: 5rem;
+        }
+        .route-input {
+            min-width: 6rem;
         }
         .duty-free-input {
             padding: 0.5rem;
@@ -194,11 +232,18 @@
         button:hover {
             background: #ff7f50;
         }
-        .add-crew-button {
+        .add-crew-button, .remove-crew-button {
             width: auto;
             padding: 0.6rem 1rem;
             font-size: 1rem;
-            margin-top: 0.5rem;
+            margin: 0.5rem 0.5rem 0 0;
+            min-height: 36px;
+        }
+        .remove-crew-button {
+            background: #ff4d4d;
+        }
+        .remove-crew-button:hover {
+            background: #cc0000;
         }
         footer {
             background: rgba(0, 0, 0, 0.7);
@@ -268,7 +313,7 @@
                             <tbody id="flightsTableBody">
                                 <tr data-flight="1">
                                     <td class="flight-number-cell" onclick="toggleFlightView('1')">1</td>
-                                    <td><input type="text" class="route" placeholder="e.g., ALC-MAD" required autocomplete="off"></td>
+                                    <td><input type="text" class="route route-input" placeholder="e.g., ALC-MAD" required autocomplete="off"></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1234" required autocomplete="off"></td>
                                     <td><input type="time" class="departure" required></td>
                                     <td><input type="time" class="arrival" required></td>
@@ -280,7 +325,7 @@
                                 </tr>
                                 <tr data-flight="2">
                                     <td class="flight-number-cell" onclick="toggleFlightView('2')">2</td>
-                                    <td><input type="text" class="route" placeholder="e.g., MAD-ALC" required autocomplete="off"></td>
+                                    <td><input type="text" class="route route-input" placeholder="e.g., MAD-ALC" required autocomplete="off"></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1235" required autocomplete="off"></td>
                                     <td><input type="time" class="departure" required></td>
                                     <td><input type="time" class="arrival" required></td>
@@ -292,7 +337,7 @@
                                 </tr>
                                 <tr data-flight="3">
                                     <td class="flight-number-cell" onclick="toggleFlightView('3')">3</td>
-                                    <td><input type="text" class="route" placeholder="e.g., ALC-STN" required autocomplete="off"></td>
+                                    <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" required autocomplete="off"></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1236" required autocomplete="off"></td>
                                     <td><input type="time" class="departure" required></td>
                                     <td><input type="time" class="arrival" required></td>
@@ -304,7 +349,7 @@
                                 </tr>
                                 <tr data-flight="4">
                                     <td class="flight-number-cell" onclick="toggleFlightView('4')">4</td>
-                                    <td><input type="text" class="route" placeholder="e.g., STN-ALC" required autocomplete="off"></td>
+                                    <td><input type="text" class="route route-input" placeholder="e.g., STN-ALC" required autocomplete="off"></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1237" required autocomplete="off"></td>
                                     <td><input type="time" class="departure" required></td>
                                     <td><input type="time" class="arrival" required></td>
@@ -338,6 +383,7 @@
                                 <th>Crew</th>
                                 <th>Crewcode</th>
                                 <th>Name</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -345,141 +391,150 @@
                                 <td>No. 1</td>
                                 <td><input type="text" class="crewcode crew-input" id="crewcode1" required autocomplete="off"></td>
                                 <td><input type="text" class="crewName crew-input" required autocomplete="off"></td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>No. 2</td>
                                 <td><input type="text" class="crewcode crew-input" id="crewcode2" required autocomplete="off"></td>
                                 <td><input type="text" class="crewName crew-input" required autocomplete="off"></td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>No. 3</td>
                                 <td><input type="text" class="crewcode crew-input" id="crewcode3" autocomplete="off"></td>
                                 <td><input type="text" class="crewName crew-input" autocomplete="off"></td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>No. 4</td>
                                 <td><input type="text" class="crewcode crew-input" id="crewcode4" autocomplete="off"></td>
                                 <td><input type="text" class="crewName crew-input" autocomplete="off"></td>
+                                <td></td>
                             </tr>
                             <tr class="extra-crew" id="extraCrew1">
                                 <td>Extra 1</td>
                                 <td><input type="text" class="crewcode crew-input" autocomplete="off"></td>
                                 <td><input type="text" class="crewName crew-input" autocomplete="off"></td>
+                                <td><button type="button" class="remove-crew-button" onclick="removeExtraCrew(1)">Remove</button></td>
                             </tr>
                             <tr class="extra-crew" id="extraCrew2">
                                 <td>Extra 2</td>
                                 <td><input type="text" class="crewcode crew-input" autocomplete="off"></td>
                                 <td><input type="text" class="crewName crew-input" autocomplete="off"></td>
+                                <td><button type="button" class="remove-crew-button" onclick="removeExtraCrew(2)">Remove</button></td>
                             </tr>
                         </tbody>
                     </table>
                     <button type="button" class="add-crew-button" onclick="addExtraCrew()">Add Extra Crew</button>
                 </details>
 
-                <!-- Product Stock -->
-                <details class="form-section" id="productStockSection">
-                    <summary>Product Stock</summary>
-                    <table id="productTable">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Open</th>
-                                <th>Close</th>
-                                <th>Diff</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>H&C Panini</td>
-                                <td><input type="number" min="0" class="open" required></td>
-                                <td><input type="number" min="0" class="close" required></td>
-                                <td class="difference-cell"></td>
-                            </tr>
-                            <tr>
-                                <td>C&M Panini</td>
-                                <td><input type="number" min="0" class="open" required></td>
-                                <td><input type="number" min="0" class="close" required></td>
-                                <td class="difference-cell"></td>
-                            </tr>
-                            <tr>
-                                <td>H&C Croissant</td>
-                                <td><input type="number" min="0" class="open" required></td>
-                                <td><input type="number" min="0" class="close" required></td>
-                                <td class="difference-cell"></td>
-                            </tr>
-                            <tr>
-                                <td>C&M Croissant</td>
-                                <td><input type="number" min="0" class="open" required></td>
-                                <td><input type="number" min="0" class="close" required></td>
-                                <td class="difference-cell"></td>
-                            </tr>
-                            <tr>
-                                <td>Cheese T</td>
-                                <td><input type="number" min="0" class="open" required></td>
-                                <td><input type="number" min="0" class="close" required></td>
-                                <td class="difference-cell"></td>
-                            </tr>
-                            <tr>
-                                <td>Pizza</td>
-                                <td><input type="number" min="0" class="open" required></td>
-                                <td><input type="number" min="0" class="close" required></td>
-                                <td class="difference-cell"></td>
-                            </tr>
-                            <tr>
-                                <td>Bacon B</td>
-                                <td><input type="number" min="0" class="open" required></td>
-                                <td><input type="number" min="0" class="close" required></td>
-                                <td class="difference-cell"></td>
-                            </tr>
-                            <tr>
-                                <td>F Sandwich</td>
-                                <td><input type="number" min="0" class="open" required></td>
-                                <td><input type="number" min="0" class="close" required></td>
-                                <td class="difference-cell"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </details>
-
-                <!-- Duty-Free Stock -->
-                <details class="form-section" id="dutyFreeStockSection">
-                    <summary>Duty-Free Stock</summary>
-                    <table id="dutyFreeTable">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Open</th>
-                                <th>Close</th>
-                                <th>Diff</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Marlboro Gold</td>
-                                <td><input type="number" min="0" class="open duty-free-input" required></td>
-                                <td><input type="number" min="0" class="close duty-free-input" required></td>
-                                <td class="difference-cell"></td>
-                            </tr>
-                            <tr>
-                                <td>Marlboro Red</td>
-                                <td><input type="number" min="0" class="open duty-free-input" required></td>
-                                <td><input type="number" min="0" class="close duty-free-input" required></td>
-                                <td class="difference-cell"></td>
-                            </tr>
-                            <tr>
-                                <td>Lambert</td>
-                                <td><input type="number" min="0" class="open duty-free-input" required></td>
-                                <td><input type="number" min="0" class="close duty-free-input" required></td>
-                                <td class="difference-cell"></td>
-                            </tr>
-                            <tr>
-                                <td>Amber Leaf</td>
-                                <td><input type="number" min="0" class="open duty-free-input" required></td>
-                                <td><input type="number" min="0" class="close duty-free-input" required></td>
-                                <td class="difference-cell"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- Stock Section -->
+                <details class="form-section" id="stockSection">
+                    <summary>Stock</summary>
+                    <div class="stock-tabs">
+                        <button type="button" class="stock-tab active" onclick="toggleStockView('product')">Product Stock</button>
+                        <button type="button" class="stock-tab" onclick="toggleStockView('dutyFree')">Duty-Free Stock</button>
+                    </div>
+                    <div id="productStockTable">
+                        <table id="productTable">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Open</th>
+                                    <th>Close</th>
+                                    <th>Diff</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>H&C Panini</td>
+                                    <td><input type="number" min="0" class="open" required></td>
+                                    <td><input type="number" min="0" class="close" required></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>C&M Panini</td>
+                                    <td><input type="number" min="0" class="open" required></td>
+                                    <td><input type="number" min="0" class="close" required></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>H&C Croissant</td>
+                                    <td><input type="number" min="0" class="open" required></td>
+                                    <td><input type="number" min="0" class="close" required></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>C&M Croissant</td>
+                                    <td><input type="number" min="0" class="open" required></td>
+                                    <td><input type="number" min="0" class="close" required></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>Cheese T</td>
+                                    <td><input type="number" min="0" class="open" required></td>
+                                    <td><input type="number" min="0" class="close" required></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>Pizza</td>
+                                    <td><input type="number" min="0" class="open" required></td>
+                                    <td><input type="number" min="0" class="close" required></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>Bacon B</td>
+                                    <td><input type="number" min="0" class="open" required></td>
+                                    <td><input type="number" min="0" class="close" required></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>F Sandwich</td>
+                                    <td><input type="number" min="0" class="open" required></td>
+                                    <td><input type="number" min="0" class="close" required></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="dutyFreeStockTable" class="hidden">
+                        <table id="dutyFreeTable">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Open</th>
+                                    <th>Close</th>
+                                    <th>Diff</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Marlboro Gold</td>
+                                    <td><input type="number" min="0" class="open duty-free-input" required></td>
+                                    <td><input type="number" min="0" class="close duty-free-input" required></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>Marlboro Red</td>
+                                    <td><input type="number" min="0" class="open duty-free-input" required></td>
+                                    <td><input type="number" min="0" class="close duty-free-input" required></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>Lambert</td>
+                                    <td><input type="number" min="0" class="open duty-free-input" required></td>
+                                    <td><input type="number" min="0" class="close duty-free-input" required></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>Amber Leaf</td>
+                                    <td><input type="number" min="0" class="open duty-free-input" required></td>
+                                    <td><input type="number" min="0" class="close duty-free-input" required></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </details>
 
                 <!-- Sales and Totals -->
@@ -488,23 +543,38 @@
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label id="salesLabel1">Sales Crewcode 1</label>
-                            <input type="number" step="0.01" id="sales1" min="0" required>
+                            <div class="sales-wrapper">
+                                <input type="number" step="0.01" id="sales1" min="0" required class="sales-input">
+                                <span class="sales-euro">€</span>
+                            </div>
                         </div>
                         <div>
                             <label id="salesLabel2">Sales Crewcode 2</label>
-                            <input type="number" step="0.01" id="sales2" min="0" required>
+                            <div class="sales-wrapper">
+                                <input type="number" step="0.01" id="sales2" min="0" required class="sales-input">
+                                <span class="sales-euro">€</span>
+                            </div>
                         </div>
                         <div>
                             <label id="salesLabel3">Sales Crewcode 3</label>
-                            <input type="number" step="0.01" id="sales3" min="0" required>
+                            <div class="sales-wrapper">
+                                <input type="number" step="0.01" id="sales3" min="0" required class="sales-input">
+                                <span class="sales-euro">€</span>
+                            </div>
                         </div>
                         <div>
                             <label id="salesLabel4">Sales Crewcode 4</label>
-                            <input type="number" step="0.01" id="sales4" min="0" required>
+                            <div class="sales-wrapper">
+                                <input type="number" step="0.01" id="sales4" min="0" required class="sales-input">
+                                <span class="sales-euro">€</span>
+                            </div>
                         </div>
                         <div>
                             <label>Total Sales</label>
-                            <input type="number" id="totalSales" readonly style="background: rgba(255, 255, 255, 0.3); color: #000;">
+                            <div class="sales-wrapper">
+                                <input type="number" id="totalSales" readonly class="sales-input" style="background: rgba(255, 255, 255, 0.3); color: #000;">
+                                <span class="sales-euro">€</span>
+                            </div>
                         </div>
                         <div>
                             <label>Total Pax</label>
@@ -512,7 +582,10 @@
                         </div>
                         <div>
                             <label>Total Overall</label>
-                            <input type="number" id="totalOverall" readonly style="background: rgba(255, 255, 255, 0.3); color: #000;">
+                            <div class="sales-wrapper">
+                                <input type="number" id="totalOverall" readonly class="sales-input" style="background: rgba(255, 255, 255, 0.3); color: #000;">
+                                <span class="sales-euro">€</span>
+                            </div>
                         </div>
                     </div>
                 </details>
@@ -528,13 +601,13 @@
     <script>
         let activeFlight = null;
         let extraCrewCount = 0;
+        let activeStockTab = 'product';
 
         // Toggle flight visibility
         function toggleFlightView(flightNumber) {
             const flightRows = document.querySelectorAll('#flightsTableBody tr');
             const flightInfoHeader = document.getElementById('flightInfoHeader');
-            const productStockSection = document.getElementById('productStockSection');
-            const dutyFreeStockSection = document.getElementById('dutyFreeStockSection');
+            const stockSection = document.getElementById('stockSection');
             const salesSection = document.getElementById('salesSection');
             const crewSection = document.getElementById('crewSection');
 
@@ -543,8 +616,7 @@
                 activeFlight = null;
                 flightRows.forEach(row => row.classList.remove('hidden'));
                 flightInfoHeader.classList.remove('hidden');
-                productStockSection.classList.remove('hidden');
-                dutyFreeStockSection.classList.remove('hidden');
+                stockSection.classList.remove('hidden');
                 salesSection.classList.remove('hidden');
                 crewSection.classList.remove('hidden');
             } else {
@@ -558,8 +630,7 @@
                     }
                 });
                 flightInfoHeader.classList.add('hidden');
-                productStockSection.classList.add('hidden');
-                dutyFreeStockSection.classList.add('hidden');
+                stockSection.classList.add('hidden');
                 salesSection.classList.add('hidden');
                 crewSection.classList.remove('hidden');
             }
@@ -569,11 +640,42 @@
         function addExtraCrew() {
             if (extraCrewCount < 2) {
                 extraCrewCount++;
-                document.getElementById(`extraCrew${extraCrewCount}`).classList.remove('extra-crew');
+                const extraRow = document.getElementById(`extraCrew${extraCrewCount}`);
+                extraRow.classList.remove('extra-crew');
                 if (extraCrewCount === 2) {
                     document.querySelector('.add-crew-button').classList.add('hidden');
                 }
             }
+        }
+
+        // Remove extra crew
+        function removeExtraCrew(index) {
+            const extraRow = document.getElementById(`extraCrew${index}`);
+            extraRow.classList.add('extra-crew');
+            extraRow.querySelectorAll('input').forEach(input => input.value = '');
+            extraCrewCount--;
+            document.querySelector('.add-crew-button').classList.remove('hidden');
+        }
+
+        // Toggle stock view
+        function toggleStockView(type) {
+            const productTable = document.getElementById('productStockTable');
+            const dutyFreeTable = document.getElementById('dutyFreeStockTable');
+            const productTab = document.querySelector('.stock-tab[onclick="toggleStockView(\'product\')"]');
+            const dutyFreeTab = document.querySelector('.stock-tab[onclick="toggleStockView(\'dutyFree\')"]');
+
+            if (type === 'product') {
+                productTable.classList.remove('hidden');
+                dutyFreeTable.classList.add('hidden');
+                productTab.classList.add('active');
+                dutyFreeTab.classList.remove('active');
+            } else {
+                productTable.classList.add('hidden');
+                dutyFreeTable.classList.remove('hidden');
+                productTab.classList.remove('active');
+                dutyFreeTab.classList.add('active');
+            }
+            activeStockTab = type;
         }
 
         // Calculate differences for product and duty-free stock
@@ -614,7 +716,7 @@
 
             crewcodes.forEach((input, index) => {
                 const updateLabel = () => {
-                    const code = input.value || `Crewcode ${index + 1}`;
+                    const code = input.value.trim() || `Crewcode ${index + 1}`;
                     salesLabels[index].textContent = `Sales ${code}`;
                 };
                 input.addEventListener('input', updateLabel);
@@ -622,7 +724,7 @@
             });
         }
 
-        // Calculate total sales
+        // Calculate total sales and total overall
         function calculateTotalSales() {
             const salesInputs = [
                 document.getElementById('sales1'),
@@ -631,29 +733,43 @@
                 document.getElementById('sales4')
             ];
             const totalSales = document.getElementById('totalSales');
+            const totalPax = document.getElementById('totalPax');
+            const totalOverall = document.getElementById('totalOverall');
+
             const updateTotal = () => {
                 const total = salesInputs.reduce((sum, input) => {
                     const value = parseFloat(input.value) || 0;
                     return sum + value;
                 }, 0);
                 totalSales.value = total.toFixed(2);
+
+                const paxCount = parseInt(totalPax.value) || 0;
+                totalOverall.value = paxCount > 0 ? (total / paxCount).toFixed(2) : '0.00';
             };
-            salesInputs.forEach(input => input.addEventListener('input', updateTotal));
+
+            salesInputs.forEach(input => {
+                input.addEventListener('input', updateTotal);
+            });
             updateTotal();
         }
 
         // Calculate total pax
         function calculateTotalPax() {
-            const paxInputs = document.querySelectorAll('.finalPax');
+            const paxInputs = document.querySelectorAll('.final-pax-input');
             const totalPax = document.getElementById('totalPax');
+
             const updateTotal = () => {
                 const total = Array.from(paxInputs).reduce((sum, input) => {
                     const value = parseInt(input.value) || 0;
                     return sum + value;
                 }, 0);
                 totalPax.value = total;
+                calculateTotalSales(); // Update Total Overall
             };
-            paxInputs.forEach(input => input.addEventListener('input', updateTotal));
+
+            paxInputs.forEach(input => {
+                input.addEventListener('input', updateTotal);
+            });
             updateTotal();
         }
 
@@ -688,9 +804,7 @@
                     })),
                     captain: document.getElementById('captain').value,
                     firstOfficer: document.getElementById('firstOfficer').value,
-                    crew: Array.from(document.querySelectorAll('#crewTable tr:not(.extra-crew)')).concat(
-                        Array.from(document.querySelectorAll('#crewTable tr.extra-crew')).filter(row => !row.classList.contains('extra-crew'))
-                    ).map(row => ({
+                    crew: Array.from(document.querySelectorAll('#crewTable tr:not(.extra-crew)')).map(row => ({
                         crewcode: row.querySelector('.crewcode').value,
                         name: row.querySelector('.crewName').value
                     })),
@@ -711,10 +825,10 @@
                         sales2: document.getElementById('sales2').value,
                         sales3: document.getElementById('sales3').value,
                         sales4: document.getElementById('sales4').value,
-                        totalSales: document.getElementById('totalSales').value
+                        totalSales: document.getElementById('totalSales').value,
+                        totalOverall: document.getElementById('totalOverall').value
                     },
-                    totalPax: document.getElementById('totalPax').value,
-                    totalOverall: document.getElementById('totalOverall').value
+                    totalPax: document.getElementById('totalPax').value
                 };
                 console.log('Form data:', formData);
                 // In a real application, send formData to a server
@@ -727,8 +841,8 @@
         calculateDifference('productTable');
         calculateDifference('dutyFreeTable');
         updateSalesLabels();
-        calculateTotalSales();
         calculateTotalPax();
+        calculateTotalSales();
     </script>
 </body>
 </html>
