@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight Briefing</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="manifest.json">
+    <title>Inflight Report Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,20 +16,17 @@
             flex-direction: column;
             min-height: 100vh;
         }
-
         header {
             background: rgba(0, 0, 0, 0.7);
             padding: 1em;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-
         header h1 {
             margin: 0;
             font-size: 2.5em;
             color: #fff;
         }
-
         main {
             flex: 1;
             padding: 2em;
@@ -38,169 +34,447 @@
             flex-direction: column;
             align-items: center;
         }
-
-        section {
+        .form-container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5em;
+            width: 100%;
+            max-width: 800px;
+        }
+        .form-section {
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin: 1em 0;
             padding: 1.5em;
-            width: 100%;
-            max-width: 600px;
         }
-
-        section h2 {
+        .form-section h2 {
             text-align: center;
             margin-bottom: 1em;
+            color: #fff;
         }
-
         label {
             display: block;
             margin: 0.5em 0 0.2em;
+            color: #fff;
         }
-
-        input, select {
+        input {
             width: 100%;
             padding: 0.3em;
             margin-bottom: 1em;
             border-radius: 5px;
             border: none;
             font-size: 0.9em;
+            box-sizing: border-box;
         }
-
+        .small-input {
+            padding: 0.2em;
+            font-size: 0.8em;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 1em 0;
         }
-
         table, th, td {
             border: 1px solid #fff;
         }
-
         th, td {
             padding: 0.5em;
             text-align: center;
+            color: #fff;
         }
-
         table input {
             width: calc(100% - 10px);
             padding: 0.3em;
             font-size: 0.9em;
             box-sizing: border-box;
         }
-
-        .additional-info {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 1em;
+        table .small-input {
+            padding: 0.2em;
+            font-size: 0.8em;
         }
-
-        .additional-info div {
-            flex: 1;
-            margin: 0 0.5em;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
+        .difference-cell {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        button {
+            width: 100%;
             padding: 0.5em;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: #1e90ff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s;
         }
-
-        .additional-info div input {
-            width: 90%;
-            margin: 0 auto;
-            padding: 0.3em;
-            font-size: 0.9em;
-            box-sizing: border-box;
-            text-align: center;
+        button:hover {
+            background: #ff7f50;
         }
-
+        .required-note {
+            text-align: center;
+            color: #ff4d4d;
+            margin-bottom: 1em;
+        }
         footer {
             background: rgba(0, 0, 0, 0.7);
             text-align: center;
             padding: 1em;
             font-size: 0.9em;
+            color: #fff;
+        }
+        .table-wrapper {
+            overflow-x: auto;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Flight Briefing Tool</h1>
+        <h1>Inflight Report Form</h1>
     </header>
     <main>
-        <section id="dateSection">
-            <label for="date">Flight Date:</label>
-            <input type="date" id="date" name="date">
-        </section>
-        <section id="flightDetails">
-            <h2>Flight Details</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Departure Airport</th>
-                        <th>Flight Time</th>
-                        <th>Destination Airport</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td><input type="text" id="departure1" placeholder="Enter Departure"></td>
-                        <td><input type="text" id="flightTime1" placeholder="Flight Time"></td>
-                        <td><input type="text" id="destination1" placeholder="Enter Destination"></td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td><input type="text" id="departure2" placeholder="Enter Departure"></td>
-                        <td><input type="text" id="flightTime2" placeholder="Flight Time"></td>
-                        <td><input type="text" id="destination2" placeholder="Enter Destination"></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td><input type="text" id="departure3" placeholder="Enter Departure"></td>
-                        <td><input type="text" id="flightTime3" placeholder="Flight Time"></td>
-                        <td><input type="text" id="destination3" placeholder="Enter Destination"></td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td><input type="text" id="departure4" placeholder="Enter Departure"></td>
-                        <td><input type="text" id="flightTime4" placeholder="Flight Time"></td>
-                        <td><input type="text" id="destination4" placeholder="Enter Destination"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="additional-info">
-                <div>
-                    <label for="totalPax">Total Pax</label>
-                    <input type="text" id="totalPax" placeholder="Enter Total Pax">
+        <div class="form-container">
+            <p class="required-note">All sections must be completed</p>
+            <form id="inflightForm" class="space-y-4">
+                <!-- Flight Information -->
+                <div class="form-section">
+                    <h2>Flight Information</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label>Date</label>
+                            <input type="date" id="date" required class="small-input">
+                        </div>
+                        <div>
+                            <label>A/C Ref (EI-)</label>
+                            <input type="text" id="acRef" placeholder="EI-" required class="small-input">
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Route</th>
+                                    <th>Flight Number</th>
+                                    <th>Departure</th>
+                                    <th>Arrival</th>
+                                    <th>Flight Time</th>
+                                    <th>Final Pax</th>
+                                    <th>FWD</th>
+                                    <th>AFT</th>
+                                    <th>Wheelchair</th>
+                                </tr>
+                            </thead>
+                            <tbody id="flightsTable">
+                                <tr>
+                                    <td>1</td>
+                                    <td><input type="text" class="route" placeholder="e.g., ALC-MAD" required></td>
+                                    <td><input type="text" class="flightNumber" placeholder="e.g., FR1234" required></td>
+                                    <td><input type="time" class="departure" required></td>
+                                    <td><input type="time" class="arrival" required></td>
+                                    <td><input type="text" class="flightTime" placeholder="e.g., 1:30" required></td>
+                                    <td><input type="number" min="0" class="finalPax" required></td>
+                                    <td><input type="number" min="0" class="fwd" required></td>
+                                    <td><input type="number" min="0" class="aft" required></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required></td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td><input type="text" class="route" placeholder="e.g., MAD-ALC" required></td>
+                                    <td><input type="text" class="flightNumber" placeholder="e.g., FR1235" required></td>
+                                    <td><input type="time" class="departure" required></td>
+                                    <td><input type="time" class="arrival" required></td>
+                                    <td><input type="text" class="flightTime" placeholder="e.g., 1:30" required></td>
+                                    <td><input type="number" min="0" class="finalPax" required></td>
+                                    <td><input type="number" min="0" class="fwd" required></td>
+                                    <td><input type="number" min="0" class="aft" required></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required></td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td><input type="text" class="route" placeholder="e.g., ALC-STN" required></td>
+                                    <td><input type="text" class="flightNumber" placeholder="e.g., FR1236" required></td>
+                                    <td><input type="time" class="departure" required></td>
+                                    <td><input type="time" class="arrival" required></td>
+                                    <td><input type="text" class="flightTime" placeholder="e.g., 1:30" required></td>
+                                    <td><input type="number" min="0" class="finalPax" required></td>
+                                    <td><input type="number" min="0" class="fwd" required></td>
+                                    <td><input type="number" min="0" class="aft" required></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required></td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td><input type="text" class="route" placeholder="e.g., STN-ALC" required></td>
+                                    <td><input type="text" class="flightNumber" placeholder="e.g., FR1237" required></td>
+                                    <td><input type="time" class="departure" required></td>
+                                    <td><input type="time" class="arrival" required></td>
+                                    <td><input type="text" class="flightTime" placeholder="e.g., 1:30" required></td>
+                                    <td><input type="number" min="0" class="finalPax" required></td>
+                                    <td><input type="number" min="0" class="fwd" required></td>
+                                    <td><input type="number" min="0" class="aft" required></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div>
-                    <label for="fwd">FWD</label>
-                    <input type="text" id="fwd" placeholder="Enter FWD Pax">
+
+                <!-- Crew Information -->
+                <div class="form-section">
+                    <h2>Crew Information</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label>Captain</label>
+                            <input type="text" id="captain" required>
+                        </div>
+                        <div>
+                            <label>First Officer</label>
+                            <input type="text" id="firstOfficer" required>
+                        </div>
+                    </div>
+                    <table id="crewTable">
+                        <thead>
+                            <tr>
+                                <th>Crew</th>
+                                <th>Crewcode</th>
+                                <th>Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>No. 1</td>
+                                <td><input type="text" class="crewcode" required></td>
+                                <td><input type="text" class="crewName" required></td>
+                            </tr>
+                            <tr>
+                                <td>No. 2</td>
+                                <td><input type="text" class="crewcode" required></td>
+                                <td><input type="text" class="crewName" required></td>
+                            </tr>
+                            <tr>
+                                <td>No. 3</td>
+                                <td><input type="text" class="crewcode"></td>
+                                <td><input type="text" class="crewName"></td>
+                            </tr>
+                            <tr>
+                                <td>No. 4</td>
+                                <td><input type="text" class="crewcode"></td>
+                                <td><input type="text" class="crewName"></td>
+                            </tr>
+                            <tr>
+                                <td>Extra 1</td>
+                                <td><input type="text" class="crewcode"></td>
+                                <td><input type="text" class="crewName"></td>
+                            </tr>
+                            <tr>
+                                <td>Extra 2</td>
+                                <td><input type="text" class="crewcode"></td>
+                                <td><input type="text" class="crewName"></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div>
-                    <label for="aft">AFT</label>
-                    <input type="text" id="aft" placeholder="Enter AFT Pax">
+
+                <!-- Product Stock -->
+                <div class="form-section">
+                    <h2>Product Stock</h2>
+                    <table id="productTable">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Open</th>
+                                <th>Close</th>
+                                <th>Difference</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>HSC Panini</td>
+                                <td><input type="number" min="0" class="open" required></td>
+                                <td><input type="number" min="0" class="close" required></td>
+                                <td class="difference-cell"></td>
+                            </tr>
+                            <tr>
+                                <td>C. Panini</td>
+                                <td><input type="number" min="0" class="open" required></td>
+                                <td><input type="number" min="0" class="close" required></td>
+                                <td class="difference-cell"></td>
+                            </tr>
+                            <tr>
+                                <td>Twix</td>
+                                <td><input type="number" min="0" class="open" required></td>
+                                <td><input type="number" min="0" class="close" required></td>
+                                <td class="difference-cell"></td>
+                            </tr>
+                            <tr>
+                                <td>HSC Croissant</td>
+                                <td><input type="number" min="0" class="open" required></td>
+                                <td><input type="number" min="0" class="close" required></td>
+                                <td class="difference-cell"></td>
+                            </tr>
+                            <tr>
+                                <td>Choc Croissant</td>
+                                <td><input type="number" min="0" class="open" required></td>
+                                <td><input type="number" min="0" class="close" required></td>
+                                <td class="difference-cell"></td>
+                            </tr>
+                            <tr>
+                                <td>Marlboro Gold</td>
+                                <td><input type="number" min="0" class="open" required></td>
+                                <td><input type="number" min="0" class="close" required></td>
+                                <td class="difference-cell"></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div>
-                    <label for="prm">PRM</label>
-                    <input type="text" id="prm" placeholder="Enter PRM Pax">
+
+                <!-- Sales and Totals -->
+                <div class="form-section">
+                    <h2>Sales and Totals</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label>Sales 1</label>
+                            <input type="number" id="sales1" min="0" required>
+                        </div>
+                        <div>
+                            <label>Sales 2</label>
+                            <input type="number" id="sales2" min="0" required>
+                        </div>
+                        <div>
+                            <label>Sales 3</label>
+                            <input type="number" id="sales3" min="0" required>
+                        </div>
+                        <div>
+                            <label>Sales 4</label>
+                            <input type="number" id="sales4" min="0" required>
+                        </div>
+                        <div>
+                            <label>Total Sales</label>
+                            <input type="number" id="totalSales" readonly style="background: rgba(255, 255, 255, 0.3);">
+                        </div>
+                        <div>
+                            <label>Total Pax</label>
+                            <input type="number" id="totalPax" min="0" required>
+                        </div>
+                        <div>
+                            <label>Total Overall</label>
+                            <input type="number" id="totalOverall" readonly style="background: rgba(255, 255, 255, 0.3);">
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </section>
+
+                <button type="submit">Submit Report</button>
+            </form>
+        </div>
     </main>
     <footer>
-        © 2025 Flight Briefing Tool. All rights reserved.
+        <p>Inflight Report Form &copy; 2025</p>
     </footer>
-    <script src="script.js"></script>
+
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(() => console.log('Service Worker Registered'))
-                .catch(error => console.error('Service Worker Registration Failed:', error));
+        // Calculate differences for product stock
+        function calculateDifference() {
+            const table = document.getElementById('productTable');
+            const rows = table.getElementsByTagName('tr');
+            for (let row of rows) {
+                const openInput = row.querySelector('.open');
+                const closeInput = row.querySelector('.close');
+                const differenceCell = row.querySelector('.difference-cell');
+                if (openInput && closeInput && differenceCell) {
+                    const updateDifference = () => {
+                        const openVal = parseInt(openInput.value) || 0;
+                        const closeVal = parseInt(closeInput.value) || 0;
+                        differenceCell.textContent = openVal - closeVal;
+                    };
+                    openInput.addEventListener('input', updateDifference);
+                    closeInput.addEventListener('input', updateDifference);
+                    updateDifference();
+                }
+            }
         }
+
+        // Calculate total sales
+        function calculateTotalSales() {
+            const salesInputs = [
+                document.getElementById('sales1'),
+                document.getElementById('sales2'),
+                document.getElementById('sales3'),
+                document.getElementById('sales4')
+            ];
+            const totalSales = document.getElementById('totalSales');
+            const updateTotal = () => {
+                const total = salesInputs.reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
+                totalSales.value = total;
+            };
+            salesInputs.forEach(input => input.addEventListener('input', updateTotal));
+            updateTotal();
+        }
+
+        // Form submission handling
+        document.getElementById('inflightForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const requiredFields = document.querySelectorAll('input[required]');
+            let allFilled = true;
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    allFilled = false;
+                    field.style.border = '1px solid #ff4d4d';
+                } else {
+                    field.style.border = 'none';
+                }
+            });
+            if (allFilled) {
+                alert('Form submitted successfully!');
+                // Collect form data
+                const formData = {
+                    date: document.getElementById('date').value,
+                    acRef: document.getElementById('acRef').value,
+                    flights: Array.from(document.querySelectorAll('#flightsTable tr')).map(row => ({
+                        route: row.querySelector('.route').value,
+                        flightNumber: row.querySelector('.flightNumber').value,
+                        departure: row.querySelector('.departure').value,
+                        arrival: row.querySelector('.arrival').value,
+                        flightTime: row.querySelector('.flightTime').value,
+                        finalPax: row.querySelector('.finalPax').value,
+                        fwd: row.querySelector('.fwd').value,
+                        aft: row.querySelector('.aft').value,
+                        wheelchair: row.querySelector('.wheelchair').value
+                    })),
+                    captain: document.getElementById('captain').value,
+                    firstOfficer: document.getElementById('firstOfficer').value,
+                    crew: Array.from(document.querySelectorAll('#crewTable tr')).map(row => ({
+                        crewcode: row.querySelector('.crewcode').value,
+                        name: row.querySelector('.crewName').value
+                    })),
+                    products: Array.from(document.querySelectorAll('#productTable tr')).map(row => ({
+                        product: row.cells[0].textContent,
+                        open: row.querySelector('.open').value,
+                        close: row.querySelector('.close').value,
+                        difference: row.querySelector('.difference-cell').textContent
+                    })),
+                    sales: {
+                        sales1: document.getElementById('sales1').value,
+                        sales2: document.getElementById('sales2').value,
+                        sales3: document.getElementById('sales3').value,
+                        sales4: document.getElementById('sales4').value,
+                        totalSales: document.getElementById('totalSales').value
+                    },
+                    totalPax: document.getElementById('totalPax').value,
+                    totalOverall: document.getElementById('totalOverall').value
+                };
+                console.log('Form data:', formData);
+                // In a real application, send formData to a server
+            } else {
+                alert('Please fill all required fields.');
+            }
+        });
+
+        // Initialize calculations
+        calculateDifference();
+        calculateTotalSales();
     </script>
 </body>
 </html>
