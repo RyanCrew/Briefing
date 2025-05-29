@@ -609,7 +609,7 @@
                 <!-- Sales and Totals -->
                 <details class="form-section" id="salesSection">
                     <summary>Sales and Totals</summary>
-                    <div class="sales-grid">
+                    <div class="sales-grid grid">
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px;">
                             <div>
                                 <label id="salesLabel1" for="salesCrew1" class="sales-label">Sales Crew 1</label>
@@ -635,7 +635,7 @@
                             <div>
                                 <label id="salesLabel4" for="salesCrew4" class="sales-label">Sales Crew 4</label>
                                 <div class="sales-wrapper">
-                                    <input type="number" id="salesCrew4" step="0.01" min="0" class="sales-input outpost" style="font-size: 12px; height: 40px;">
+                                    <input type="number" id="salesCrew4" step="0.01" min="0" class="sales-input" style="font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
                                 </div>
                             </div>
@@ -774,7 +774,6 @@
                 if (stockSection && !stockSection.hasAttribute('open')) {
                     stockSection.setAttribute('open', '');
                 }
-                alert(`Switched to ${type} stock view.`);
             } catch (err) {
                 alert(`Error toggling stock view: ${err.message}`);
             }
@@ -790,9 +789,9 @@
                 }
                 const rows = table.getElementsByTagName('tr');
                 for (const row of rows) {
-                    const openInput = row.querySelector('.open-amount');
-                    const closeInput = row.querySelector('.close-amount');
-                    const soldCell = row.querySelector('.sold-amount');
+                    const openInput = row.querySelector('.open');
+                    const closeInput = row.querySelector('.close');
+                    const soldCell = row.querySelector('.difference-cell');
                     if (openInput && closeInput && soldCell) {
                         const updateSales = () => {
                             const openVal = parseInt(openInput.value) || 0;
@@ -848,17 +847,20 @@
                     document.getElementById('salesCrew3'),
                     document.getElementById('salesCrew4'),
                 ];
-                const totalSales = document.getElementById('totalSalesInput');
-                const totalPax = document.getElementById('totalPaxInput');
-                const overallAvg = document.getElementById('overallAverageInput');
+                const totalSales = document.getElementById('totalSales');
+                const totalPax = document.getElementById('totalPax');
+                const overallAverage = document.getElementById('overallAverage');
+                if (!totalSales || !totalPax || !overallAverage) {
+                    return;
+                }
                 const updateTotal = () => {
                     const total = salesInputs.reduce((sum, input) => {
                         const value = parseFloat(input.value) || 0;
                         return sum + value;
                     }, 0);
-                    if (totalSales) totalSales.value = total.toFixed(2);
+                    totalSales.value = total.toFixed(2);
                     const paxCount = parseInt(totalPax.value) || 1;
-                    if (overallAvg) overallAvg.value = (total / paxCount).toFixed(2);
+                    overallAverage.value = (total / paxCount).toFixed(2);
                 };
                 salesInputs.forEach(input => {
                     if (input) input.addEventListener('input', updateTotal);
@@ -872,14 +874,15 @@
         // Calculate total passengers
         function calculateTotalPax() {
             try {
-                const paxInputs = document.querySelectorAll('.pax-count');
-                const totalPaxInput = document.getElementById('totalPaxInput');
+                const paxInputs = document.querySelectorAll('.finalPax');
+                const totalPax = document.getElementById('totalPax');
+                if (!totalPax) return;
                 const updateTotal = () => {
                     const total = Array.from(paxInputs).reduce((sum, input) => {
                         const value = parseInt(input.value) || 0;
                         return sum + value;
                     }, 0);
-                    if (totalPaxInput) totalPaxInput.value = total;
+                    totalPax.value = total;
                     calculateTotalSales();
                 };
                 paxInputs.forEach(input => {
@@ -1008,10 +1011,10 @@
             doc.text('Sales and Totals', 10, y);
             y += 5;
             const salesData = [
-                [`Crew 1 (${document.getElementById('crewcode1').value || 'N/A'})`, sales.salesCrew1 || '0.00'],
-                [`Crew 2 (${document.getElementById('crewcode2').value || 'N/A'})`, sales.salesCrew2 || '0.00'],
-                [`Crew 3 (${document.getElementById('crewcode3').value || 'N/A'})`, sales.salesCrew3 || '0.00'],
-                [`Crew 4 (${document.getElementById('crewcode4').value || 'N/A'})`, sales.salesCrew4 || '0.00'],
+                [`Crew 1 (${document.getElementById('crewcode1').value || 'N/A'})`, formData.sales.salesCrew1 || '0.00'],
+                [`Crew 2 (${document.getElementById('crewcode2').value || 'N/A'})`, formData.sales.salesCrew2 || '0.00'],
+                [`Crew 3 (${document.getElementById('crewcode3').value || 'N/A'})`, formData.sales.salesCrew3 || '0.00'],
+                [`Crew 4 (${document.getElementById('crewcode4').value || 'N/A'})`, formData.sales.salesCrew4 || '0.00'],
             ];
             doc.autoTable({
                 head: [['Crew', 'Sales (€)']],
@@ -1139,4 +1142,3 @@
     </script>
 </body>
 </html>
-```
