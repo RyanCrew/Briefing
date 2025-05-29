@@ -86,10 +86,25 @@
             -webkit-appearance: none;
             touch-action: manipulation;
         }
+        select {
+            width: 100%;
+            padding: 0.6rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.9rem;
+            background: #fff;
+            color: #000;
+        }
         .small-input {
             padding: 0.4rem;
             font-size: 0.85rem;
             min-width: 6rem;
+        }
+        .duty-free-input {
+            padding: 0.4rem;
+            font-size: 0.85rem;
+            min-width: 3.5rem;
         }
         table {
             width: 100%;
@@ -118,6 +133,11 @@
             padding: 0.4rem;
             font-size: 0.85rem;
             min-width: 6rem;
+        }
+        table .duty-free-input {
+            padding: 0.4rem;
+            font-size: 0.85rem;
+            min-width: 3.5rem;
         }
         table .flight-number-input {
             min-width: 7rem;
@@ -162,11 +182,13 @@
             text-align: center;
             padding: 1rem;
             font-size: 0.9rem;
-            color: #fff;
         }
         .table-wrapper {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+        }
+        .hidden {
+            display: none;
         }
         @media (min-width: 768px) {
             header h1 {
@@ -192,7 +214,7 @@
                 <!-- Flight Information -->
                 <details class="form-section" open>
                     <summary>Flight Information</summary>
-                    <div class="grid grid-cols-1 gap-3">
+                    <div class="grid grid-cols-1 gap-3" id="flightInfoHeader">
                         <div>
                             <label>Date</label>
                             <input type="date" id="date" required class="small-input" autocomplete="off">
@@ -202,8 +224,18 @@
                             <input type="text" id="acRef" placeholder="EI-" required class="small-input" autocomplete="off">
                         </div>
                     </div>
+                    <div>
+                        <label>Select Flight</label>
+                        <select id="flightSelector">
+                            <option value="all">All Flights</option>
+                            <option value="1">Flight 1</option>
+                            <option value="2">Flight 2</option>
+                            <option value="3">Flight 3</option>
+                            <option value="4">Flight 4</option>
+                        </select>
+                    </div>
                     <div class="table-wrapper">
-                        <table>
+                        <table id="flightTable">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -219,7 +251,7 @@
                                 </tr>
                             </thead>
                             <tbody id="flightsTableBody">
-                                <tr>
+                                <tr data-flight="1">
                                     <td>1</td>
                                     <td><input type="text" class="route" placeholder="e.g., ALC-MAD" required autocomplete="off"></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1234" required autocomplete="off"></td>
@@ -231,7 +263,7 @@
                                     <td><input type="number" min="0" class="aft aft-input" required></td>
                                     <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required autocomplete="off"></td>
                                 </tr>
-                                <tr>
+                                <tr data-flight="2">
                                     <td>2</td>
                                     <td><input type="text" class="route" placeholder="e.g., MAD-ALC" required autocomplete="off"></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1235" required autocomplete="off"></td>
@@ -243,7 +275,7 @@
                                     <td><input type="number" min="0" class="aft aft-input" required></td>
                                     <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required autocomplete="off"></td>
                                 </tr>
-                                <tr>
+                                <tr data-flight="3">
                                     <td>3</td>
                                     <td><input type="text" class="route" placeholder="e.g., ALC-STN" required autocomplete="off"></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1236" required autocomplete="off"></td>
@@ -255,7 +287,7 @@
                                     <td><input type="number" min="0" class="aft aft-input" required></td>
                                     <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" required autocomplete="off"></td>
                                 </tr>
-                                <tr>
+                                <tr data-flight="4">
                                     <td>4</td>
                                     <td><input type="text" class="route" placeholder="e.g., STN-ALC" required autocomplete="off"></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1237" required autocomplete="off"></td>
@@ -273,7 +305,7 @@
                 </details>
 
                 <!-- Crew Information -->
-                <details class="form-section">
+                <details class="form-section" id="crewSection">
                     <summary>Crew Information</summary>
                     <div class="grid grid-cols-1 gap-3">
                         <div>
@@ -296,22 +328,22 @@
                         <tbody>
                             <tr>
                                 <td>No. 1</td>
-                                <td><input type="text" class="crewcode" required autocomplete="off"></td>
+                                <td><input type="text" class="crewcode" id="crewcode1" required autocomplete="off"></td>
                                 <td><input type="text" class="crewName" required autocomplete="off"></td>
                             </tr>
                             <tr>
                                 <td>No. 2</td>
-                                <td><input type="text" class="crewcode" required autocomplete="off"></td>
+                                <td><input type="text" class="crewcode" id="crewcode2" required autocomplete="off"></td>
                                 <td><input type="text" class="crewName" required autocomplete="off"></td>
                             </tr>
                             <tr>
                                 <td>No. 3</td>
-                                <td><input type="text" class="crewcode" autocomplete="off"></td>
+                                <td><input type="text" class="crewcode" id="crewcode3" autocomplete="off"></td>
                                 <td><input type="text" class="crewName" autocomplete="off"></td>
                             </tr>
                             <tr>
                                 <td>No. 4</td>
-                                <td><input type="text" class="crewcode" autocomplete="off"></td>
+                                <td><input type="text" class="crewcode" id="crewcode4" autocomplete="off"></td>
                                 <td><input type="text" class="crewName" autocomplete="off"></td>
                             </tr>
                             <tr>
@@ -329,7 +361,7 @@
                 </details>
 
                 <!-- Product Stock -->
-                <details class="form-section">
+                <details class="form-section" id="productStockSection">
                     <summary>Product Stock</summary>
                     <table id="productTable">
                         <thead>
@@ -342,37 +374,49 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>HSC Panini</td>
+                                <td>H&C Panini</td>
                                 <td><input type="number" min="0" class="open" required></td>
                                 <td><input type="number" min="0" class="close" required></td>
                                 <td class="difference-cell"></td>
                             </tr>
                             <tr>
-                                <td>C. Panini</td>
+                                <td>C&M Panini</td>
                                 <td><input type="number" min="0" class="open" required></td>
                                 <td><input type="number" min="0" class="close" required></td>
                                 <td class="difference-cell"></td>
                             </tr>
                             <tr>
-                                <td>Twix</td>
+                                <td>H&C Croissant</td>
                                 <td><input type="number" min="0" class="open" required></td>
                                 <td><input type="number" min="0" class="close" required></td>
                                 <td class="difference-cell"></td>
                             </tr>
                             <tr>
-                                <td>HSC Croissant</td>
+                                <td>C&M Croissant</td>
                                 <td><input type="number" min="0" class="open" required></td>
                                 <td><input type="number" min="0" class="close" required></td>
                                 <td class="difference-cell"></td>
                             </tr>
                             <tr>
-                                <td>Choc Croissant</td>
+                                <td>Cheese T</td>
                                 <td><input type="number" min="0" class="open" required></td>
                                 <td><input type="number" min="0" class="close" required></td>
                                 <td class="difference-cell"></td>
                             </tr>
                             <tr>
-                                <td>Marlboro Gold</td>
+                                <td>Pizza</td>
+                                <td><input type="number" min="0" class="open" required></td>
+                                <td><input type="number" min="0" class="close" required></td>
+                                <td class="difference-cell"></td>
+                            </tr>
+                            <tr>
+                                <td>Bacon B</td>
+                                <td><input type="number" min="0" class="open" required></td>
+                                <td><input type="number" min="0" class="close" required></td>
+                                <td class="difference-cell"></td>
+                            </tr>
+                            <tr>
+                                <td>F Sandwich</td>
                                 <td><input type="number" min="0" class="open" required></td>
                                 <td><input type="number" min="0" class="close" required></td>
                                 <td class="difference-cell"></td>
@@ -381,24 +425,65 @@
                     </table>
                 </details>
 
+                <!-- Duty-Free Stock -->
+                <details class="form-section" id="dutyFreeStockSection">
+                    <summary>Duty-Free Stock</summary>
+                    <table id="dutyFreeTable">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Open</th>
+                                <th>Close</th>
+                                <th>Diff</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Marl. Gold</td>
+                                <td><input type="number" min="0" class="open duty-free-input" required></td>
+                                <td><input type="number" min="0" class="close duty-free-input" required></td>
+                                <td class="difference-cell"></td>
+                            </tr>
+                            <tr>
+                                <td>Marlboro Red</td>
+                                <td><input type="number" min="0" class="open duty-free-input" required></td>
+                                <td><input type="number" min="0" class="close duty-free-input" required></td>
+                                <td class="difference-cell"></td>
+                            </tr>
+                            <tr>
+                                <td>Lambert</td>
+                                <td><input type="number" min="0" class="open duty-free-input" required></td>
+                                <td><input type="number" min="0" class="close duty-free-input" required></td>
+                                <td class="difference-cell"></td>
+                            </tr>
+                            <tr>
+                                <td>Amber Lighter</td>
+                                <td><input type="number" min="0" class="open duty-free-input" required></td>
+                                <td><input type="number" min="0" class="close duty-free-input" required></td>
+                                <td class="difference-cell"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </details>
+
                 <!-- Sales and Totals -->
-                <details class="form-section">
+                <details class="form-section" id="salesSection">
                     <summary>Sales and Totals</summary>
                     <div class="grid grid-cols-1 gap-3">
                         <div>
-                            <label>Sales 1</label>
+                            <label id="salesLabel1">Sales Crewcode 1</label>
                             <input type="number" id="sales1" min="0" required>
                         </div>
                         <div>
-                            <label>Sales 2</label>
+                            <label id="salesLabel2">Sales Crewcode 2</label>
                             <input type="number" id="sales2" min="0" required>
                         </div>
                         <div>
-                            <label>Sales 3</label>
+                            <label id="salesLabel3">Sales Crewcode 3</label>
                             <input type="number" id="sales3" min="0" required>
                         </div>
                         <div>
-                            <label>Sales 4</label>
+                            <label id="salesLabel4">Sales Crewcode 4</label>
                             <input type="number" id="sales4" min="0" required>
                         </div>
                         <div>
@@ -425,9 +510,46 @@
     </footer>
 
     <script>
-        // Calculate differences for product stock
-        function calculateDifference() {
-            const table = document.getElementById('productTable');
+        // Toggle flight visibility
+        function toggleFlightView() {
+            const selector = document.getElementById('flightSelector');
+            const flightRows = document.querySelectorAll('#flightsTableBody tr');
+            const flightInfoHeader = document.getElementById('flightInfoHeader');
+            const productStockSection = document.getElementById('productStockSection');
+            const dutyFreeStockSection = document.getElementById('dutyFreeStockSection');
+            const salesSection = document.getElementById('salesSection');
+            const crewSection = document.getElementById('crewSection');
+
+            selector.addEventListener('change', () => {
+                const selectedFlight = selector.value;
+
+                // Reset visibility
+                flightRows.forEach(row => row.classList.remove('hidden'));
+                flightInfoHeader.classList.remove('hidden');
+                productStockSection.classList.remove('hidden');
+                dutyFreeStockSection.classList.remove('hidden');
+                salesSection.classList.remove('hidden');
+                crewSection.classList.remove('hidden');
+
+                if (selectedFlight !== 'all') {
+                    // Hide all rows except the selected flight
+                    flightRows.forEach(row => {
+                        if (row.getAttribute('data-flight') !== selectedFlight) {
+                            row.classList.add('hidden');
+                        }
+                    });
+                    // Hide other sections except Crew Information
+                    flightInfoHeader.classList.add('hidden');
+                    productStockSection.classList.add('hidden');
+                    dutyFreeStockSection.classList.add('hidden');
+                    salesSection.classList.add('hidden');
+                }
+            });
+        }
+
+        // Calculate differences for product and duty-free stock
+        function calculateDifference(tableId) {
+            const table = document.getElementById(tableId);
             const rows = table.getElementsByTagName('tr');
             for (let row of rows) {
                 const openInput = row.querySelector('.open');
@@ -444,6 +566,31 @@
                     updateDifference();
                 }
             }
+        }
+
+        // Update sales labels based on crewcodes
+        function updateSalesLabels() {
+            const crewcodes = [
+                document.getElementById('crewcode1'),
+                document.getElementById('crewcode2'),
+                document.getElementById('crewcode3'),
+                document.getElementById('crewcode4')
+            ];
+            const salesLabels = [
+                document.getElementById('salesLabel1'),
+                document.getElementById('salesLabel2'),
+                document.getElementById('salesLabel3'),
+                document.getElementById('salesLabel4')
+            ];
+
+            crewcodes.forEach((input, index) => {
+                const updateLabel = () => {
+                    const code = input.value || `Crewcode ${index + 1}`;
+                    salesLabels[index].textContent = `Sales ${code}`;
+                };
+                input.addEventListener('input', updateLabel);
+                updateLabel();
+            });
         }
 
         // Calculate total sales
@@ -469,7 +616,7 @@
             const requiredFields = document.querySelectorAll('input[required]');
             let allFilled = true;
             requiredFields.forEach(field => {
-                if (!field.value) {
+                if (!field.value && !field.closest('.hidden')) {
                     allFilled = false;
                     field.style.border = '1px solid #ff4d4d';
                 } else {
@@ -504,6 +651,12 @@
                         close: row.querySelector('.close').value,
                         difference: row.querySelector('.difference-cell').textContent
                     })),
+                    dutyFreeProducts: Array.from(document.querySelectorAll('#dutyFreeTable tr')).map(row => ({
+                        product: row.cells[0].textContent,
+                        open: row.querySelector('.open').value,
+                        close: row.querySelector('.close').value,
+                        difference: row.querySelector('.difference-cell').textContent
+                    })),
                     sales: {
                         sales1: document.getElementById('sales1').value,
                         sales2: document.getElementById('sales2').value,
@@ -521,8 +674,11 @@
             }
         });
 
-        // Initialize calculations
-        calculateDifference();
+        // Initialize functions
+        toggleFlightView();
+        calculateDifference('productTable');
+        calculateDifference('dutyFreeTable');
+        updateSalesLabels();
         calculateTotalSales();
     </script>
 </body>
