@@ -554,7 +554,7 @@
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-top: 8px;">
                             <div>
                                 <label for="kettles" class="equipment-label">Kettles</label>
-                                <input type="number" id="kettles" min="1" max="5" class="small-input" style="width: 100%; max-width: 80px; font-size: 10px; height: 32px; padding: 0.3rem;" autocomplete="off">
+                            <input type="number" id="kettles" min="1" max="5" class="small-input" style="width: 100%; max-width: 80px; font-size: 10px; height: 32px; padding: 0.3rem;" autocomplete="off">
                             </div>
                             <div>
                                 <label for="cupholder" class="equipment-label">Cupholder</label>
@@ -950,7 +950,7 @@
             ]);
             doc.autoTable({
                 head: [crewHeaders],
-                body: cabe,
+                body: crewData,
                 startY: y,
                 theme: 'grid',
                 headStyles: { fillColor: [30, 144, 255] },
@@ -1041,54 +1041,32 @@
             return doc;
         }
 
-        // Mock server upload (replace with real server endpoint)
-        async function uploadPDFToServer(pdfData, filename) {
+        // Upload file to GitHub
+        async function uploadToGitHub(content, filename, token, owner, repo) {
             try {
-                // Simulate server upload (replace with real fetch POST)
-                console.log(`Uploading PDF: ${filename}`);
-                // Mock response (replace with actual server response)
-                return new Promise((resolve) => {
-                    setTimeout(() => {
-                        resolve({
-                            success: true,
-                            url: `https://mock-server.com/pdf/${filename}`,
-                        });
-                    }, 500);
+                const path = `reports/${filename}`;
+                const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify({
+                        message: `Add ${filename} to reports`,
+                        content: content, // Base64 encoded
+                        branch: 'main'
+                    })
                 });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'GitHub upload failed');
+                }
+                const result = await response.json();
+                return result.content.html_url; // URL to file on GitHub
             } catch (err) {
-                throw new Error(`Failed to upload PDF: ${err.message}`);
-            }
-        }
-
-        // Trigger download from URL
-        function triggerDownloadFromURL(url, filename) {
-            try {
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            } catch (err) {
-                throw new Error(`Failed to trigger download: ${err.message}`);
-            }
-        }
-
-        // Download JSON file
-        function downloadJSON(formData, dateStr) {
-            try {
-                const jsonStr = JSON.stringify(formData, null, 2);
-                const blob = new Blob([jsonStr], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `inflight_report_${dateStr}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            } catch (err) {
-                alert(`Error downloading JSON: ${err.message}`);
+                throw new Error(`GitHub upload failed: ${err.message}`);
             }
         }
 
@@ -1165,42 +1143,48 @@
                     };
                     try {
                         const dateStr = formData.date.replace(/-/g, '') || '20250101';
-                        const filename = `inflight_report_${dateStr}.pdf`;
+                        const pdfFilename = `inflight_report_${dateStr}.pdf`;
+                        const jsonFilename = `inflight_report_${dateStr}.json`;
+
+                        // Prompt for GitHub details
+                        const token = prompt('Enter your GitHub Personal Access Token:');
+                        if (!token) {
+                            throw new Error('GitHub token is required');
+                        }
+                        const owner = prompt('Enter GitHub repository owner (username or organization):') || 'your-username';
+                        const repo = prompt('Enter GitHub repository name:') || 'your-repo';
 
                         // Generate PDF
                         const doc = generatePDF(formData);
-                        const pdfBase64 = doc.output('datauristring').split(',')[1]; // Get base64 part
+                        const pdfBase64 = doc.output('datauristring').split(',')[1];
 
-                        // Upload to mock server (replace with real endpoint)
-                        const response = await uploadPDFToServer(pdfBase64, filename);
-                        if (!response.success) {
-                            throw new Error('Server upload failed');
-                        }
+                        // Generate JSON
+                        const jsonStr = JSON.stringify(formData, null, 2);
+                        const jsonBase64 = btoa(jsonStr);
 
-                        // Trigger download from server URL
-                        triggerDownloadFromURL(response.url, filename);
+                        // Upload PDF to GitHub
+                        const pdfUrl = await uploadToGitHub(pdfBase64, pdfFilename, token, owner, repo);
 
-                        // Download JSON locally
-                        downloadJSON(formData, dateStr);
+                        // Upload JSON to GitHub
+                        const jsonUrl = await uploadToGitHub(jsonBase64, jsonFilename, token, owner, repo);
 
                         // Prepare email
                         const emailSubject = `Inflight Report ${formData.date || 'N/A'}`;
-                        const emailBody = `Please attach the PDF (inflight_report_${dateStr}.pdf) and JSON (inflight_report_${dateStr}.json) manually.\n\nData:\n${JSON.stringify(formData, null, 2).substring(0, 1000)}...`;
+                        const emailBody = `Report uploaded to GitHub:\nPDF: ${pdfUrl}\nJSON: ${jsonUrl}\n\nData:\n${JSON.stringify(formData, null, 2).substring(0, 1000)}...`;
                         const emailLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
 
-                        alert('Report generated! PDF downloading from server, JSON downloading locally.');
+                        alert('Report uploaded to GitHub! Check the repository.');
                         setTimeout(() => {
-                            if (confirm('Send report via email? Attach PDF and JSON manually.')) {
+                            if (confirm('Send report links via email?')) {
                                 window.location.href = emailLink;
                             }
                         }, 500);
                     } catch (err) {
-                        alert(`Error generating report: ${err.message}. Try emailing the report.`);
-                        // Fallback: Prompt for email
-                        const emailSubject = `Inflight Report ${formData.date || 'N/A'}`;
-                        const emailBody = `PDF download failed. Please generate the report again or contact support.\n\nData:\n${JSON.stringify(formData, null, 2).substring(0, 1000)}...`;
+                        alert(`Error: ${err.message}. Try emailing the report data.`);
+                        const emailSubject = `Inflight Report ${formData.date || 'N/A'} (Error)`;
+                        const emailBody = `Failed to upload to GitHub: ${err.message}\n\nData:\n${JSON.stringify(formData, null, 2).substring(0, 1000)}...`;
                         const emailLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-                        if (confirm('PDF failed to download. Send report via email instead?')) {
+                        if (confirm('Upload failed. Send report data via email?')) {
                             window.location.href = emailLink;
                         }
                     }
