@@ -1,0 +1,7 @@
+<xaiartifact_id="c7f8d3a1-4b2e-5d-9e0a-3c4f0bb2d4e8" title=".gitignore" contentType="text/plain">
+# Ignore node_modules
+node_modules/
+
+# Ignore generated CSS
+output.css
+</xaiartifact>
