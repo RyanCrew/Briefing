@@ -1,1 +1,3 @@
-/* output.css */
+.date-ac-input {
+    @apply w-full max-w-[160px] text-sm h-10;
+}
