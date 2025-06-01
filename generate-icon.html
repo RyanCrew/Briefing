@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Icon</title>
+</head>
+<body>
+    <canvas id="iconCanvas" width="192" height="192"></canvas>
+    <br>
+    <button onclick="downloadIcon()">Download icon.png</button>
+
+    <script>
+        const canvas = document.getElementById('iconCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Fondo azul (coincide con el tema de Flight Report)
+        ctx.fillStyle = '#1e90ff';
+        ctx.fillRect(0, 0, 192, 192);
+
+        // Dibujar un avión simple
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(96, 48); // Nariz del avión
+        ctx.lineTo(48, 96); // Ala izquierda
+        ctx.lineTo(72, 96); // Cuerpo
+        ctx.lineTo(48, 144); // Cola izquierda
+        ctx.lineTo(96, 120); // Cola central
+        ctx.lineTo(144, 144); // Cola derecha
+        ctx.lineTo(120, 96); // Cuerpo
+        ctx.lineTo(144, 96); // Ala derecha
+        ctx.closePath();
+        ctx.fill();
+
+        // Dibujar ventanas
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(84, 84, 8, 8);
+        ctx.fillRect(100, 84, 8, 8);
+
+        function downloadIcon() {
+            const link = document.createElement('a');
+            link.download = 'icon.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>
