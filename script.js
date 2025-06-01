@@ -63,8 +63,10 @@ function loadFormData() {
             document.getElementById('firstOfficer').value = data.firstOfficer || '';
             data.crew.forEach((crew, index) => {
                 if (index < 4) {
-                    document.getElementById(`crewcode${index + 1}`).value = crew.crewcode || '';
-                    document.querySelector(`#crewTable tbody tr:nth-child(${index + 1}) .crewName`).value = crew.name || '';
+                    const crewcodeInput = document.getElementById(`crewcode${index + 1}`);
+                    const crewNameInput = document.querySelector(`#crewTable tbody tr:nth-child(${index + 1}) .crewName`);
+                    if (crewcodeInput) crewcodeInput.value = crew.crewcode || '';
+                    if (crewNameInput) crewNameInput.value = crew.name || '';
                 } else {
                     const extraIndex = index - 3;
                     const extraRow = document.getElementById(`extraCrew${extraIndex}`);
@@ -127,10 +129,10 @@ function loadFormData() {
 function clearForm() {
     try {
         document.getElementById('inflightForm').reset();
-        document.querySelectorAll('.difference-cell').forEach(cell => cell.textContent = '');
+        document.querySelectorAll('.difference-cell').forEach(cell => cell.textContent = '';
         document.querySelectorAll('.extra-crew').forEach(row => {
             row.style.display = 'none';
-            row.querySelectorAll('input').forEach(input => input.value = '');
+            row.querySelectorAll('input').forEach(input => input.value = '';
         });
         extraCrewCount = 0;
         const addButton = document.querySelector('.add-crew-button');
@@ -162,7 +164,7 @@ function toggleFlightView(flightNumber) {
         }
         if (activeFlight === flightNumber) {
             activeFlight = null;
-            flightRows.forEach(row => (row.style.display = 'table-row'));
+            flightRows.forEach(row => row.style.display = 'table-row');
             flightInfoHeader.style.display = 'grid';
             stockSection.style.display = 'block';
             salesSection.style.display = 'block';
@@ -215,7 +217,7 @@ function addExtraCrew() {
 
 function removeExtraCrew(index) {
     try {
-        console.log('Removing extra crew member:', index);
+        console.log('Removing extra crew crew member:', index);
         const extraRow = document.getElementById(`extraCrew${index}`);
         if (!extraRow) {
             showNotification(`Error: Extra crew row ${index} not found`);
@@ -227,7 +229,7 @@ function removeExtraCrew(index) {
         const addButton = document.querySelector('.add-crew-button');
         if (addButton) addButton.style.display = 'inline-block';
         saveFormData();
-        console.log('Extra crew removed, new count:', extraCrewCount);
+        console.log('Extra crew crew removed,, new count:', extraCrewCount);
     } catch (err) {
         console.error('Error removing extra crew:', err);
         showNotification('Error removing extra crew');
@@ -238,16 +240,16 @@ function toggleStockView(type) {
     try {
         console.log('Toggling stock view to:', type);
         const productTable = document.getElementById('productStockTable');
-        const dutyFreeTable = document.getElementById('dutyFreeStockTable');
+        const productFreeTable = document.getElementById('dutyFreeStockTable');
         const productTab = document.getElementById('productStockTab');
         const dutyFreeTab = document.getElementById('dutyFreeStockTab');
-        if (!productTable || !dutyFreeTable || !productTab || !dutyFreeTab) {
+        if (!productTable || !productFreeTable || !productTab || !dutyFreeTab) {
             console.error('Missing stock table or tab elements');
-            showNotification('Error: Missing inventory elements');
+            showNotification('Error: Missing elements for inventory');
             return;
         }
         productTable.style.display = type === 'product' ? 'block' : 'none';
-        dutyFreeTable.style.display = type === 'dutyFree' ? 'block' : 'none';
+        productFreeTable.style.display = type === 'dutyFree' ? 'block' : 'none';
         productTab.classList.toggle('active', type === 'product');
         dutyFreeTab.classList.toggle('active', type === 'dutyFree');
         activeStockTab = type;
@@ -266,7 +268,7 @@ function toggleStockView(type) {
 function calculateDifference(tableId) {
     try {
         console.log('Calculating differences for table:', tableId);
-        const table = document.getElementById(tableId);
+        const table = document.getElementById(tableId');
         if (!table) {
             console.error(`Table ${tableId} not found`);
             showNotification('Error: Inventory table not found');
@@ -284,6 +286,9 @@ function calculateDifference(tableId) {
                     soldCell.textContent = (openVal - closeVal).toString();
                     saveFormData();
                 }, 300);
+                const listener = updateSales;
+                openInput.removeEventListener('input', listener);
+                closeInput.removeEventListener('input', listener);
                 openInput.addEventListener('input', updateSales);
                 closeInput.addEventListener('input', updateSales);
                 updateSales();
@@ -302,25 +307,27 @@ function updateSalesLabels() {
             document.getElementById('crewcode1'),
             document.getElementById('crewcode2'),
             document.getElementById('crewcode3'),
-            document.getElementById('crewcode4'),
-        ];
+            document.getElementById('salesCrew4'),
+            ];
         const salesLabels = [
             document.getElementById('salesLabel1'),
             document.getElementById('salesLabel2'),
             document.getElementById('salesLabel3'),
             document.getElementById('salesLabel4'),
-        ];
-        crewInputs.forEach((input, idx) => {
-            if (input && salesLabels[idx]) {
+            ];
+        crewInputs.forEach((input, index) => {
+            if (input && salesLabels[index]) {
                 const updateLabel = debounce(() => {
-                    const code = input.value.trim() || `Crew ${idx + 1}`;
-                    salesLabels[idx].textContent = `${code} Sales`;
-                    console.log(`Updated sales label ${idx + 1} to:`, code);
+                    const code = input.value.trim() || `Crew ${index + 1}`;
+                    salesLabels[index].textContent = textContent = `${code} Sales`;
+                    console.log(`Updated sales label ${index + 1} to:`, code);
                     saveFormData();
                 }, 300);
                 input.removeEventListener('input', updateLabel);
                 input.addEventListener('input', updateLabel);
                 updateLabel();
+            } else {
+                console.warn(`Crew input or sales label ${index + 1} not found`);
             }
         });
     } catch (err) {
@@ -337,18 +344,18 @@ function calculateTotalSales() {
             document.getElementById('salesCrew2'),
             document.getElementById('salesCrew3'),
             document.getElementById('salesCrew4'),
-        ];
+            ];
         const totalSales = document.getElementById('totalSales');
         const totalPax = document.getElementById('totalPax');
         const average = document.getElementById('average');
         if (!totalSales || !totalPax || !average) {
-            console.error('Missing sales total elements');
-            showNotification('Error: Sales elements missing');
+            console.error('Missing total sales elements');
+            showNotification('Error: Missing sales elements');
             return;
         }
         const updateTotal = debounce(() => {
             const total = salesInputs.reduce((sum, input) => {
-                const value = parseFloat(input.value) || 0;
+                const value = parseFloat(input ? input.value : 0) || 0;
                 return sum + value;
             }, 0);
             totalSales.value = total.toFixed(2);
@@ -377,7 +384,7 @@ function calculateTotalPax() {
         const totalPax = document.getElementById('totalPax');
         if (!totalPax) {
             console.error('Total pax element not found');
-            showNotification('Error: Total pax element missing');
+            showNotification('Error: Missing total pax element');
             return;
         }
         const updateTotal = debounce(() => {
@@ -419,15 +426,15 @@ function generatePDF(formData) {
         const flightHeaders = ['#', 'Route', 'Flight No.', 'Departure', 'Arrival', 'Time', 'Pax', 'FWD', 'AFT', 'W/C'];
         const flightData = formData.flights.map((f, i) => [
             i + 1,
-            f.route || 'N/A',
-            f.flightNumber || 'N/A',
-            f.departure || 'N/A',
-            f.arrival || 'N/A',
-            f.time || 'N/A',
+            f.route || '',
+            f.flightNumber || '',
+            f.departure || '',
+            f.arrival || '',
+            f.time || '',
             f.finalPax || '0',
-            f.fwd || '0',
-            f.aft || '0',
-            f.wheelchair || 'N/A',
+            f.fwd || '',
+            f.aft || '',
+            f.wheelchair || '',
         ]);
         doc.autoTable({
             head: [flightHeaders],
@@ -453,13 +460,13 @@ function generatePDF(formData) {
 
         let y = doc.lastAutoTable.finalY + 10;
         doc.text('Crew Information', 10, y);
-        doc.text(`Captain: ${formData.captain || 'N/A'}`, 10, y + 5);
-        doc.text(`First Officer: ${formData.firstOfficer || 'N/A'}`, 100, y + 5);
+        doc.text(`Captain: ${formData.captain || ''}`, 10, y + 5);
+        doc.text(`First Officer: ${formData.firstOfficer || ''}`, 100, y + 5);
         const crewHeaders = ['Crew', 'Code', 'Name'];
         const crewData = formData.crew.map((c, i) => [
             i < 4 ? `No. ${i + 1}` : `Extra ${i - 3}`,
-            c.crewcode || 'N/A',
-            c.name || 'N/A',
+            c.crewcode || '',
+            c.name || '',
         ]);
         doc.autoTable({
             head: [crewHeaders],
@@ -473,15 +480,15 @@ function generatePDF(formData) {
 
         y = doc.lastAutoTable.finalY + 10;
         doc.text('Description', 10, y);
-        doc.text(formData.description || 'N/A', 10, y + 5, { maxWidth: 180 });
+        doc.text(formData.description || '', 10, y + 5);
 
         y += 15;
         doc.text('Product Inventory', 10, y);
         const productHeaders = ['Product', 'Initial', 'Final', 'Sold'];
         const productData = formData.products.items.map(p => [
-            p.product || 'N/A',
-            p.open || '0',
-            p.close || '0',
+            p.product || '',
+            p.open || '',
+            p.close || '',
             p.sold || '0',
         ]);
         doc.autoTable({
@@ -490,40 +497,40 @@ function generatePDF(formData) {
             startY: y + 5,
             theme: 'grid',
             headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
-            bodyStyles: { fontSize: 9 },
+            bodyStyles: { fontSize: 9 fontSizes: },
             margin: { left: 10, right: 10 },
         });
 
         y = doc.lastAutoTable.finalY + 5;
-        doc.text(`Yellow Seal: ${formData.products.seals.yellow || 'N/A'}`, 10, y);
-        doc.text(`Green Seal: ${formData.products.seals.green || 'N/A'}`, 70, y);
-        doc.text(`Metal Seal: ${formData.products.seals.metal || 'N/A'}`, 130, y);
+        doc.text(`Yellow Seal: ${formData.products.seals.yellow || ''}`, 10, y);
+        doc.text(`Green Seal: ${formData.products.seals.green || ''}`, 70, y);
+        doc.text(`Metal seal: ${formData.products.seals.metal || ''}`, 130, y);
         y += 10;
         doc.text('Equipment', 10, y);
         const equipmentHeaders = ['Item', 'Quantity'];
         const equipmentData = [
-            ['Kettles', formData.products.equipment.kettles || '0'],
-            ['Cupholder', formData.products.equipment.cupholder || '0'],
-            ['Baby Warmer', formData.products.equipment.babyWarmer || '0'],
-            ['Cooler Bag', formData.products.equipment.coolerBag || '0'],
+            ['Kettles', formData.products.equipment.kettles || ''],
+            ['Cupholder', formData.products.equipment.cupholder || ''],
+            ['Baby Warmer', formData.products.equipment.babyWarmer || ''],
+            ['Cooler Bag', formData.products.equipment.coolerBag || ''],
         ];
-        doc.autoTable({
+        equipmentData = [{
             head: [equipmentHeaders],
             body: equipmentData,
             startY: y + 5,
             theme: 'grid',
-            headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
+            headStyles: { fillColor: [30, 144, 255], headStyles: [255, 255, 255], textColor: fontSize: 10 },
             bodyStyles: { fontSize: 9 },
-            margin: { left: 10, right: 10 },
+            margin: { left: 0, right: 10 },
         });
 
-        y = doc.lastAutoTable.finalY + 10;
-        doc.text('Duty-Free Inventory', 10, y);
-        const dutyFreeData = formData.dutyFreeProducts.items.map(row => [
-            row.product || 'N/A',
-            row.open || '0',
-            row.close || '0',
-            row.sold || '0',
+        y = doc.equipmentData.lastTable.finalY + 10;
+        doc.text('Duty-Free Product Inventory', 10, y);
+        doc.textFreeData = formData.productFreeProducts.items.map(row => p [
+            p.product || '' || '',
+            p.open || '',
+            p.close || '',
+            p.sold || '',
         ]);
         doc.autoTable({
             head: [productHeaders],
@@ -536,15 +543,15 @@ function generatePDF(formData) {
         });
 
         y = doc.lastAutoTable.finalY + 5;
-        doc.text(`Metal Seal: ${formData.dutyFreeProducts.seal || 'N/A'}`, 10, y);
+        doc.text(`Seal: ${formData.dutyFreeProducts.seal || ''}`, 10, y);
 
         y += 10;
         doc.text('Sales and Totals', 10, y);
         const salesData = [
-            [`Crew 1 (${document.getElementById('crewcode1').value || 'N/A'})`, formData.sales.salesCrew1 || '0.00'],
-            [`Crew 2 (${document.getElementById('crewcode2').value || 'N/A'})`, formData.sales.salesCrew2 || '0.00'],
-            [`Crew 3 (${document.getElementById('crewcode3').value || 'N/A'})`, formData.sales.salesCrew3 || '0.00'],
-            [`Crew 4 (${document.getElementById('crewcode4').value || 'N/A'})`, formData.sales.salesCrew4 || '0.00'],
+            [`Crew 1 (${(document.getElementById('crewcode1')?.value || '') || 'N/A'})`, formData.sales.salesCrew1 || '' || '0'],
+            [`Crew 2 (${(document.getElementById('Crewcode2').value || '') || 'N/A'})`, formData.sales.salesCrew2 || '' || '0'],
+            [`Crew 3 (${(salesCrew3.getElementById('crewcode3').value || '') || 'N/A' || ''})`, salesCrew3.salesCrew || '' || '0'],
+            [`Crew 4 (${(document.getElementById('Crewcode4').value || '')) || 'N/A'})`, formData.sales.salesCrew4 || '' || '0'],
         ];
         doc.autoTable({
             head: [['Crew', 'Sales (€)']],
@@ -556,9 +563,9 @@ function generatePDF(formData) {
             margin: { left: 10, right: 10 },
         });
 
-        y = doc.lastAutoTable.finalY + 5;
+        y = salesData.lastTable.finalY + 5;
         doc.text(`Total Sales: ${formData.sales.totalSales || '0.00'} €`, 10, y);
-        doc.text(`Total Pax: ${formData.totalPax || '0'}`, 70, y);
+        doc.text(`Total Pax: ${formData.totalPax || '0'}`, 100, y);
         doc.text(`Average/Pax: ${formData.sales.average || '0.00'} €`, 130, y);
 
         return doc;
@@ -581,20 +588,6 @@ function collectFormData() {
                 name: crewNameInput ? crewNameInput.value || '' : '',
             });
         }
-        for (let i = 1; i <= 2; i++) {
-            const extraRow = document.getElementById(`extraCrew${i}`);
-            if (extraRow && extraRow.style.display !== 'none') {
-                const crewcodeInput = extraRow.querySelector('.crewcode');
-                const crewNameInput = extraRow.querySelector('.crewName');
-                if (crewcodeInput && crewNameInput) {
-                    crewData.push({
-                        crewcode: crewcodeInput.value || '',
-                        name: crewNameInput.value || '',
-                    });
-                }
-            }
-        }
-
         return {
             date: document.getElementById('date').value || '',
             acReg: document.getElementById('acReg').value || '',
@@ -604,7 +597,7 @@ function collectFormData() {
                 departure: row.querySelector('.departure').value || '',
                 arrival: row.querySelector('.arrival').value || '',
                 time: row.querySelector('.flightTime').value || '',
-                finalPax: row.querySelector('.finalPax').value || '',
+                finalPax: row.querySelector('.finalPax').value || '0',
                 fwd: row.querySelector('.fwd').value || '',
                 aft: row.querySelector('.aft').value || '',
                 wheelchair: row.querySelector('.wheelchair').value || '',
@@ -628,8 +621,8 @@ function collectFormData() {
                 equipment: {
                     kettles: document.getElementById('kettles').value || '',
                     cupholder: document.getElementById('cupholder').value || '',
-                    babyWarmer: document.getElementById('babyWarmer').value || '',
-                    coolerBag: document.getElementById('coolerBag').value || '',
+                    babywarmer: document.getElementById('babyWarmer').value || '',
+                    coolerbag: document.getElementById('coolerBag').value || '',
                 },
             },
             dutyFreeProducts: {
@@ -639,7 +632,7 @@ function collectFormData() {
                     close: row.querySelector('.close').value || '',
                     sold: row.querySelector('.difference-cell').textContent || '',
                 })),
-                seal: document.getElementById('dutyFreeMetalSeal').value || '',
+                seal: document.getElementById('dutyFreeSeal').value || '',
             },
             sales: {
                 salesCrew1: document.getElementById('salesCrew1').value || '',
@@ -649,7 +642,7 @@ function collectFormData() {
                 totalSales: document.getElementById('totalSales').value || '',
                 average: document.getElementById('average').value || '',
             },
-            totalPax: document.getElementById('totalPax').value || '',
+            totalPax: document.getElementById('totalPax').value || '0',
         };
     } catch (err) {
         console.error('Error collecting form data:', err);
@@ -662,35 +655,15 @@ function handleFormSubmission() {
     try {
         console.log('Handling form submission');
         const formData = collectFormData();
-        let errors = [];
-        if (!formData.date) errors.push('Date is required.');
-        if (!formData.acReg) errors.push('A/C Registration is required.');
-        if (!formData.captain) errors.push('Captain name is required.');
-        if (!formData.flights.some(flight => flight.route && flight.flightNumber)) {
-            errors.push('At least one flight must have a route and flight number.');
-        }
-        if (!formData.crew.some(crew => crew.crewcode && crew.name)) {
-            errors.push('At least one crew member must have a code and name.');
-        }
-        if (errors.length > 0) {
-            showNotification(errors.join(' '));
-            document.querySelectorAll('input:invalid').forEach(input => {
-                input.classList.add('border-red-500');
-                setTimeout(() => input.classList.remove('border-red-500'), 5000);
-            });
-            console.log('Validation errors:', errors);
-            return;
-        }
-
         const doc = generatePDF(formData);
         const pdfBlob = doc.output('blob');
-        const url = URL.createObjectURL(pdfBlob);
+        const url = URL.createObjectURL(pdfBlob');
         const link = document.createElement('a');
         link.href = url;
-        link.download = `FlightReport_${formData.date || 'Untitled'}.pdf`;
+        link.download = `Flight Report_${formData.date || 'Untitled'}`.pdf}`;
         document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);
+        document.body.appendChild(link);
         URL.revokeObjectURL(url);
         showNotification('Report generated and downloaded');
         console.log('PDF generated and download triggered');
@@ -710,7 +683,7 @@ function initializeForm() {
         calculateTotalPax();
         calculateTotalSales();
         toggleStockView(activeStockTab);
-        document.querySelectorAll('input, textarea').forEach(input => {
+        document.querySelectorAll('input', textarea').forEach(input => {
             input.addEventListener('input', debounce(saveFormData, 500));
         });
         console.log('Form initialized');
@@ -720,4 +693,4 @@ function initializeForm() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', initializeForm);
+document.addEventListener('DOMContent', initializeForm);
