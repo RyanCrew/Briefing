@@ -351,9 +351,9 @@
                                         <th>#</th>
                                         <th>Route</th>
                                         <th>Flight No.</th>
+                                        <th>Time</th>
                                         <th>Departure</th>
                                         <th>Arrival</th>
-                                        <th>Time</th>
                                         <th>Pax</th>
                                         <th>FWD</th>
                                         <th>AFT</th>
@@ -365,9 +365,9 @@
                                         <td class="flight-number-cell" onclick="toggleFlightView('1')">1</td>
                                         <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off" tabindex="3"></td>
                                         <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1234" autocomplete="off" tabindex="4"></td>
-                                        <td><input type="time" class="departure" tabindex="5"></td>
-                                        <td><input type="time" class="arrival" tabindex="6"></td>
-                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="7"></td>
+                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="5"></td>
+                                        <td><input type="time" class="departure" tabindex="6"></td>
+                                        <td><input type="time" class="arrival" tabindex="7"></td>
                                         <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="8"></td>
                                         <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="9"></td>
                                         <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="10"></td>
@@ -377,9 +377,9 @@
                                         <td class="flight-number-cell" onclick="toggleFlightView('2')">2</td>
                                         <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off" tabindex="12"></td>
                                         <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1235" autocomplete="off" tabindex="13"></td>
-                                        <td><input type="time" class="departure" tabindex="14"></td>
-                                        <td><input type="time" class="arrival" tabindex="15"></td>
-                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="16"></td>
+                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="14"></td>
+                                        <td><input type="time" class="departure" tabindex="15"></td>
+                                        <td><input type="time" class="arrival" tabindex="16"></td>
                                         <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="17"></td>
                                         <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="18"></td>
                                         <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="19"></td>
@@ -389,9 +389,9 @@
                                         <td class="flight-number-cell" onclick="toggleFlightView('3')">3</td>
                                         <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off" tabindex="21"></td>
                                         <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1236" autocomplete="off" tabindex="22"></td>
-                                        <td><input type="time" class="departure" tabindex="23"></td>
-                                        <td><input type="time" class="arrival" tabindex="24"></td>
-                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="25"></td>
+                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="23"></td>
+                                        <td><input type="time" class="departure" tabindex="24"></td>
+                                        <td><input type="time" class="arrival" tabindex="25"></td>
                                         <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="26"></td>
                                         <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="27"></td>
                                         <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="28"></td>
@@ -401,9 +401,9 @@
                                         <td class="flight-number-cell" onclick="toggleFlightView('4')">4</td>
                                         <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off" tabindex="30"></td>
                                         <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1237" autocomplete="off" tabindex="31"></td>
-                                        <td><input type="time" class="departure" tabindex="32"></td>
-                                        <td><input type="time" class="arrival" tabindex="33"></td>
-                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="34"></td>
+                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="32"></td>
+                                        <td><input type="time" class="departure" tabindex="33"></td>
+                                        <td><input type="time" class="arrival" tabindex="34"></td>
                                         <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="35"></td>
                                         <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="36"></td>
                                         <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="37"></td>
@@ -485,14 +485,10 @@
                     </div>
                 </details>
 
-                <!-- Inventory Section -->
+                <!-- Product Inventory Section -->
                 <details class="form-section" id="stockSection" open aria-expanded="true">
-                    <summary role="button" aria-controls="inventory-content">Inventory</summary>
+                    <summary role="button" aria-controls="inventory-content">Product Inventory</summary>
                     <div id="inventory-content">
-                        <div class="stock-tabs">
-                            <button type="button" id="productStockTab" class="stock-tab active" onclick="toggleStockView('product')" tabindex="57">Product Inventory</button>
-                            <button type="button" id="dutyFreeStockTab" class="stock-tab" onclick="toggleStockView('dutyFree')" tabindex="58">Duty-Free Inventory</button>
-                        </div>
                         <div id="productStockTable" class="stock-table">
                             <table id="productTable">
                                 <thead>
@@ -506,50 +502,50 @@
                                 <tbody>
                                     <tr>
                                         <td>H&C Panini</td>
+                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="57"></td>
+                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="58"></td>
+                                        <td class="difference-cell"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Choco. Croissant</td>
                                         <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="59"></td>
                                         <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="60"></td>
                                         <td class="difference-cell"></td>
                                     </tr>
                                     <tr>
-                                        <td>Choco. Croissant</td>
+                                        <td>H&C Croissant</td>
                                         <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="61"></td>
                                         <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="62"></td>
                                         <td class="difference-cell"></td>
                                     </tr>
                                     <tr>
-                                        <td>H&C Croissant</td>
+                                        <td>Choco. Croissant</td>
                                         <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="63"></td>
                                         <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="64"></td>
                                         <td class="difference-cell"></td>
                                     </tr>
                                     <tr>
-                                        <td>Choco. Croissant</td>
+                                        <td>Cheese T</td>
                                         <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="65"></td>
                                         <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="66"></td>
                                         <td class="difference-cell"></td>
                                     </tr>
                                     <tr>
-                                        <td>Cheese T</td>
+                                        <td>Pizza</td>
                                         <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="67"></td>
                                         <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="68"></td>
                                         <td class="difference-cell"></td>
                                     </tr>
                                     <tr>
-                                        <td>Pizza</td>
+                                        <td>Bacon B</td>
                                         <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="69"></td>
                                         <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="70"></td>
                                         <td class="difference-cell"></td>
                                     </tr>
                                     <tr>
-                                        <td>Bacon B</td>
+                                        <td>F Sandwich</td>
                                         <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="71"></td>
                                         <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="72"></td>
-                                        <td class="difference-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>F Sandwich</td>
-                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="73"></td>
-                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="74"></td>
                                         <td class="difference-cell"></td>
                                     </tr>
                                 </tbody>
@@ -557,37 +553,44 @@
                             <div class="grid grid-cols-3 gap-1">
                                 <div>
                                     <label for="yellowSeal">Yellow Seal</label>
-                                    <input type="text" id="yellowSeal" class="seal-input" placeholder="e.g., Y12345" autocomplete="off" tabindex="75"></td>
+                                    <input type="text" id="yellowSeal" class="seal-input" placeholder="e.g., Y12345" autocomplete="off" tabindex="73"></td>
                                 </div>
                                 <div>
                                     <label for="greenSeal">Green Seal</label>
-                                    <input type="text" id="greenSeal" class="seal-input" placeholder="e.g., G67890" autocomplete="off" tabindex="76"></td>
+                                    <input type="text" id="greenSeal" class="seal-input" placeholder="e.g., G67890" autocomplete="off" tabindex="74"></td>
                                 </div>
                                 <div>
                                     <label for="metalSeal">Metal Seal</label>
-                                    <input type="text" id="metalSeal" class="seal-input" placeholder="e.g., M11223" autocomplete="off" tabindex="77"></td>
+                                    <input type="text" id="metalSeal" class="seal-input" placeholder="e.g., M11223" autocomplete="off" tabindex="75"></td>
                                 </div>
                             </div>
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-top: 8px;">
                                 <div>
                                     <label for="kettles" class="equipment-label">Kettles</label>
-                                    <input type="number" id="kettles" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="78"></td>
+                                    <input type="number" id="kettles" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="76"></td>
                                 </div>
                                 <div>
                                     <label for="cupholder" class="equipment-label">Cupholder</label>
-                                    <input type="number" id="cupholder" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="79"></td>
+                                    <input type="number" id="cupholder" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="77"></td>
                                 </div>
                                 <div>
                                     <label for="babyWarmer" class="equipment-label">Baby Warmer</label>
-                                    <input type="number" id="babyWarmer" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="80"></td>
+                                    <input type="number" id="babyWarmer" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="78"></td>
                                 </div>
                                 <div>
                                     <label for="coolerBag" class="equipment-label">Cooler Bag</label>
-                                    <input type="number" id="coolerBag" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="81"></td>
+                                    <input type="number" id="coolerBag" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="79"></td>
                                 </div>
                             </div>
                         </div>
-                        <div id="dutyFreeStockTable" class="stock-table" style="display: none;">
+                    </div>
+                </details>
+
+                <!-- Duty-Free Inventory Section -->
+                <details class="form-section" id="dutyFreeSection" aria-expanded="false">
+                    <summary role="button" aria-controls="duty-free-content">Duty-Free Inventory</summary>
+                    <div id="duty-free-content">
+                        <div id="dutyFreeStockTable" class="stock-table">
                             <table id="dutyFreeTable">
                                 <thead>
                                     <tr>
@@ -600,33 +603,33 @@
                                 <tbody>
                                     <tr>
                                         <td>Marlboro Gold</td>
+                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="80"></td>
+                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="81"></td>
+                                        <td class="difference-cell"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Marlboro Red</td>
                                         <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="82"></td>
                                         <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="83"></td>
                                         <td class="difference-cell"></td>
                                     </tr>
                                     <tr>
-                                        <td>Marlboro Red</td>
+                                        <td>Lambert</td>
                                         <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="84"></td>
                                         <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="85"></td>
                                         <td class="difference-cell"></td>
                                     </tr>
                                     <tr>
-                                        <td>Lambert</td>
+                                        <td>Amber Leaf</td>
                                         <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="86"></td>
                                         <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="87"></td>
                                         <td class="difference-cell"></td>
                                     </tr>
-                                    <tr>
-                                        <td>Amber Leaf</td>
-                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="88"></td>
-                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="89"></td>
-                                        <td class="difference-cell"></td>
-                                    </tr>
                                 </tbody>
                             </table>
-                            <div class="mt-3">
+                            <div style="margin-top: 0.8rem;">
                                 <label for="dutyFreeMetalSeal">Metal Seal</label>
-                                <input type="text" id="dutyFreeMetalSeal" class="seal-input" placeholder="e.g., M44556" autocomplete="off" tabindex="90">
+                                <input type="text" id="dutyFreeMetalSeal" class="seal-input" placeholder="e.g., M44556" autocomplete="off" tabindex="88">
                             </div>
                         </div>
                     </div>
@@ -636,33 +639,33 @@
                 <details class="form-section" id="salesSection" aria-expanded="false">
                     <summary role="button" aria-controls="sales-content">Sales and Totals</summary>
                     <div id="sales-content">
-                        <div class="sales-grid grid">
+                        <div class="sales-grid">
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px;">
                                 <div>
                                     <label id="salesLabel1" for="salesCrew1" class="sales-label">Crew 1 Sales</label>
                                     <div class="sales-wrapper">
-                                        <input type="number" id="salesCrew1" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="91">
+                                        <input type="number" id="salesCrew1" step="0.5" min="0" class="sales-input" placeholder="0.00" tabindex="89">
                                         <span class="sales-euro">€</span>
                                     </div>
                                 </div>
                                 <div>
                                     <label id="salesLabel2" for="salesCrew2" class="sales-label">Crew 2 Sales</label>
                                     <div class="sales-wrapper">
-                                        <input type="number" id="salesCrew2" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="92">
+                                        <input type="number" id="salesCrew2" step="0.5" min="0" class="sales-input" placeholder="0.00" tabindex="90">
                                         <span class="sales-euro">€</span>
                                     </div>
                                 </div>
                                 <div>
                                     <label id="salesLabel3" for="salesCrew3" class="sales-label">Crew 3 Sales</label>
                                     <div class="sales-wrapper">
-                                        <input type="number" id="salesCrew3" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="93">
+                                        <input type="text" id="salesCrew3" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="91">
                                         <span class="sales-euro">€</span>
                                     </div>
                                 </div>
                                 <div>
                                     <label id="salesLabel4" for="salesCrew4" class="sales-label">Crew 4 Sales</label>
                                     <div class="sales-wrapper">
-                                        <input type="number" id="salesCrew4" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="94">
+                                        <input type="text" id="salesCrew4" step="0.01" min="sales-input" class="sales-input" placeholder="0.00" tabindex="92">
                                         <span class="sales-euro">€</span>
                                     </div>
                                 </div>
@@ -671,47 +674,47 @@
                                 <div>
                                     <label for="totalSales" class="sales-label">Total Sales</label>
                                     <div class="sales-wrapper">
-                                        <input type="number" id="totalSales" step="0.01" readonly class="sales-input" placeholder="0.00" style="background: rgba(227, 227, 227, 0.7); color: #000;" tabindex="95">
+                                        <input type="number" id="totalSales" step="0.01" readonly class="sales-input" placeholder="0.00" style="background: rgba(255, 255,255,0.7); color: #000;" tabindex="93">
                                         <span class="sales-euro">€</span>
                                     </div>
                                 </div>
                                 <div>
-                                    <label for="totalPax" class="sales-label">Total Pax</label>
-                                    <input type="number" id="totalPax" readonly class="sales-input" placeholder="0" style="background: rgba(227, 227, 227, 0.7); color: #000;" tabindex="96">
-                                </div>
-                                <div>
-                                    <label for="average" class="sales-label">Average/Pax</label>
-                                    <div class="sales-wrapper">
-                                        <input type="number" id="average" step="0.01" readonly class="sales-input" placeholder="0.00" style="background: rgba(227, 227, 227, 0.7); color: #000;" tabindex="97">
-                                        <span class="sales-euro">€</span>
+                                    <div>
+                                        <label for="totalPax" class="sales-label">Total Pax</label>
+                                        <input type="number" id="totalPax" readonly class="sales-input" placeholder="0" style="background: rgba(255,255,255,0.7); color: #000;" tabindex="94"></div>
+                                    </div>
+                                    <div>
+                                        <label for="average" class="sales-label">Average/Pax</label>
+                                        <div class="sales-wrapper">
+                                            <input type="number" id="average" step="0.01" readonly class="sales-input" placeholder="0.00" style="background: rgba(255,255,255,0.7); color: #000;" tabindex="95"></div>
+                                            <span class="sales-euro">€</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </details>
+                    </details>
 
-                <button type="button" onclick="handleFormSubmission()" tabindex="98">Submit Report</button>
-            </form>
-        </div>
-    </main>
-    <footer>
-        <p>Flight Report © 2025</p>
-    </footer>
+                    <button type="button" id="submitBtn" onclick="handleFormSubmission()" tabindex="96">Submit Report</button>
+                </form>
+            </div>
+        </main>
+        <footer>
+            <p>Flight Report © 2025</p>
+        </footer>
 
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('Service Worker registered successfully:', registration.scope);
-                    })
-                    .catch(err => {
-                        console.error('Error registering Service Worker:', err);
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(registration => {
+                            console.log('Service Worker registered successfully:', registration.scope);
+                        })
+                        .catch(error => {
+                            console.error('Error registering Service Worker:', error);
+                        });
                     });
-            });
-        }
-    </script>
-    <script src="script.js"></script>
-</body>
+            </script>
+        <script src="script.js"></script>
+    </body>
 </html>
