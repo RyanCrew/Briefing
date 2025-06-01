@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Informe de Vuelo">
-    <meta name="description" content="Formulario de informe de vuelo para uso sin conexión">
-    <title>Informe de Vuelo</title>
+    <meta name="apple-mobile-web-app-title" content="Flight Report">
+    <meta name="description" content="Flight report form for offline use">
+    <title>Flight Report</title>
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/icon.png">
     <link href="./output.css" rel="stylesheet">
@@ -320,22 +320,22 @@
 </head>
 <body>
     <header>
-        <h1>Informe de Vuelo</h1>
+        <h1>Flight Report</h1>
     </header>
     <main>
         <div class="form-container">
             <form id="inflightForm" class="space-y-1">
-                <!-- Información del Vuelo -->
+                <!-- Flight Information -->
                 <details class="form-section" open>
-                    <summary>Información del Vuelo</summary>
+                    <summary>Flight Information</summary>
                     <div class="flight-info-header" id="flightInfoHeader" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
                         <div>
-                            <label class="date-ac-label">Fecha</label>
+                            <label class="date-ac-label">Date</label>
                             <input type="date" id="date" class="date-ac-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
                         </div>
                         <div>
-                            <label class="date-ac-label">Matrícula A/C</label>
-                            <input type="text" id="acReg" placeholder="EI-" class="date-ac-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
+                            <label class="date-ac-label">A/C Registration</label>
+                            <input type="text" id="acReg" placeholder="e.g., EI-" class="date-ac-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
                         </div>
                     </div>
                     <div class="table-wrapper">
@@ -343,90 +343,90 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>Ruta</th>
-                                    <th>Nº Vuelo</th>
-                                    <th>Salida</th>
-                                    <th>Llegada</th>
-                                    <th>Tiempo</th>
+                                    <th>Route</th>
+                                    <th>Flight No.</th>
+                                    <th>Departure</th>
+                                    <th>Arrival</th>
+                                    <th>Time</th>
                                     <th>Pax</th>
                                     <th>FWD</th>
                                     <th>AFT</th>
-                                    <th>S/R</th>
+                                    <th>W/C</th>
                                 </tr>
                             </thead>
                             <tbody id="flightsTableBody">
                                 <tr data-flight="1">
                                     <td class="flight-number-cell" onclick="toggleFlightView('1')">1</td>
-                                    <td><input type="text" class="route route-input" placeholder="ej., ALC-MAD" autocomplete="off"></td>
-                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="ej., FR1234" autocomplete="off"></td>
+                                    <td><input type="text" class="route route-input" placeholder="e.g., ALC-MAD" autocomplete="off"></td>
+                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1234" autocomplete="off"></td>
                                     <td><input type="time" class="departure"></td>
                                     <td><input type="time" class="arrival"></td>
-                                    <td><input type="text" class="flightTime flight-time-input" placeholder="ej., 1:30" autocomplete="off"></td>
+                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off"></td>
                                     <td><input type="number" min="0" class="finalPax final-pax-input"></td>
                                     <td><input type="number" min="0" class="fwd fwd-input"></td>
                                     <td><input type="number" min="0" class="aft aft-input"></td>
-                                    <td><input type="text" class="wheelchair small-input" placeholder="ej., 1C,2S,3R" autocomplete="off"></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off"></td>
                                 </tr>
                                 <tr data-flight="2">
                                     <td class="flight-number-cell" onclick="toggleFlightView('2')">2</td>
-                                    <td><input type="text" class="route route-input" placeholder="ej., MAD-ALC" autocomplete="off"></td>
-                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="ej., FR1235" autocomplete="off"></td>
+                                    <td><input type="text" class="route route-input" placeholder="e.g., MAD-ALC" autocomplete="off"></td>
+                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1235" autocomplete="off"></td>
                                     <td><input type="time" class="departure"></td>
                                     <td><input type="time" class="arrival"></td>
-                                    <td><input type="text" class="flightTime flight-time-input" placeholder="ej., 1:30" autocomplete="off"></td>
+                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off"></td>
                                     <td><input type="number" min="0" class="finalPax final-pax-input"></td>
                                     <td><input type="number" min="0" class="fwd fwd-input"></td>
                                     <td><input type="number" min="0" class="aft aft-input"></td>
-                                    <td><input type="text" class="wheelchair small-input" placeholder="ej., 1C,2S,3R" autocomplete="off"></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off"></td>
                                 </tr>
                                 <tr data-flight="3">
                                     <td class="flight-number-cell" onclick="toggleFlightView('3')">3</td>
-                                    <td><input type="text" class="route route-input" placeholder="ej., ALC-STN" autocomplete="off"></td>
-                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="ej., FR1236" autocomplete="off"></td>
+                                    <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off"></td>
+                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1236" autocomplete="off"></td>
                                     <td><input type="time" class="departure"></td>
                                     <td><input type="time" class="arrival"></td>
-                                    <td><input type="text" class="flightTime flight-time-input" placeholder="ej., 1:30" autocomplete="off"></td>
+                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off"></td>
                                     <td><input type="number" min="0" class="finalPax final-pax-input"></td>
                                     <td><input type="number" min="0" class="fwd fwd-input"></td>
                                     <td><input type="number" min="0" class="aft aft-input"></td>
-                                    <td><input type="text" class="wheelchair small-input" placeholder="ej., 1C,2S,3R" autocomplete="off"></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off"></td>
                                 </tr>
                                 <tr data-flight="4">
                                     <td class="flight-number-cell" onclick="toggleFlightView('4')">4</td>
-                                    <td><input type="text" class="route route-input" placeholder="ej., STN-ALC" autocomplete="off"></td>
-                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="ej., FR1237" autocomplete="off"></td>
+                                    <td><input type="text" class="route route-input" placeholder="e.g., STN-ALC" autocomplete="off"></td>
+                                    <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1237" autocomplete="off"></td>
                                     <td><input type="time" class="departure"></td>
                                     <td><input type="time" class="arrival"></td>
-                                    <td><input type="text" class="flightTime flight-time-input" placeholder="ej., 1:30" autocomplete="off"></td>
+                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off"></td>
                                     <td><input type="number" min="0" class="finalPax final-pax-input"></td>
                                     <td><input type="number" min="0" class="fwd fwd-input"></td>
                                     <td><input type="number" min="0" class="aft aft-input"></td>
-                                    <td><input type="text" class="wheelchair small-input" placeholder="ej., 1C,2S,3R" autocomplete="off"></td>
+                                    <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off"></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </details>
 
-                <!-- Información de la Tripulación -->
+                <!-- Crew Information -->
                 <details class="form-section" id="crewSection">
-                    <summary>Información de la Tripulación</summary>
+                    <summary>Crew Information</summary>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
                         <div>
-                            <label>Capitán</label>
+                            <label>Captain</label>
                             <input type="text" id="captain" class="captain-fo-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
                         </div>
                         <div>
-                            <label>Primer Oficial</label>
+                            <label>First Officer</label>
                             <input type="text" id="firstOfficer" class="captain-fo-input" style="width: 100%; max-width: 160px; font-size: 12px; height: 40px;" autocomplete="off">
                         </div>
                     </div>
                     <table id="crewTable">
                         <thead>
                             <tr>
-                                <th>Tripulación</th>
-                                <th>Código</th>
-                                <th>Nombre</th>
+                                <th>Crew</th>
+                                <th>Code</th>
+                                <th>Name</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -459,38 +459,38 @@
                                 <td>Extra 1</td>
                                 <td><input type="text" class="crewcode crew-input" autocomplete="off"></td>
                                 <td><input type="text" class="crewName crew-input" autocomplete="off"></td>
-                                <td><button type="button" class="remove-crew-button" onclick="removeExtraCrew(1)">Eliminar</button></td>
+                                <td><button type="button" class="remove-crew-button" onclick="removeExtraCrew(1)">Remove</button></td>
                             </tr>
                             <tr class="extra-crew" id="extraCrew2">
                                 <td>Extra 2</td>
                                 <td><input type="text" class="crewcode crew-input" autocomplete="off"></td>
                                 <td><input type="text" class="crewName crew-input" autocomplete="off"></td>
-                                <td><button type="button" class="remove-crew-button" onclick="removeExtraCrew(2)">Eliminar</button></td>
+                                <td><button type="button" class="remove-crew-button" onclick="removeExtraCrew(2)">Remove</button></td>
                             </tr>
                         </tbody>
                     </table>
-                    <button type="button" class="add-crew-button" onclick="addExtraCrew()">Añadir Tripulación Extra</button>
+                    <button type="button" class="add-crew-button" onclick="addExtraCrew()">Add Extra Crew</button>
                     <div style="margin-top: 0.8rem;">
-                        <label for="description">Descripción</label>
-                        <textarea id="description" rows="4" placeholder="Ingrese descripción (ej., notas de tripulación, incidentes)" autocomplete="off"></textarea>
+                        <label for="description">Description</label>
+                        <textarea id="description" rows="4" placeholder="Enter description (e.g., crew notes, incidents)" autocomplete="off"></textarea>
                     </div>
                 </details>
 
-                <!-- Sección de Inventario -->
+                <!-- Inventory Section -->
                 <details class="form-section" id="stockSection" open>
-                    <summary>Inventario</summary>
+                    <summary>Inventory</summary>
                     <div class="stock-tabs">
-                        <button type="button" id="productStockTab" class="stock-tab active" onclick="toggleStockView('product')">Inventario de Productos</button>
-                        <button type="button" id="dutyFreeStockTab" class="stock-tab" onclick="toggleStockView('dutyFree')">Inventario Duty-Free</button>
+                        <button type="button" id="productStockTab" class="stock-tab active" onclick="toggleStockView('product')">Product Inventory</button>
+                        <button type="button" id="dutyFreeStockTab" class="stock-tab" onclick="toggleStockView('dutyFree')">Duty-Free Inventory</button>
                     </div>
                     <div id="productStockTable" class="stock-table">
                         <table id="productTable">
                             <thead>
                                 <tr>
-                                    <th>Producto</th>
-                                    <th>Inicial</th>
+                                    <th>Product</th>
+                                    <th>Initial</th>
                                     <th>Final</th>
-                                    <th>Vendido</th>
+                                    <th>Sold</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -546,33 +546,33 @@
                         </table>
                         <div class="grid grid-cols-3 gap-1">
                             <div>
-                                <label for="yellowSeal">Sello Amarillo</label>
-                                <input type="text" id="yellowSeal" class="seal-input" placeholder="ej., Y12345" autocomplete="off">
+                                <label for="yellowSeal">Yellow Seal</label>
+                                <input type="text" id="yellowSeal" class="seal-input" placeholder="e.g., Y12345" autocomplete="off">
                             </div>
                             <div>
-                                <label for="greenSeal">Sello Verde</label>
-                                <input type="text" id="greenSeal" class="seal-input" placeholder="ej., G67890" autocomplete="off">
+                                <label for="greenSeal">Green Seal</label>
+                                <input type="text" id="greenSeal" class="seal-input" placeholder="e.g., G67890" autocomplete="off">
                             </div>
                             <div>
-                                <label for="metalSeal">Sello Metálico</label>
-                                <input type="text" id="metalSeal" class="seal-input" placeholder="ej., M11223" autocomplete="off">
+                                <label for="metalSeal">Metal Seal</label>
+                                <input type="text" id="metalSeal" class="seal-input" placeholder="e.g., M11223" autocomplete="off">
                             </div>
                         </div>
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-top: 8px;">
                             <div>
-                                <label for="kettles" class="equipment-label">Teteras</label>
+                                <label for="kettles" class="equipment-label">Kettles</label>
                                 <input type="number" id="kettles" min="1" max="5" class="small-input" style="width: 100%; max-width: 80px; font-size: 10px; height: 32px; padding: 0.3rem;" autocomplete="off">
                             </div>
                             <div>
-                                <label for="cupholder" class="equipment-label">Portavasos</label>
+                                <label for="cupholder" class="equipment-label">Cupholder</label>
                                 <input type="number" id="cupholder" min="1" max="5" class="small-input" style="width: 100%; max-width: 80px; font-size: 10px; height: 32px; padding: 0.3rem;" autocomplete="off">
                             </div>
                             <div>
-                                <label for="babyWarmer" class="equipment-label">Calentador Bebé</label>
+                                <label for="babyWarmer" class="equipment-label">Baby Warmer</label>
                                 <input type="number" id="babyWarmer" min="1" max="5" class="small-input" style="width: 100%; max-width: 80px; font-size: 10px; height: 32px; padding: 0.3rem;" autocomplete="off">
                             </div>
                             <div>
-                                <label for="coolerBag" class="equipment-label">Bolsa Fría</label>
+                                <label for="coolerBag" class="equipment-label">Cooler Bag</label>
                                 <input type="number" id="coolerBag" min="1" max="5" class="small-input" style="width: 100%; max-width: 80px; font-size: 10px; height: 32px; padding: 0.3rem;" autocomplete="off">
                             </div>
                         </div>
@@ -581,10 +581,10 @@
                         <table id="dutyFreeTable">
                             <thead>
                                 <tr>
-                                    <th>Producto</th>
-                                    <th>Inicial</th>
+                                    <th>Product</th>
+                                    <th>Initial</th>
                                     <th>Final</th>
-                                    <th>Vendido</th>
+                                    <th>Sold</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -615,40 +615,40 @@
                             </tbody>
                         </table>
                         <div class="mt-3">
-                            <label for="dutyFreeMetalSeal">Sello Metálico</label>
-                            <input type="text" id="dutyFreeMetalSeal" class="seal-input" placeholder="ej., M44556" autocomplete="off">
+                            <label for="dutyFreeMetalSeal">Metal Seal</label>
+                            <input type="text" id="dutyFreeMetalSeal" class="seal-input" placeholder="e.g., M44556" autocomplete="off">
                         </div>
                     </div>
                 </details>
 
-                <!-- Ventas y Totales -->
+                <!-- Sales and Totals -->
                 <details class="form-section" id="salesSection">
-                    <summary>Ventas y Totales</summary>
+                    <summary>Sales and Totals</summary>
                     <div class="sales-grid grid">
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px;">
                             <div>
-                                <label id="salesLabel1" for="salesCrew1" class="sales-label">Ventas Tripulación 1</label>
+                                <label id="salesLabel1" for="salesCrew1" class="sales-label">Crew 1 Sales</label>
                                 <div class="sales-wrapper">
                                     <input type="number" id="salesCrew1" step="0.01" min="0" class="sales-input" style="font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
                                 </div>
                             </div>
                             <div>
-                                <label id="salesLabel2" for="salesCrew2" class="sales-label">Ventas Tripulación 2</label>
+                                <label id="salesLabel2" for="salesCrew2" class="sales-label">Crew 2 Sales</label>
                                 <div class="sales-wrapper">
                                     <input type="number" id="salesCrew2" step="0.01" min="0" class="sales-input" style="font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
                                 </div>
                             </div>
                             <div>
-                                <label id="salesLabel3" for="salesCrew3" class="sales-label">Ventas Tripulación 3</label>
+                                <label id="salesLabel3" for="salesCrew3" class="sales-label">Crew 3 Sales</label>
                                 <div class="sales-wrapper">
                                     <input type="number" id="salesCrew3" step="0.01" min="0" class="sales-input" style="font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
                                 </div>
                             </div>
                             <div>
-                                <label id="salesLabel4" for="salesCrew4" class="sales-label">Ventas Tripulación 4</label>
+                                <label id="salesLabel4" for="salesCrew4" class="sales-label">Crew 4 Sales</label>
                                 <div class="sales-wrapper">
                                     <input type="number" id="salesCrew4" step="0.01" min="0" class="sales-input" style="font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
@@ -657,7 +657,7 @@
                         </div>
                         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 4px;">
                             <div>
-                                <label for="totalSales" class="sales-label">Total Ventas</label>
+                                <label for="totalSales" class="sales-label">Total Sales</label>
                                 <div class="sales-wrapper">
                                     <input type="number" id="totalSales" readonly class="sales-input" style="background: rgba(227, 227, 227, 0.7); color: #000; font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
@@ -668,7 +668,7 @@
                                 <input type="number" id="totalPax" readonly class="sales-input" style="background: rgba(227, 227, 227, 0.7); color: #000; font-size: 12px; height: 40px;">
                             </div>
                             <div>
-                                <label for="overallAverage" class="sales-label">Promedio/Pax</label>
+                                <label for="overallAverage" class="sales-label">Average/Pax</label>
                                 <div class="sales-wrapper">
                                     <input type="number" id="overallAverage" readonly class="sales-input" style="background: rgba(227, 227, 227, 0.7); color: #000; font-size: 12px; height: 40px;">
                                     <span class="sales-euro">€</span>
@@ -678,12 +678,12 @@
                     </div>
                 </details>
 
-                <button type="submit">Enviar Informe</button>
+                <button type="button" onclick="handleFormSubmission()">Submit Report</button>
             </form>
         </div>
     </main>
     <footer>
-        <p>Informe de Vuelo © 2025</p>
+        <p>Flight Report © 2025</p>
     </footer>
 
     <script>
@@ -692,20 +692,20 @@
         let activeStockTab = 'product';
         const { jsPDF } = window.jspdf;
 
-        // Registrar el service worker para uso sin conexión
+        // Register service worker for offline use
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then(registration => {
-                        console.log('Service Worker registrado con éxito:', registration.scope);
+                        console.log('Service Worker registered successfully:', registration.scope);
                     })
                     .catch(err => {
-                        console.error('Error al registrar el Service Worker:', err);
+                        console.error('Error registering Service Worker:', err);
                     });
             });
         }
 
-        // Alternar visibilidad de vuelos
+        // Toggle flight view
         function toggleFlightView(flightNumber) {
             try {
                 const flightRows = document.querySelectorAll('#flightsTableBody tr');
@@ -714,7 +714,7 @@
                 const salesSection = document.querySelector('#salesSection');
                 const crewSection = document.querySelector('#crewSection');
                 if (!flightRows || !flightInfoHeader || !stockSection || !salesSection || !crewSection) {
-                    alert('Error: Faltan elementos necesarios para alternar vuelos.');
+                    alert('Error: Missing elements required to toggle flights.');
                     return;
                 }
                 if (activeFlight === flightNumber) {
@@ -735,41 +735,41 @@
                     crewSection.style.display = '';
                 }
             } catch (err) {
-                alert(`Error al alternar la vista de vuelo: ${err.message}`);
+                alert(`Error toggling flight view: ${err.message}`);
             }
         }
 
-        // Añadir tripulación extra
+        // Add extra crew
         function addExtraCrew() {
             try {
                 if (extraCrewCount >= 2) {
-                    alert('Se alcanzó el máximo de 2 miembros de tripulación extra.');
+                    alert('Maximum of 2 extra crew members reached.');
                     return;
                 }
                 extraCrewCount++;
                 const extraRow = document.getElementById(`extraCrew${extraCrewCount}`);
                 if (!extraRow) {
-                    alert(`Error: Fila de tripulación extra ${extraCrewCount} no encontrada.`);
+                    alert(`Error: Extra crew row ${extraCrewCount} not found.`);
                     extraCrewCount--;
                     return;
                 }
                 extraRow.style.display = 'table-row';
-                alert(`Miembro de tripulación extra ${extraCrewCount} añadido.`);
+                alert(`Extra crew member ${extraCrewCount} added.`);
                 if (extraCrewCount === 2) {
                     const addButton = document.querySelector('.add-crew-button');
                     if (addButton) addButton.style.display = 'none';
                 }
             } catch (err) {
-                alert(`Error al añadir tripulación extra: ${err.message}`);
+                alert(`Error adding extra crew: ${err.message}`);
             }
         }
 
-        // Eliminar tripulación extra
+        // Remove extra crew
         function removeExtraCrew(index) {
             try {
                 const extraRow = document.getElementById(`extraCrew${index}`);
                 if (!extraRow) {
-                    alert(`Error: Fila de tripulación extra ${index} no encontrada.`);
+                    alert(`Error: Extra crew row ${index} not found.`);
                     return;
                 }
                 extraRow.style.display = 'none';
@@ -778,11 +778,11 @@
                 const addButton = document.querySelector('.add-crew-button');
                 if (addButton) addButton.style.display = 'inline-block';
             } catch (err) {
-                alert(`Error al eliminar tripulación extra: ${err.message}`);
+                alert(`Error removing extra crew: ${err.message}`);
             }
         }
 
-        // Alternar vista de inventario
+        // Toggle inventory view
         function toggleStockView(type) {
             try {
                 const productTable = document.getElementById('productStockTable');
@@ -790,7 +790,7 @@
                 const productTab = document.getElementById('productStockTab');
                 const dutyFreeTab = document.getElementById('dutyFreeStockTab');
                 if (!productTable || !dutyFreeTable || !productTab || !dutyFreeTab) {
-                    alert('Error: Faltan elementos de tabla o pestañas de inventario.');
+                    alert('Error: Missing inventory table or tab elements.');
                     return;
                 }
                 productTable.style.display = type === 'product' ? 'block' : 'none';
@@ -803,16 +803,16 @@
                     stockSection.setAttribute('open', '');
                 }
             } catch (err) {
-                alert(`Error al alternar la vista de inventario: ${err.message}`);
+                alert(`Error toggling inventory view: ${err.message}`);
             }
         }
 
-        // Calcular diferencias para tablas de inventario
+        // Calculate differences for inventory tables
         function calculateDifference(tableId) {
             try {
                 const table = document.getElementById(tableId);
                 if (!table) {
-                    alert(`Error: Tabla con ID '${tableId}' no encontrada.`);
+                    alert(`Error: Table with ID '${tableId}' not found.`);
                     return;
                 }
                 const rows = table.getElementsByTagName('tr');
@@ -832,11 +832,11 @@
                     }
                 }
             } catch (err) {
-                alert(`Error al calcular diferencias: ${err.message}`);
+                alert(`Error calculating differences: ${err.message}`);
             }
         }
 
-        // Actualizar etiquetas de ventas según códigos de tripulación
+        // Update sales labels based on crew codes
         function updateSalesLabels() {
             try {
                 const crewInputs = [
@@ -854,19 +854,19 @@
                 crewInputs.forEach((input, idx) => {
                     if (input && salesLabels[idx]) {
                         const updateLabel = () => {
-                            const code = input.value.trim() || `Tripulación ${idx + 1}`;
-                            salesLabels[idx].textContent = `Ventas ${code}`;
+                            const code = input.value.trim() || `Crew ${idx + 1}`;
+                            salesLabels[idx].textContent = `Sales ${code}`;
                         };
                         input.addEventListener('input', updateLabel);
                         updateLabel();
                     }
                 });
             } catch (err) {
-                alert(`Error al actualizar etiquetas de ventas: ${err.message}`);
+                alert(`Error updating sales labels: ${err.message}`);
             }
         }
 
-        // Calcular total de ventas y promedio por pasajero
+        // Calculate total sales and average per passenger
         function calculateTotalSales() {
             try {
                 const salesInputs = [
@@ -875,7 +875,7 @@
                     document.getElementById('salesCrew3'),
                     document.getElementById('salesCrew4'),
                 ];
-                const totalSales = document.getingetElementById('totalSales');
+                const totalSales = document.getElementById('totalSales');
                 const totalPax = document.getElementById('totalPax');
                 const overallAverage = document.getElementById('overallAverage');
                 if (!totalSales || !totalPax || !overallAverage) {
@@ -895,11 +895,11 @@
                 });
                 updateTotal();
             } catch (err) {
-                alert(`Error al calcular total de ventas: ${err.message}`);
+                alert(`Error calculating total sales: ${err.message}`);
             }
         }
 
-        // Calcular total de pasajeros
+        // Calculate total passengers
         function calculateTotalPax() {
             try {
                 const paxInputs = document.querySelectorAll('.finalPax');
@@ -918,24 +918,24 @@
                 });
                 updateTotal();
             } catch (err) {
-                alert(`Error al calcular total de pasajeros: ${err.message}`);
+                alert(`Error calculating total passengers: ${err.message}`);
             }
         }
 
-        // Generar PDF con formato mejorado
+        // Generate PDF with improved formatting
         function generatePDF(formData) {
             try {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
                 doc.setFontSize(16);
-                doc.text('Informe de Vuelo', 10, 10);
+                doc.text('Flight Report', 10, 10);
                 doc.setFontSize(12);
-                doc.text(`Fecha: ${formData.date || 'N/A'}`, 10, 20);
-                doc.text(`Matrícula A/C: ${formData.acReg || 'N/A'}`, 100, 20);
+                doc.text(`Date: ${formData.date || 'N/A'}`, 10, 20);
+                doc.text(`A/C Registration: ${formData.acReg || 'N/A'}`, 100, 20);
 
-                // Información de Vuelos
-                doc.text('Información de Vuelos', 10, 30);
-                const flightHeaders = ['#', 'Ruta', 'Nº Vuelo', 'Salida', 'Llegada', 'Tiempo', 'Pax', 'FWD', 'AFT', 'S/R'];
+                // Flight Information
+                doc.text('Flight Information', 10, 30);
+                const flightHeaders = ['#', 'Route', 'Flight No.', 'Departure', 'Arrival', 'Time', 'Pax', 'FWD', 'AFT', 'W/C'];
                 const flightData = formData.flights.map((f, i) => [
                     i + 1,
                     f.route || 'N/A',
@@ -970,14 +970,14 @@
                     },
                 });
 
-                // Información de la Tripulación
+                // Crew Information
                 let y = doc.lastAutoTable.finalY + 10;
-                doc.text('Información de la Tripulación', 10, y);
-                doc.text(`Capitán: ${formData.captain || 'N/A'}`, 10, y + 5);
-                doc.text(`Primer Oficial: ${formData.firstOfficer || 'N/A'}`, 100, y + 5);
-                const crewHeaders = ['Tripulación', 'Código', 'Nombre'];
+                doc.text('Crew Information', 10, y);
+                doc.text(`Captain: ${formData.captain || 'N/A'}`, 10, y + 5);
+                doc.text(`First Officer: ${formData.firstOfficer || 'N/A'}`, 100, y + 5);
+                const crewHeaders = ['Crew', 'Code', 'Name'];
                 const crewData = formData.crew.map((c, i) => [
-                    c.crewcode ? `Tripulación ${i + 1}` : `Extra ${i - 3}`,
+                    c.crewcode ? `Crew ${i + 1}` : `Extra ${i - 3}`,
                     c.crewcode || 'N/A',
                     c.name || 'N/A',
                 ]);
@@ -991,15 +991,15 @@
                     margin: { left: 10, right: 10 },
                 });
 
-                // Descripción
+                // Description
                 y = doc.lastAutoTable.finalY + 10;
-                doc.text('Descripción', 10, y);
+                doc.text('Description', 10, y);
                 doc.text(formData.description || 'N/A', 10, y + 5, { maxWidth: 180 });
 
-                // Inventario de Productos
+                // Product Inventory
                 y += 15;
-                doc.text('Inventario de Productos', 10, y);
-                const productHeaders = ['Producto', 'Inicial', 'Final', 'Vendido'];
+                doc.text('Product Inventory', 10, y);
+                const productHeaders = ['Product', 'Initial', 'Final', 'Sold'];
                 const productData = formData.products.items.map(p => [
                     p.product || 'N/A',
                     p.open || '0',
@@ -1016,19 +1016,19 @@
                     margin: { left: 10, right: 10 },
                 });
 
-                // Sellos y Equipamiento
+                // Seals and Equipment
                 y = doc.lastAutoTable.finalY + 5;
-                doc.text(`Sello Amarillo: ${formData.products.seals.yellow || 'N/A'}`, 10, y);
-                doc.text(`Sello Verde: ${formData.products.seals.green || 'N/A'}`, 70, y);
-                doc.text(`Sello Metálico: ${formData.products.seals.metal || 'N/A'}`, 130, y);
+                doc.text(`Yellow Seal: ${formData.products.seals.yellow || 'N/A'}`, 10, y);
+                doc.text(`Green Seal: ${formData.products.seals.green || 'N/A'}`, 70, y);
+                doc.text(`Metal Seal: ${formData.products.seals.metal || 'N/A'}`, 130, y);
                 y += 10;
-                doc.text('Equipamiento', 10, y);
-                const equipmentHeaders = ['Artículo', 'Cantidad'];
+                doc.text('Equipment', 10, y);
+                const equipmentHeaders = ['Item', 'Quantity'];
                 const equipmentData = [
-                    ['Teteras', formData.products.equipment.kettles || '0'],
-                    ['Portavasos', formData.products.equipment.cupholder || '0'],
-                    ['Calentador Bebé', formData.products.equipment.babyWarmer || '0'],
-                    ['Bolsa Fría', formData.products.equipment.coolerBag || '0'],
+                    ['Kettles', formData.products.equipment.kettles || '0'],
+                    ['Cupholder', formData.products.equipment.cupholder || '0'],
+                    ['Baby Warmer', formData.products.equipment.babyWarmer || '0'],
+                    ['Cooler Bag', formData.products.equipment.coolerBag || '0'],
                 ];
                 doc.autoTable({
                     head: [equipmentHeaders],
@@ -1040,9 +1040,9 @@
                     margin: { left: 10, right: 10 },
                 });
 
-                // Inventario Duty-Free
+                // Duty-Free Inventory
                 y = doc.lastAutoTable.finalY + 10;
-                doc.text('Inventario Duty-Free', 10, y);
+                doc.text('Duty-Free Inventory', 10, y);
                 const dutyFreeData = formData.dutyFreeProducts.items.map(row => [
                     row.product || 'N/A',
                     row.open || '0',
@@ -1050,7 +1050,7 @@
                     row.sold || '0',
                 ]);
                 doc.autoTable({
-                    head: [['Producto', 'Inicial', 'Final', 'Vendido']],
+                    head: [['Product', 'Initial', 'Final', 'Sold']],
                     body: dutyFreeData,
                     startY: y + 5,
                     theme: 'grid',
@@ -1059,21 +1059,21 @@
                     margin: { left: 10, right: 10 },
                 });
 
-                // Sello Duty-Free
+                // Duty-Free Seal
                 y = doc.lastAutoTable.finalY + 5;
-                doc.text(`Sello Metálico: ${formData.dutyFreeProducts.seal || 'N/A'}`, 10, y);
+                doc.text(`Metal Seal: ${formData.dutyFreeProducts.seal || 'N/A'}`, 10, y);
 
-                // Ventas y Totales
+                // Sales and Totals
                 y += 10;
-                doc.text('Ventas y Totales', 10, y);
+                doc.text('Sales and Totals', 10, y);
                 const salesData = [
-                    [`Tripulación 1 (${document.getElementById('crewcode1').value || 'N/A'})`, formData.sales.salesCrew1 || '0.00'],
-                    [`Tripulación 2 (${document.getElementById('crewcode2').value || 'N/A'})`, formData.sales.salesCrew2 || '0.00'],
-                    [`Tripulación 3 (${document.getElementById('crewcode3').value || 'N/A'})`, formData.sales.salesCrew3 || '0.00'],
-                    [`Tripulación 4 (${document.getElementById('crewcode4').value || 'N/A'})`, formData.sales.salesCrew4 || '0.00'],
+                    [`Crew 1 (${document.getElementById('crewcode1').value || 'N/A'})`, formData.sales.salesCrew1 || '0.00'],
+                    [`Crew 2 (${document.getElementById('crewcode2').value || 'N/A'})`, formData.sales.salesCrew2 || '0.00'],
+                    [`Crew 3 (${document.getElementById('crewcode3').value || 'N/A'})`, formData.sales.salesCrew3 || '0.00'],
+                    [`Crew 4 (${document.getElementById('crewcode4').value || 'N/A'})`, formData.sales.salesCrew4 || '0.00'],
                 ];
                 doc.autoTable({
-                    head: [['Tripulación', 'Ventas (€)']],
+                    head: [['Crew', 'Sales (€)']],
                     body: salesData,
                     startY: y + 5,
                     theme: 'grid',
@@ -1082,109 +1082,105 @@
                     margin: { left: 10, right: 10 },
                 });
 
-                // Totales finales
+                // Final Totals
                 y = doc.lastAutoTable.finalY + 5;
-                doc.text(`Total Ventas: ${formData.sales.totalSales || '0.00'} €`, 10, y);
+                doc.text(`Total Sales: ${formData.sales.totalSales || '0.00'} €`, 10, y);
                 doc.text(`Total Pax: ${formData.totalPax || '0'}`, 70, y);
-                doc.text(`Promedio/Pax: ${formData.sales.overallAverage || '0.00'} €`, 130, y);
+                doc.text(`Average/Pax: ${formData.sales.overallAverage || '0.00'} €`, 130, y);
 
                 return doc;
             } catch (err) {
-                alert(`Error al generar el PDF: ${err.message}`);
+                alert(`Error generating PDF: ${err.message}`);
                 throw err;
             }
         }
 
-        // Manejar envío del formulario
+        // Handle form submission
         function handleFormSubmission() {
             try {
-                const form = document.getElementById('inflightForm');
-                if (!form) {
-                    alert('Error: Formulario no encontrado.');
-                    return;
-                }
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    try {
-                        const formData = {
-                            date: document.getElementById('date').value || '',
-                            acReg: document.getElementById('acReg').value || 'N/A',
-                            flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
-                                route: row.querySelector('.route').value || 'N/A',
-                                flightNumber: row.querySelector('.flightNumber').value || 'N/A',
-                                departure: row.querySelector('.departure').value || 'N/A',
-                                arrival: row.querySelector('.arrival').value || 'N/A',
-                                time: row.querySelector('.flightTime').value || 'N/A',
-                                finalPax: row.querySelector('.finalPax').value || '0',
-                                fwd: row.querySelector('.fwd').value || '0',
-                                aft: row.querySelector('.aft').value || '0',
-                                wheelchair: row.querySelector('.wheelchair').value || 'N/A',
-                            })),
-                            captain: document.getElementById('captain').value || 'N/A',
-                            firstOfficer: document.getElementById('firstOfficer').value || 'N/A',
-                            crew: Array.from(document.querySelectorAll('#crewTable tr'))
-                                .filter(row => !row.classList.contains('extra-crew') || row.style.display !== 'none')
-                                .map(row => ({
-                                    crewcode: row.querySelector('.crewcode').value || 'N/A',
-                                    name: row.querySelector('.crewName').value || 'N/A',
-                                })),
-                            description: document.getElementById('description').value || 'N/A',
-                            products: {
-                                items: Array.from(document.querySelectorAll('#productTable tr')).map(row => ({
-                                    product: row.cells[0].textContent || 'N/A',
-                                    open: row.querySelector('.open').value || '0',
-                                    close: row.querySelector('.close').value || '0',
-                                    sold: row.querySelector('.difference-cell').textContent || '0',
-                                })),
-                                seals: {
-                                    yellow: document.getElementById('yellowSeal').value || 'N/A',
-                                    green: document.getElementById('greenSeal').value || 'N/A',
-                                    metal: document.getElementById('metalSeal').value || 'N/A',
-                                },
-                                equipment: {
-                                    kettles: document.getElementById('kettles').value || '0',
-                                    cupholder: document.getElementById('cupholder').value || '0',
-                                    babyWarmer: document.getElementById('babyWarmer').value || '0',
-                                    coolerBag: document.getElementById('coolerBag').value || '0',
-                                },
-                            },
-                            dutyFreeProducts: {
-                                items: Array.from(document.querySelectorAll('#dutyFreeTable tr')).map(row => ({
-                                    product: row.cells[0].textContent || 'N/A',
-                                    open: row.querySelector('.open').value || '0',
-                                    close: row.querySelector('.close').value || '0',
-                                    sold: row.querySelector('.difference-cell').textContent || '0',
-                                })),
-                                seal: document.getElementById('dutyFreeMetalSeal').value || 'N/A',
-                            },
-                            sales: {
-                                salesCrew1: document.getElementById('salesCrew1').value || '0.00',
-                                salesCrew2: document.getElementById('salesCrew2').value || '0.00',
-                                salesCrew3: document.getElementById('salesCrew3').value || '0.00',
-                                salesCrew4: document.getElementById('salesCrew4').value || '0.00',
-                                totalSales: document.getElementById('totalSales').value || '0.00',
-                                overallAverage: document.getElementById('overallAverage').value || '0.00',
-                            },
-                            totalPax: document.getElementById('totalPax').value || '0',
-                        };
+                const formData = {
+                    date: document.getElementById('date').value || '',
+                    acReg: document.getElementById('acReg').value || 'N/A',
+                    flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
+                        route: row.querySelector('.route').value || 'N/A',
+                        flightNumber: row.querySelector('.flightNumber').value || 'N/A',
+                        departure: row.querySelector('.departure').value || 'N/A',
+                        arrival: row.querySelector('.arrival').value || 'N/A',
+                        time: row.querySelector('.flightTime').value || 'N/A',
+                        finalPax: row.querySelector('.finalPax').value || '0',
+                        fwd: row.querySelector('.fwd').value || '0',
+                        aft: row.querySelector('.aft').value || '0',
+                        wheelchair: row.querySelector('.wheelchair').value || 'N/A',
+                    })),
+                    captain: document.getElementById('captain').value || 'N/A',
+                    firstOfficer: document.getElementById('firstOfficer').value || 'N/A',
+                    crew: Array.from(document.querySelectorAll('#crewTable tr'))
+                        .filter(row => !row.classList.contains('extra-crew') || row.style.display !== 'none')
+                        .map(row => ({
+                            crewcode: row.querySelector('.crewcode').value || 'N/A',
+                            name: row.querySelector('.crewName').value || 'N/A',
+                        })),
+                    description: document.getElementById('description').value || 'N/A',
+                    products: {
+                        items: Array.from(document.querySelectorAll('#productTable tr')).map(row => ({
+                            product: row.cells[0].textContent || 'N/A',
+                            open: row.querySelector('.open').value || '0',
+                            close: row.querySelector('.close').value || '0',
+                            sold: row.querySelector('.difference-cell').textContent || '0',
+                        })),
+                        seals: {
+                            yellow: document.getElementById('yellowSeal').value || 'N/A',
+                            green: document.getElementById('greenSeal').value || 'N/A',
+                            metal: document.getElementById('metalSeal').value || 'N/A',
+                        },
+                        equipment: {
+                            kettles: document.getElementById('kettles').value || '0',
+                            cupholder: document.getElementById('cupholder').value || '0',
+                            babyWarmer: document.getElementById('babyWarmer').value || '0',
+                            coolerBag: document.getElementById('coolerBag').value || '0',
+                        },
+                    },
+                    dutyFreeProducts: {
+                        items: Array.from(document.querySelectorAll('#dutyFreeTable tr')).map(row => ({
+                            product: row.cells[0].textContent || 'N/A',
+                            open: row.querySelector('.open').value || '0',
+                            close: row.querySelector('.close').value || '0',
+                            sold: row.querySelector('.difference-cell').textContent || '0',
+                        })),
+                        seal: document.getElementById('dutyFreeMetalSeal').value || 'N/A',
+                    },
+                    sales: {
+                        salesCrew1: document.getElementById('salesCrew1').value || '0.00',
+                        salesCrew2: document.getElementById('salesCrew2').value || '0.00',
+                        salesCrew3: document.getElementById('salesCrew3').value || '0.00',
+                        salesCrew4: document.getElementById('salesCrew4').value || '0.00',
+                        totalSales: document.getElementById('totalSales').value || '0.00',
+                        overallAverage: document.getElementById('overallAverage').value || '0.00',
+                    },
+                    totalPax: document.getElementById('totalPax').value || '0',
+                };
 
-                        const dateStr = formData.date.replace(/-/g, '') || '20250101';
-                        const pdfFilename = `informe_vuelo_${dateStr}.pdf`;
+                const dateStr = formData.date.replace(/-/g, '') || '20250101';
+                const pdfFilename = `flight_report_${dateStr}.pdf`;
 
-                        // Generar y descargar PDF
-                        const doc = generatePDF(formData);
-                        doc.save(pdfFilename);
-                        alert(`Informe guardado como ${pdfFilename}`);
-                    } catch (err) {
-                        alert(`Error al procesar el formulario: ${err.message}`);
-                    }
-                });
+                // Generate and download PDF
+                const doc = generatePDF(formData);
+                const pdfBlob = doc.output('blob');
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                const link = document.createElement('a');
+                link.href = pdfUrl;
+                link.download = pdfFilename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(pdfUrl);
+                alert(`Report saved as ${pdfFilename}`);
             } catch (err) {
-                alert(`Error al configurar el envío del formulario: ${err.message}`);
+                alert(`Error processing form: ${err.message}`);
             }
         }
 
-        // Inicializar el formulario
+        // Initialize the form
         function initializeForm() {
             try {
                 calculateDifference('productTable');
@@ -1192,10 +1188,9 @@
                 updateSalesLabels();
                 calculateTotalPax();
                 calculateTotalSales();
-                handleFormSubmission();
                 toggleStockView('product');
             } catch (err) {
-                alert(`Error al inicializar el formulario: ${err.message}`);
+                alert(`Error initializing form: ${err.message}`);
             }
         }
 
