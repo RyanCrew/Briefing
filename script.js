@@ -20,7 +20,7 @@ function saveFormData() {
         const formData = collectFormData();
         localStorage.setItem('flightReportData', JSON.stringify(formData));
         localStorage.setItem('extraCrewCount', extraCrewCount);
-        console.log('Form data saved');
+        console.log('Form data saved:', formData);
     } catch (error) {
         console.error('Error saving form:', error);
         showNotification('Error saving form data');
@@ -102,7 +102,7 @@ function loadFormData() {
                     document.querySelector('.add-crew-button').style.display = 'none';
                 }
             }
-            console.log('Form data loaded');
+            console.log('Form data loaded:', data);
         }
     } catch (error) {
         console.error('Error loading form:', error);
@@ -176,9 +176,11 @@ function addExtraCrew() {
     try {
         if (extraCrewCount >= 2) {
             showNotification('Maximum extra crew reached');
+            console.log('Max extra crew reached');
             return;
         }
         extraCrewCount++;
+        console.log('Adding extra crew:', extraCrewCount);
         const extraRow = document.getElementById(`extraCrew${extraCrewCount}`);
         if (extraRow) {
             extraRow.style.display = 'table-row';
@@ -190,7 +192,8 @@ function addExtraCrew() {
             console.log('Extra crew added:', extraCrewCount);
         } else {
             extraCrewCount--;
-            showNotification('Error adding crew');
+            console.error('Extra crew row not found:', `extraCrew${extraCrewCount + 1}`);
+            showNotification('Error adding crew: Row not found');
         }
     } catch (error) {
         console.error('Error adding extra crew:', error);
@@ -234,11 +237,11 @@ function calculateDifference() {
                         openInput.addEventListener('input', () => {
                             soldCell.textContent = (parseInt(openInput.value) || 0) - (parseInt(closeInput.value) || 0);
                             saveFormData();
-                        }, { once: true });
+                        });
                         closeInput.addEventListener('input', () => {
                             soldCell.textContent = (parseInt(openInput.value) || 0) - (parseInt(closeInput.value) || 0);
                             saveFormData();
-                        }, { once: true });
+                        });
                     }
                 });
             }
@@ -260,9 +263,11 @@ function updateSalesLabels() {
                 const code = crewCode.value.trim() || `Crew ${i}`;
                 salesLabel.textContent = `${code} Sales`;
                 crewCode.addEventListener('input', () => {
-                    salesLabel.textContent = `${crewCode.value.trim() || `Crew ${i}`} Sales`;
+                    const newCode = crewCode.value.trim() || `Crew ${i}`;
+                    salesLabel.textContent = `${newCode} Sales`;
+                    console.log(`Updated sales label ${i}: ${newCode}`);
                     saveFormData();
-                }, { once: true });
+                });
             }
         }
         console.log('Updated sales labels');
@@ -285,7 +290,11 @@ function calculateTotalSales() {
         const totalPaxInput = document.getElementById('totalPax');
         const averageInput = document.getElementById('average');
         if (totalSalesInput && totalPaxInput && averageInput) {
-            const total = salesInputs.reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0);
+            const total = salesInputs.reduce((sum, input) => {
+                const value = parseFloat(input.value) || 0;
+                console.log(`Sales input ${input.id}: ${value}`);
+                return sum + value;
+            }, 0);
             totalSalesInput.value = total.toFixed(2);
             const totalPax = parseInt(totalPaxInput.value) || 0;
             averageInput.value = totalPax > 0 ? (total / totalPax).toFixed(2) : '0.00';
@@ -295,8 +304,9 @@ function calculateTotalSales() {
                     totalSalesInput.value = newTotal.toFixed(2);
                     const newTotalPax = parseInt(totalPaxInput.value) || 0;
                     averageInput.value = newTotalPax > 0 ? (newTotal / newTotalPax).toFixed(2) : '0.00';
+                    console.log(`New total sales: ${newTotal}, Pax: ${newTotalPax}, Average: ${averageInput.value}`);
                     saveFormData();
-                }, { once: true });
+                });
             });
             console.log('Calculated total sales:', total);
         }
@@ -314,7 +324,11 @@ function calculateTotalPax() {
         const averageInput = document.getElementById('average');
         const totalSalesInput = document.getElementById('totalSales');
         if (totalPaxInput && averageInput && totalSalesInput) {
-            const totalPax = Array.from(paxInputs).reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
+            const totalPax = Array.from(paxInputs).reduce((sum, input) => {
+                const value = parseInt(input.value) || 0;
+                console.log(`Pax input ${input.id || input.className}: ${value}`);
+                return sum + value;
+            }, 0);
             totalPaxInput.value = totalPax;
             const totalSales = parseFloat(totalSalesInput.value) || 0;
             averageInput.value = totalPax > 0 ? (totalSales / totalPax).toFixed(2) : '0.00';
@@ -324,8 +338,9 @@ function calculateTotalPax() {
                     totalPaxInput.value = newTotalPax;
                     const newTotalSales = parseFloat(totalSalesInput.value) || 0;
                     averageInput.value = newTotalPax > 0 ? (newTotalSales / newTotalPax).toFixed(2) : '0.00';
+                    console.log(`New total pax: ${newTotalPax}, Sales: ${newTotalSales}, Average: ${averageInput.value}`);
                     saveFormData();
-                }, { once: true });
+                });
             });
             console.log('Calculated total pax:', totalPax);
         }
@@ -510,7 +525,7 @@ function collectFormData() {
                 });
             }
         }
-        return {
+        const formData = {
             date: document.getElementById('date').value || '',
             acReg: document.getElementById('acReg').value || '',
             flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
@@ -553,15 +568,17 @@ function collectFormData() {
             })),
             dutyFreeSeal: document.getElementById('dutyFreeMetalSeal').value || '',
             salesForm: {
-                crew1: document.getElementById('salesCrew1').value || '0.00',
-                crew2: document.getElementById('salesCrew2').value || '0.00',
-                crew3: document.getElementById('salesCrew3').value || '0.00',
-                crew4: document.getElementById('salesCrew4').value || '0.00',
-                total: document.getElementById('totalSales').value || '0.00',
-                average: document.getElementById('average').value || '0.00'
+                crew1: parseFloat(document.getElementById('salesCrew1').value) || 0.00,
+                crew2: parseFloat(document.getElementById('salesCrew2').value) || 0.00,
+                crew3: parseFloat(document.getElementById('salesCrew3').value) || 0.00,
+                crew4: parseFloat(document.getElementById('salesCrew4').value) || 0.00,
+                total: parseFloat(document.getElementById('totalSales').value) || 0.00,
+                average: parseFloat(document.getElementById('average').value) || 0.00
             },
-            totalPax: document.getElementById('totalPax').value || '0'
+            totalPax: parseInt(document.getElementById('totalPax').value) || 0
         };
+        console.log('Collected form data:', formData);
+        return formData;
     } catch (error) {
         console.error('Error collecting form data:', error);
         showNotification('Error collecting form data');
@@ -601,7 +618,7 @@ function initializeForm() {
         calculateTotalSales();
         calculateTotalPax();
         document.querySelectorAll('input, textarea').forEach(input => {
-            input.addEventListener('input', saveFormData, { once: true });
+            input.addEventListener('input', saveFormData);
         });
         console.log('Form initialized');
     } catch (error) {
