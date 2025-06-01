@@ -1,14 +1,15 @@
-
-<xaiartifact_id="e4b7c9f2-5a3d-4c-8e9a-2b3f0aa1c2e5" title="package.json" contentType="application/json">
 {
-  "name": "inflight-report-app",
-  "version": "1.0.0",
-  "description": "Inflight report form application",
-  "scripts": {
-    "build": "npx tailwindcss -i ./input.css -o ./output.css --minify"
-  },
-  "devDependencies": {
-    "tailwindcss": "^3.2.4"
-  }
+    "name": "inflight-report-app",
+    "version": "1.0.0",
+    "description": "Inflight report form application",
+    "scripts": {
+        "build": "npx tailwindcss -i ./input.css -o ./output.css --minify"
+    },
+    "dependencies": {
+        "jspdf": "^2.5.1",
+        "jspdf-autotable": "^3.8.3"
+    },
+    "devDependencies": {
+        "tailwindcss": "^3.2.4"
+    }
 }
-</xaiartifact>
