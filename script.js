@@ -1,38 +1,9 @@
-const airports = [
-    { code: "TIA", name: "Tirana Airport" },
-    { code: "FMM", name: "Algovia Airport Memmingen" },
-    { code: "BER", name: "Berlin Brandenburg Airport" },
-    { code: "ALC", name: "Alicante-Elche Airport" },
-    { code: "MAD", name: "Madrid-Barajas Airport" },
-    { code: "STN", name: "London Stansted Airport" },
-];
-
 let activeFlight = null;
 let extraCrewCount = 0;
 let activeStockTab = 'product';
 
-function populateAirports() {
-    try {
-        const selects = document.querySelectorAll('.airport-select');
-        if (selects.length === 0) {
-            console.warn('No elements with class "airport-select" found.');
-            return;
-        }
-        selects.forEach(select => {
-            select.innerHTML = '<option value="">Select Airport</option>';
-            airports.forEach(airport => {
-                const option = document.createElement('option');
-                option.value = airport.code;
-                option.textContent = `${airport.name} (${airport.code})`;
-                select.appendChild(option);
-            });
-        });
-    } catch (err) {
-        console.error('Error populating airports:', err);
-    }
-}
-
 function showNotification(message, duration = 5000) {
+    console.log('Notification:', message);
     const notification = document.getElementById('notification');
     if (notification) {
         notification.textContent = message;
@@ -58,8 +29,10 @@ function saveFormData() {
         const formData = collectFormData();
         localStorage.setItem('flightReportData', JSON.stringify(formData));
         localStorage.setItem('extraCrewCount', extraCrewCount);
+        console.log('Form data saved to localStorage');
     } catch (err) {
         console.error('Error saving form data:', err);
+        showNotification('Error saving form data');
     }
 }
 
@@ -134,7 +107,7 @@ function loadFormData() {
             document.getElementById('salesCrew4').value = data.sales.salesCrew4 || '';
             document.getElementById('totalSales').value = data.sales.totalSales || '';
             document.getElementById('totalPax').value = data.totalPax || '';
-            document.getElementById('overallAverage').value = data.sales.overallAverage || '';
+            document.getElementById('average').value = data.sales.average || '';
 
             if (savedExtraCrewCount) {
                 extraCrewCount = parseInt(savedExtraCrewCount) || 0;
@@ -143,9 +116,11 @@ function loadFormData() {
                     addButton.style.display = 'none';
                 }
             }
+            console.log('Form data loaded from localStorage');
         }
     } catch (err) {
-        showNotification('Error loading form data: ' + err.message);
+        console.error('Error loading form data:', err);
+        showNotification('Error loading saved data');
     }
 }
 
@@ -165,13 +140,17 @@ function clearForm() {
         updateSalesLabels();
         calculateTotalPax();
         calculateTotalSales();
+        showNotification('Form cleared');
+        console.log('Form cleared');
     } catch (err) {
-        showNotification('Error clearing form: ' + err.message);
+        console.error('Error clearing form:', err);
+        showNotification('Error clearing form');
     }
 }
 
 function toggleFlightView(flightNumber) {
     try {
+        console.log('Toggling flight view:', flightNumber);
         const flightRows = document.querySelectorAll('#flightsTableBody tr');
         const flightInfoHeader = document.getElementById('flightInfoHeader');
         const stockSection = document.querySelector('#stockSection');
@@ -191,7 +170,7 @@ function toggleFlightView(flightNumber) {
         } else {
             activeFlight = flightNumber;
             flightRows.forEach(row => {
-                row.style.display = row.getAttribute('data-flight') === flightNumber ? '' : 'none';
+                row.style.display = row.dataset.flight === flightNumber ? '' : 'none';
             });
             flightInfoHeader.style.display = 'none';
             stockSection.style.display = 'none';
@@ -199,62 +178,72 @@ function toggleFlightView(flightNumber) {
             crewSection.style.display = '';
         }
         saveFormData();
+        console.log('Flight view toggled to:', activeFlight);
     } catch (err) {
-        showNotification('Error toggling flight view: ' + err.message);
+        console.error('Error toggling flight view:', err);
+        showNotification('Error toggling flight view');
     }
 }
 
 function addExtraCrew() {
     try {
+        console.log('Adding extra crew, current count:', extraCrewCount);
         if (extraCrewCount >= 2) {
-            showNotification('Maximum of 2 extra crew members reached.');
+            showNotification('Maximum of 2 extra crew members reached');
             return;
         }
         extraCrewCount++;
         const extraRow = document.getElementById(`extraCrew${extraCrewCount}`);
         if (!extraRow) {
-            showNotification(`Error: Extra crew row ${extraCrewCount} not found.`);
+            showNotification(`Error: Extra crew row ${extraCrewCount} not found`);
             extraCrewCount--;
             return;
         }
         extraRow.style.display = 'table-row';
-        showNotification(`Extra crew member ${extraCrewCount} added.`);
+        showNotification(`Added extra crew member ${extraCrewCount}`);
         if (extraCrewCount === 2) {
             const addButton = document.querySelector('.add-crew-button');
             if (addButton) addButton.style.display = 'none';
         }
         saveFormData();
+        console.log('Extra crew added, new count:', extraCrewCount);
     } catch (err) {
-        showNotification('Error adding extra crew: ' + err.message);
+        console.error('Error adding extra crew:', err);
+        showNotification('Error adding extra crew');
     }
 }
 
 function removeExtraCrew(index) {
     try {
+        console.log('Removing extra crew member:', index);
         const extraRow = document.getElementById(`extraCrew${index}`);
         if (!extraRow) {
-            showNotification(`Error: Extra crew row ${index} not found.`);
+            showNotification(`Error: Extra crew row ${index} not found`);
             return;
         }
         extraRow.style.display = 'none';
-        extraRow.querySelectorAll('input').forEach(input => (input.value = ''));
+        extraRow.querySelectorAll('input').forEach(input => input.value = '');
         extraCrewCount--;
         const addButton = document.querySelector('.add-crew-button');
         if (addButton) addButton.style.display = 'inline-block';
         saveFormData();
+        console.log('Extra crew removed, new count:', extraCrewCount);
     } catch (err) {
-        showNotification('Error removing extra crew: ' + err.message);
+        console.error('Error removing extra crew:', err);
+        showNotification('Error removing extra crew');
     }
 }
 
 function toggleStockView(type) {
     try {
+        console.log('Toggling stock view to:', type);
         const productTable = document.getElementById('productStockTable');
         const dutyFreeTable = document.getElementById('dutyFreeStockTable');
         const productTab = document.getElementById('productStockTab');
         const dutyFreeTab = document.getElementById('dutyFreeStockTab');
         if (!productTable || !dutyFreeTable || !productTab || !dutyFreeTab) {
-            showNotification('Error: Missing inventory table or tab elements.');
+            console.error('Missing stock table or tab elements');
+            showNotification('Error: Missing inventory elements');
             return;
         }
         productTable.style.display = type === 'product' ? 'block' : 'none';
@@ -267,20 +256,24 @@ function toggleStockView(type) {
             stockSection.setAttribute('open', '');
         }
         saveFormData();
+        console.log('Stock view toggled to:', type);
     } catch (err) {
-        showNotification('Error toggling inventory view: ' + err.message);
+        console.error('Error toggling stock view:', err);
+        showNotification('Error toggling inventory view');
     }
 }
 
 function calculateDifference(tableId) {
     try {
+        console.log('Calculating differences for table:', tableId);
         const table = document.getElementById(tableId);
         if (!table) {
-            showNotification(`Error: Table with ID '${tableId}' not found.`);
+            console.error(`Table ${tableId} not found`);
+            showNotification('Error: Inventory table not found');
             return;
         }
         const rows = table.getElementsByTagName('tr');
-        for (const row of rows) {
+        for (let row of rows) {
             const openInput = row.querySelector('.open');
             const closeInput = row.querySelector('.close');
             const soldCell = row.querySelector('.difference-cell');
@@ -288,7 +281,7 @@ function calculateDifference(tableId) {
                 const updateSales = () => {
                     const openVal = parseInt(openInput.value) || 0;
                     const closeVal = parseInt(closeInput.value) || 0;
-                    soldCell.textContent = `${openVal - closeVal}`;
+                    soldCell.textContent = (openVal - closeVal).toString();
                     saveFormData();
                 };
                 openInput.addEventListener('input', updateSales);
@@ -297,12 +290,14 @@ function calculateDifference(tableId) {
             }
         }
     } catch (err) {
-        showNotification('Error calculating differences: ' + err.message);
+        console.error('Error calculating differences:', err);
+        showNotification('Error updating inventory');
     }
 }
 
 function updateSalesLabels() {
     try {
+        console.log('Updating sales labels');
         const crewInputs = [
             document.getElementById('crewcode1'),
             document.getElementById('crewcode2'),
@@ -319,20 +314,24 @@ function updateSalesLabels() {
             if (input && salesLabels[idx]) {
                 const updateLabel = () => {
                     const code = input.value.trim() || `Crew ${idx + 1}`;
-                    salesLabels[idx].textContent = `Sales ${code}`;
+                    salesLabels[idx].textContent = `${code} Sales`;
+                    console.log(`Updated sales label ${idx + 1} to:`, code);
                     saveFormData();
                 };
+                input.removeEventListener('input', updateLabel); // Prevent duplicate listeners
                 input.addEventListener('input', updateLabel);
                 updateLabel();
             }
         });
     } catch (err) {
-        showNotification('Error updating sales labels: ' + err.message);
+        console.error('Error updating sales labels:', err);
+        showNotification('Error updating sales labels');
     }
 }
 
 function calculateTotalSales() {
     try {
+        console.log('Calculating total sales');
         const salesInputs = [
             document.getElementById('salesCrew1'),
             document.getElementById('salesCrew2'),
@@ -341,8 +340,10 @@ function calculateTotalSales() {
         ];
         const totalSales = document.getElementById('totalSales');
         const totalPax = document.getElementById('totalPax');
-        const overallAverage = document.getElementById('overallAverage');
-        if (!totalSales || !totalPax || !overallAverage) {
+        const average = document.getElementById('average');
+        if (!totalSales || !totalPax || !average) {
+            console.error('Missing sales total elements');
+            showNotification('Error: Sales elements missing');
             return;
         }
         const updateTotal = () => {
@@ -352,47 +353,61 @@ function calculateTotalSales() {
             }, 0);
             totalSales.value = total.toFixed(2);
             const paxCount = parseInt(totalPax.value) || 1;
-            overallAverage.value = (total / paxCount).toFixed(2);
+            average.value = (total / paxCount).toFixed(2);
             saveFormData();
+            console.log('Total sales:', total, 'Average/Pax:', average.value);
         };
         salesInputs.forEach(input => {
-            if (input) input.addEventListener('input', updateTotal);
+            if (input) {
+                input.removeEventListener('input', updateTotal); // Prevent duplicate listeners
+                input.addEventListener('input', updateTotal);
+            }
         });
         updateTotal();
     } catch (err) {
-        showNotification('Error calculating total sales: ' + err.message);
+        console.error('Error calculating total sales:', err);
+        showNotification('Error calculating sales');
     }
 }
 
 function calculateTotalPax() {
     try {
+        console.log('Calculating total pax');
         const paxInputs = document.querySelectorAll('.finalPax');
         const totalPax = document.getElementById('totalPax');
-        if (!totalPax) return;
+        if (!totalPax) {
+            console.error('Total pax element not found');
+            showNotification('Error: Total pax element missing');
+            return;
+        }
         const updateTotal = () => {
             const total = Array.from(paxInputs).reduce((sum, input) => {
                 const value = parseInt(input.value) || 0;
                 return sum + value;
             }, 0);
-            totalPax.value = total;
-            calculateTotalSales();
+            totalPax.value = total.toString();
+            calculateTotalSales(); // Recalculate average
             saveFormData();
+            console.log('Total pax:', total);
         };
         paxInputs.forEach(input => {
+            input.removeEventListener('input', updateTotal); // Prevent duplicate listeners
             input.addEventListener('input', updateTotal);
         });
         updateTotal();
     } catch (err) {
-        showNotification('Error calculating total passengers: ' + err.message);
+        console.error('Error calculating total pax:', err);
+        showNotification('Error calculating passengers');
     }
 }
 
 function generatePDF(formData) {
     try {
+        console.log('Generating PDF');
         if (!window.jspdf) {
             throw new Error('jsPDF library is not loaded');
         }
-        const jsPDF = window.jspdf;
+        const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
         doc.setFontSize(16);
         doc.text('Flight Report', 10, 10);
@@ -511,7 +526,7 @@ function generatePDF(formData) {
             row.sold || '0',
         ]);
         doc.autoTable({
-            head: [['Product', 'Initial', 'Final', 'Sold']],
+            head: [productHeaders],
             body: dutyFreeData,
             startY: y + 5,
             theme: 'grid',
@@ -544,10 +559,11 @@ function generatePDF(formData) {
         y = doc.lastAutoTable.finalY + 5;
         doc.text(`Total Sales: ${formData.sales.totalSales || '0.00'} €`, 10, y);
         doc.text(`Total Pax: ${formData.totalPax || '0'}`, 70, y);
-        doc.text(`Average/Pax: ${formData.sales.overallAverage || '0.00'} €`, 130, y);
+        doc.text(`Average/Pax: ${formData.sales.average || '0.00'} €`, 130, y);
 
         return doc;
     } catch (err) {
+        console.error('Error generating PDF:', err);
         showNotification('Error generating PDF: ' + err.message);
         throw err;
     }
@@ -555,6 +571,7 @@ function generatePDF(formData) {
 
 function collectFormData() {
     try {
+        console.log('Collecting form data');
         const crewData = [];
         for (let i = 1; i <= 4; i++) {
             const crewcodeInput = document.getElementById(`crewcode${i}`);
@@ -634,18 +651,20 @@ function collectFormData() {
                 salesCrew3: document.getElementById('salesCrew3').value || '',
                 salesCrew4: document.getElementById('salesCrew4').value || '',
                 totalSales: document.getElementById('totalSales').value || '',
-                overallAverage: document.getElementById('overallAverage').value || '',
+                average: document.getElementById('average').value || '',
             },
             totalPax: document.getElementById('totalPax').value || '',
         };
     } catch (err) {
-        showNotification('Error collecting form data: ' + err.message);
+        console.error('Error collecting form data:', err);
+        showNotification('Error collecting form data');
         throw err;
     }
 }
 
 function handleFormSubmission() {
     try {
+        console.log('Handling form submission');
         const formData = collectFormData();
         let errors = [];
         if (!formData.date) errors.push('Date is required.');
@@ -658,83 +677,14 @@ function handleFormSubmission() {
             errors.push('At least one crew member must have a code and name.');
         }
         const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-        if (!formData.flights.every(flight => !flight.time || timeRegex.test(flight.time))) {
-            errors.push('Flight time must be in HH:MM format.');
-        }
+        formData.flights.forEach((flight, index) => {
+            if (flight.time && !timeRegex.test(flight.time)) {
+                errors.push(`Flight ${index + 1} time must be in HH:MM format.`);
+            }
+        });
         if (errors.length > 0) {
             showNotification(errors.join(' '));
             document.querySelectorAll('input:invalid, select:invalid').forEach(input => {
                 input.classList.add('border-red-500');
             });
-            return;
-        }
-
-        document.querySelectorAll('input, select').forEach(input => {
-            input.classList.remove('border-red-500');
-        });
-
-        const dateStr = formData.date.replaceAll('-', '') || '20250101';
-        const pdfFilename = `flight_report_${dateStr}.pdf`;
-
-        const doc = generatePDF(formData);
-        const pdfBlob = doc.output('blob');
-        const pdfUrl = URL.createObjectURL(pdfBlob);
-        const link = document.createElement('a');
-        link.href = pdfUrl;
-        link.download = pdfFilename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(pdfUrl);
-
-        showNotification(`Report saved as ${pdfFilename}`);
-        clearForm();
-    } catch (err) {
-        showNotification('Error processing form: ' + err.message);
-    }
-}
-
-function setupKeyboardNavigation() {
-    try {
-        const inputs = document.querySelectorAll('input:not([readonly]), select, textarea, button:not(.remove-crew-button)');
-        inputs.forEach((input, index) => {
-            input.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter' || event.keyCode === 13) {
-                    event.preventDefault();
-                    const nextIndex = index + 1;
-                    if (nextIndex < inputs.length) {
-                        inputs[nextIndex].focus();
-                    }
-                }
-            });
-        });
-    } catch (err) {
-        console.error('Error setting up keyboard navigation:', err);
-    }
-}
-
-function initializeForm() {
-    try {
-        loadFormData();
-        calculateDifference('productTable');
-        calculateDifference('dutyFreeTable');
-        updateSalesLabels();
-        calculateTotalPax();
-        calculateTotalSales();
-        toggleStockView('product');
-        setupKeyboardNavigation();
-
-        const inputs = document.querySelectorAll('input, select, textarea');
-        inputs.forEach(input => {
-            input.addEventListener('input', debounce(saveFormData, 300));
-            input.addEventListener('input', () => input.classList.remove('border-red-500'));
-        });
-    } catch (err) {
-        showNotification('Error initializing form: ' + err.message);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    populateAirports();
-    initializeForm();
-});
+            console.log('Validation errors:', errors
