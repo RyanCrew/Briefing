@@ -1,10 +1,17 @@
-<xaiartifact_id="f3c5e7a9-8d4f-6e-0a0b-5c4f0dd4e7f2" title="tailwind.config.js" contentType="application/javascript">
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./index.html"],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
+    content: [
+        "./*.html",
+        "./*.js" // Include JS files if classes are added dynamically
+    ],
+    theme: {
+        extend: {
+            // Add custom colors, fonts, etc., if needed
+            colors: {
+                'primary-blue': '#1e90ff',
+                'primary-orange': '#ff7f50',
+            },
+        },
+    },
+    plugins: [],
 }
-</xaiartifact>
