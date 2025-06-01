@@ -157,25 +157,25 @@ function toggleFlightView(flightNumber) {
         const salesSection = document.querySelector('#salesSection');
         const crewSection = document.querySelector('#crewSection');
         if (!flightRows || !flightInfoHeader || !stockSection || !salesSection || !crewSection) {
-            showNotification('Error: Missing elements required to toggle flights.');
+            showNotification('Error: Missing elements for flight toggle.');
             return;
         }
         if (activeFlight === flightNumber) {
             activeFlight = null;
-            flightRows.forEach(row => (row.style.display = ''));
+            flightRows.forEach(row => (row.style.display = 'table-row'));
             flightInfoHeader.style.display = 'grid';
-            stockSection.style.display = '';
-            salesSection.style.display = '';
-            crewSection.style.display = '';
+            stockSection.style.display = 'block';
+            salesSection.style.display = 'block';
+            crewSection.style.display = 'block';
         } else {
             activeFlight = flightNumber;
             flightRows.forEach(row => {
-                row.style.display = row.dataset.flight === flightNumber ? '' : 'none';
+                row.style.display = row.dataset.flight === flightNumber ? 'table-row' : 'none';
             });
             flightInfoHeader.style.display = 'none';
             stockSection.style.display = 'none';
             salesSection.style.display = 'none';
-            crewSection.style.display = '';
+            crewSection.style.display = 'block';
         }
         saveFormData();
         console.log('Flight view toggled to:', activeFlight);
@@ -272,23 +272,23 @@ function calculateDifference(tableId) {
             showNotification('Error: Inventory table not found');
             return;
         }
-        const rows = table.getElementsByTagName('tr');
-        for (let row of rows) {
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach(row => {
             const openInput = row.querySelector('.open');
             const closeInput = row.querySelector('.close');
             const soldCell = row.querySelector('.difference-cell');
             if (openInput && closeInput && soldCell) {
-                const updateSales = () => {
+                const updateSales = debounce(() => {
                     const openVal = parseInt(openInput.value) || 0;
                     const closeVal = parseInt(closeInput.value) || 0;
                     soldCell.textContent = (openVal - closeVal).toString();
                     saveFormData();
-                };
+                }, 300);
                 openInput.addEventListener('input', updateSales);
                 closeInput.addEventListener('input', updateSales);
                 updateSales();
             }
-        }
+        });
     } catch (err) {
         console.error('Error calculating differences:', err);
         showNotification('Error updating inventory');
@@ -312,13 +312,13 @@ function updateSalesLabels() {
         ];
         crewInputs.forEach((input, idx) => {
             if (input && salesLabels[idx]) {
-                const updateLabel = () => {
+                const updateLabel = debounce(() => {
                     const code = input.value.trim() || `Crew ${idx + 1}`;
                     salesLabels[idx].textContent = `${code} Sales`;
                     console.log(`Updated sales label ${idx + 1} to:`, code);
                     saveFormData();
-                };
-                input.removeEventListener('input', updateLabel); // Prevent duplicate listeners
+                }, 300);
+                input.removeEventListener('input', updateLabel);
                 input.addEventListener('input', updateLabel);
                 updateLabel();
             }
@@ -346,7 +346,7 @@ function calculateTotalSales() {
             showNotification('Error: Sales elements missing');
             return;
         }
-        const updateTotal = () => {
+        const updateTotal = debounce(() => {
             const total = salesInputs.reduce((sum, input) => {
                 const value = parseFloat(input.value) || 0;
                 return sum + value;
@@ -356,10 +356,10 @@ function calculateTotalSales() {
             average.value = (total / paxCount).toFixed(2);
             saveFormData();
             console.log('Total sales:', total, 'Average/Pax:', average.value);
-        };
+        }, 300);
         salesInputs.forEach(input => {
             if (input) {
-                input.removeEventListener('input', updateTotal); // Prevent duplicate listeners
+                input.removeEventListener('input', updateTotal);
                 input.addEventListener('input', updateTotal);
             }
         });
@@ -380,18 +380,18 @@ function calculateTotalPax() {
             showNotification('Error: Total pax element missing');
             return;
         }
-        const updateTotal = () => {
+        const updateTotal = debounce(() => {
             const total = Array.from(paxInputs).reduce((sum, input) => {
                 const value = parseInt(input.value) || 0;
                 return sum + value;
             }, 0);
             totalPax.value = total.toString();
-            calculateTotalSales(); // Recalculate average
+            calculateTotalSales();
             saveFormData();
             console.log('Total pax:', total);
-        };
+        }, 300);
         paxInputs.forEach(input => {
-            input.removeEventListener('input', updateTotal); // Prevent duplicate listeners
+            input.removeEventListener('input', updateTotal);
             input.addEventListener('input', updateTotal);
         });
         updateTotal();
@@ -457,7 +457,7 @@ function generatePDF(formData) {
         doc.text(`First Officer: ${formData.firstOfficer || 'N/A'}`, 100, y + 5);
         const crewHeaders = ['Crew', 'Code', 'Name'];
         const crewData = formData.crew.map((c, i) => [
-            c.crewcode ? `Crew ${i + 1}` : `Extra ${i - 3}`,
+            i < 4 ? `No. ${i + 1}` : `Extra ${i - 3}`,
             c.crewcode || 'N/A',
             c.name || 'N/A',
         ]);
@@ -595,24 +595,20 @@ function collectFormData() {
             }
         }
 
-        const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
         return {
             date: document.getElementById('date').value || '',
             acReg: document.getElementById('acReg').value || '',
-            flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => {
-                const time = row.querySelector('.flightTime').value || '';
-                return {
-                    route: row.querySelector('.route').value || '',
-                    flightNumber: row.querySelector('.flightNumber').value || '',
-                    departure: row.querySelector('.departure').value || '',
-                    arrival: row.querySelector('.arrival').value || '',
-                    time: timeRegex.test(time) ? time : '',
-                    finalPax: row.querySelector('.finalPax').value || '',
-                    fwd: row.querySelector('.fwd').value || '',
-                    aft: row.querySelector('.aft').value || '',
-                    wheelchair: row.querySelector('.wheelchair').value || '',
-                };
-            }),
+            flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
+                route: row.querySelector('.route').value || '',
+                flightNumber: row.querySelector('.flightNumber').value || '',
+                departure: row.querySelector('.departure').value || '',
+                arrival: row.querySelector('.arrival').value || '',
+                time: row.querySelector('.flightTime').value || '',
+                finalPax: row.querySelector('.finalPax').value || '',
+                fwd: row.querySelector('.fwd').value || '',
+                aft: row.querySelector('.aft').value || '',
+                wheelchair: row.querySelector('.wheelchair').value || '',
+            })),
             captain: document.getElementById('captain').value || '',
             firstOfficer: document.getElementById('firstOfficer').value || '',
             crew: crewData,
@@ -676,15 +672,52 @@ function handleFormSubmission() {
         if (!formData.crew.some(crew => crew.crewcode && crew.name)) {
             errors.push('At least one crew member must have a code and name.');
         }
-        const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-        formData.flights.forEach((flight, index) => {
-            if (flight.time && !timeRegex.test(flight.time)) {
-                errors.push(`Flight ${index + 1} time must be in HH:MM format.`);
-            }
-        });
         if (errors.length > 0) {
             showNotification(errors.join(' '));
-            document.querySelectorAll('input:invalid, select:invalid').forEach(input => {
+            document.querySelectorAll('input:invalid').forEach(input => {
                 input.classList.add('border-red-500');
+                setTimeout(() => input.classList.remove('border-red-500'), 5000);
             });
-            console.log('Validation errors:', errors
+            console.log('Validation errors:', errors);
+            return;
+        }
+
+        const doc = generatePDF(formData);
+        const pdfBlob = doc.output('blob');
+        const url = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `FlightReport_${formData.date || 'Untitled'}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        showNotification('Report generated and downloaded');
+        console.log('PDF generated and download triggered');
+    } catch (err) {
+        console.error('Error handling form submission:', err);
+        showNotification('Error submitting report: ' + err.message);
+    }
+}
+
+function initializeForm() {
+    try {
+        console.log('Initializing form');
+        loadFormData();
+        calculateDifference('productTable');
+        calculateDifference('dutyFreeTable');
+        updateSalesLabels();
+        calculateTotalPax();
+        calculateTotalSales();
+        toggleStockView(activeStockTab);
+        document.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', debounce(saveFormData, 500));
+        });
+        console.log('Form initialized');
+    } catch (err) {
+        console.error('Error initializing form:', err);
+        showNotification('Error initializing form');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initializeForm);
