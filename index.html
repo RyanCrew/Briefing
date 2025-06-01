@@ -5,311 +5,716 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Inflight Report</title>
-    <link rel="stylesheet" href="output.css">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="apple-mobile-web-app-title" content="Flight Report">
+    <meta name="description" content="Flight report form for offline use">
+    <title>Flight Report</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icon.png">
+    <link href="./output.css" rel="stylesheet">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
-</head>
-<body class="bg-gray-100 font-sans">
-    <div id="notification" class="fixed top-0 left-0 right-0 bg-red-500 text-white text-center p-2 hidden"></div>
-    <div class="container mx-auto p-4 max-w-5xl">
-        <h1 class="text-2xl font-bold mb-4 text-center">Inflight Report</h1>
-        <form id="inflightForm" class="space-y-6" onsubmit="event.preventDefault(); handleFormSubmission();">
-            <section id="flightInfoSection" class="bg-white p-4 rounded-lg shadow">
-                <h2 class="text-xl font-semibold mb-2 flight-info-header">Flight Information</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flight-info-header">
-                    <div>
-                        <label for="date" class="block text-sm font-medium">Date</label>
-                        <input type="date" id="date" class="mt-1 p-2 border rounded w-full">
-                    </div>
-                    <div>
-                        <label for="acReg" class="block text-sm font-medium">Aircraft Registration</label>
-                        <input type="text" id="acReg" class="mt-1 p-2 border rounded w-full" maxlength="10">
-                    </div>
-                </div>
-                <table class="min-w-full mt-4">
-                    <thead>
-                        <tr class="bg-blue-500 text-white">
-                            <th class="p-2 text-left">#</th>
-                            <th class="p-2 text-left">Route</th>
-                            <th class="p-2 text-left">Flight No.</th>
-                            <th class="p-2 text-left">Time</th>
-                            <th class="p-2 text-left">Dep.</th>
-                            <th class="p-2 text-left">Arr.</th>
-                            <th class="p-2 text-left">Pax</th>
-                            <th class="p-2 text-left">FWD</th>
-                            <th class="p-2 text-left">AFT</th>
-                            <th class="p-2 text-left">W/C</th>
-                            <th class="p-2 text-left">View</th>
-                        </tr>
-                    </thead>
-                    <tbody id="flightsTableBody">
-                        <tr data-flight="1">
-                            <td class="p-2">1</td>
-                            <td class="p-2"><input type="text" class="route p-1 border rounded w-full" maxlength="20"></td>
-                            <td class="p-2"><input type="text" class="flightNumber p-1 border rounded w-full" maxlength="10"></td>
-                            <td class="p-2"><input type="time" class="flightTime p-1 border rounded w-full"></td>
-                            <td class="p-2"><input type="text" class="departure p-1 border rounded w-full" maxlength="10"></td>
-                            <td class="p-2"><input type="text" class="arrival p-1 border rounded w-full" maxlength="10"></td>
-                            <td class="p-2"><input type="number" class="finalPax p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2"><input type="number" class="fwd p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2"><input type="number" class="aft p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2"><input type="text" class="wheelchair p-1 border rounded w-full" maxlength="10"></td>
-                            <td class="p-2"><button type="button" onclick="toggleFlightView('1')" class="bg-blue-500 text-white px-2 py-1 rounded">View</button></td>
-                        </tr>
-                        <tr data-flight="2">
-                            <td class="p-2">2</td>
-                            <td class="p-2"><input type="text" class="route p-1 border rounded w-full" maxlength="20"></td>
-                            <td class="p-2"><input type="text" class="flightNumber p-1 border rounded w-full" maxlength="10"></td>
-                            <td class="p-2"><input type="time" class="flightTime p-1 border rounded w-full"></td>
-                            <td class="p-2"><input type="text" class="departure p-1 border rounded w-full" maxlength="10"></td>
-                            <td class="p-2"><input type="text" class="arrival p-1 border rounded w-full" maxlength="10"></td>
-                            <td class="p-2"><input type="number" class="finalPax p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2"><input type="number" class="fwd p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2"><input type="number" class="aft p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2"><input type="text" class="wheelchair p-1 border rounded w-full" maxlength="10"></td>
-                            <td class="p-2"><button type="button" onclick="toggleFlightView('2')" class="bg-blue-500 text-white px-2 py-1 rounded">View</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-
-            <section id="crewSection" class="bg-white p-4 rounded-lg shadow">
-                <h2 class="text-xl font-semibold mb-2">Crew Information</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="captain" class="block text-sm font-medium">Captain</label>
-                        <input type="text" id="captain" class="mt-1 p-2 border rounded w-full" maxlength="50">
-                    </div>
-                    <div>
-                        <label for="firstOfficer" class="block text-sm font-medium">First Officer</label>
-                        <input type="text" id="firstOfficer" class="mt-1 p-2 border rounded w-full" maxlength="50">
-                    </div>
-                </div>
-                <table id="crewTable" class="min-w-full mt-4">
-                    <thead>
-                        <tr class="bg-blue-500 text-white">
-                            <th class="p-2 text-left">Crew</th>
-                            <th class="p-2 text-left">Name</th>
-                            <th class="p-2 text-left">Code</th>
-                            <th class="p-2 text-left">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="p-2">No. 1</td>
-                            <td class="p-2"><input type="text" class="crewName p-1 border rounded w-full" maxlength="50"></td>
-                            <td class="p-2"><input type="text" id="crewcode1" class="p-1 border rounded w-full" maxlength="10"></td>
-                            <td class="p-2"></td>
-                        </tr>
-                        <tr>
-                            <td class="p-2">No. 2</td>
-                            <td class="p-2"><input type="text" class="crewName p-1 border rounded w-full" maxlength="50"></td>
-                            <td class="p-2"><input type="text" id="crewcode2" class="p-1 border rounded w-full" maxlength="10"></td>
-                            <td class="p-2"></td>
-                        </tr>
-                        <tr>
-                            <td class="p-2">No. 3</td>
-                            <td class="p-2"><input type="text" class="crewName p-1 border rounded w-full" maxlength="50"></td>
-                            <td class="p-2"><input type="text" id="crewcode3" class="p-1 border rounded w-full" maxlength="10"></td>
-                            <td class="p-2"></td>
-                        </tr>
-                        <tr>
-                            <td class="p-2">No. 4</td>
-                            <td class="p-2"><input type="text" class="crewName p-1 border rounded w-full" maxlength="50"></td>
-                            <td class="p-2"><input type="text" id="crewcode4" class="p-1 border rounded w-full" maxlength="10"></td>
-                            <td class="p-2"></td>
-                        </tr>
-                        <tr class="extra-crew" id="extraCrew1" style="display: none;">
-                            <td class="p-2">Extra 1</td>
-                            <td class="p-2"><input type="text" class="crewName p-1 border rounded w-full" maxlength="50"></td>
-                            <td class="p-2"><input type="text" class="crewcode p-1 border rounded w-full" maxlength="10"></td>
-                            <td class="p-2"><button type="button" onclick="removeExtraCrew(1)" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button></td>
-                        </tr>
-                        <tr class="extra-crew" id="extraCrew2" style="display: none;">
-                            <td class="p-2">Extra 2</td>
-                            <td class="p-2"><input type="text" class="crewName p-1 border rounded w-full" maxlength="50"></td>
-                            <td class="p-2"><input type="text" class="crewcode p-1 border rounded w-full" maxlength="10"></td>
-                            <td class="p-2"><button type="button" onclick="removeExtraCrew(2)" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button type="button" onclick="addExtraCrew()" class="add-crew-button mt-2 bg-green-500 text-white px-4 py-2 rounded">Add Extra Crew</button>
-            </section>
-
-            <section id="descriptionSection" class="bg-white p-4 rounded-lg shadow">
-                <h2 class="text-xl font-semibold mb-2">Description</h2>
-                <textarea id="description" class="p-2 border rounded w-full" rows="4" maxlength="500"></textarea>
-            </section>
-
-            <section id="stockSection" class="bg-white p-4 rounded-lg shadow">
-                <h2 class="text-xl font-semibold mb-2">Product Inventory</h2>
-                <table id="productTable" class="min-w-full">
-                    <thead>
-                        <tr class="bg-blue-500 text-white">
-                            <th class="p-2 text-left">Product</th>
-                            <th class="p-2 text-left">Initial</th>
-                            <th class="p-2 text-left">Final</th>
-                            <th class="p-2 text-left">Sold</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="p-2">Sandwiches</td>
-                            <td class="p-2"><input type="number" class="open p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2"><input type="number" class="close p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2 difference-cell"></td>
-                        </tr>
-                        <tr>
-                            <td class="p-2">H&C Panini</td>
-                            <td class="p-2"><input type="number" class="open p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2"><input type="number" class="close p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2 difference-cell"></td>
-                        </tr>
-                        <tr>
-                            <td class="p-2">C&M Panini</td>
-                            <td class="p-2"><input type="number" class="open p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2"><input type="number" class="close p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2 difference-cell"></td>
-                        </tr>
-                        <tr>
-                            <td class="p-2">Pastries</td>
-                            <td class="p-2"><input type="number" class="open p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2"><input type="number" class="close p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2 difference-cell"></td>
-                        </tr>
-                        <tr>
-                            <td class="p-2">Wraps</td>
-                            <td class="p-2"><input type="number" class="open p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2"><input type="number" class="close p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2 difference-cell"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                    <div>
-                        <label for="yellowSeal" class="block text-sm font-medium">Yellow Seal</label>
-                        <input type="text" id="yellowSeal" class="mt-1 p-2 border rounded w-full" maxlength="20">
-                    </div>
-                    <div>
-                        <label for="greenSeal" class="block text-sm font-medium">Green Seal</label>
-                        <input type="text" id="greenSeal" class="mt-1 p-2 border rounded w-full" maxlength="20">
-                    </div>
-                    <div>
-                        <label for="metalSeal" class="block text-sm font-medium">Metal Seal</label>
-                        <input type="text" id="metalSeal" class="mt-1 p-2 border rounded w-full" maxlength="20">
-                    </div>
-                </div>
-                <h3 class="text-lg font-semibold mt-4">Equipment</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                    <div>
-                        <label for="kettles" class="block text-sm font-medium">Kettles</label>
-                        <input type="number" id="kettles" class="mt-1 p-2 border rounded w-full" min="0">
-                    </div>
-                    <div>
-                        <label for="cupholder" class="block text-sm font-medium">Cupholder</label>
-                        <input type="number" id="cupholder" class="mt-1 p-2 border rounded w-full" min="0">
-                    </div>
-                    <div>
-                        <label for="babyWarmer" class="block text-sm font-medium">Baby Warmer</label>
-                        <input type="number" id="babyWarmer" class="mt-1 p-2 border rounded w-full" min="0">
-                    </div>
-                    <div>
-                        <label for="coolerBag" class="block text-sm font-medium">Cooler Bag</label>
-                        <input type="number" id="coolerBag" class="mt-1 p-2 border rounded w-full" min="0">
-                    </div>
-                </div>
-            </section>
-
-            <section id="dutyFreeSection" class="bg-white p-4 rounded-lg shadow">
-                <h2 class="text-xl font-semibold mb-2">Duty-Free Inventory</h2>
-                <table id="dutyFreeTable" class="min-w-full">
-                    <thead>
-                        <tr class="bg-red-500 text-white">
-                            <th class="p-2 text-left">Item</th>
-                            <th class="p-2 text-left">Initial</th>
-                            <th class="p-2 text-left">Final</th>
-                            <th class="p-2 text-left">Qty</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="p-2">Perfume</td>
-                            <td class="p-2"><input type="number" class="open p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2"><input type="number" class="close p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2 difference-cell"></td>
-                        </tr>
-                        <tr>
-                            <td class="p-2">Tobacco</td>
-                            <td class="p-2"><input type="number" class="open p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2"><input type="number" class="close p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2 difference-cell"></td>
-                        </tr>
-                        <tr>
-                            <td class="p-2">Jewelry</td>
-                            <td class="p-2"><input type="number" class="open p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2"><input type="number" class="close p-1 border rounded w-full" min="0"></td>
-                            <td class="p-2 difference-cell"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="mt-4">
-                    <label for="dutyFreeMetalSeal" class="block text-sm font-medium">Metal Seal</label>
-                    <input type="text" id="dutyFreeMetalSeal" class="mt-1 p-2 border rounded w-full" maxlength="20">
-                </div>
-            </section>
-
-            <section id="salesSection" class="bg-white p-4 rounded-lg shadow">
-                <h2 class="text-xl font-semibold mb-2">Sales and Totals</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label id="salesLabel1" for="salesCrew1" class="block text-sm font-medium">Crew 1 Sales</label>
-                        <input type="number" id="salesCrew1" class="mt-1 p-2 border rounded w-full" min="0" step="0.01">
-                    </div>
-                    <div>
-                        <label id="salesLabel2" for="salesCrew2" class="block text-sm font-medium">Crew 2 Sales</label>
-                        <input type="number" id="salesCrew2" class="mt-1 p-2 border rounded w-full" min="0" step="0.01">
-                    </div>
-                    <div>
-                        <label id="salesLabel3" for="salesCrew3" class="block text-sm font-medium">Crew 3 Sales</label>
-                        <input type="number" id="salesCrew3" class="mt-1 p-2 border rounded w-full" min="0" step="0.01">
-                    </div>
-                    <div>
-                        <label id="salesLabel4" for="salesCrew4" class="block text-sm font-medium">Crew 4 Sales</label>
-                        <input type="number" id="salesCrew4" class="mt-1 p-2 border rounded w-full" min="0" step="0.01">
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                    <div>
-                        <label for="totalSales" class="block text-sm font-medium">Total Sales (€)</label>
-                        <input type="number" id="totalSales" class="mt-1 p-2 border rounded w-full" readonly>
-                    </div>
-                    <div>
-                        <label for="totalPax" class="block text-sm font-medium">Total Pax</label>
-                        <input type="number" id="totalPax" class="mt-1 p-2 border rounded w-full" readonly>
-                    </div>
-                    <div>
-                        <label for="average" class="block text-sm font-medium">Average (€)</label>
-                        <input type="number" id="average" class="mt-1 p-2 border rounded w-full" readonly>
-                    </div>
-                </div>
-            </section>
-
-            <div class="flex justify-between mt-6">
-                <button type="button" onclick="clearFormData()" class="bg-gray-500 text-white px-6 py-2 rounded">Clear Form</button>
-                <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded">Submit Report</button>
-            </div>
-        </form>
-    </div>
-    <script src="script.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('Service Worker registered'))
-                .catch(err => console.error('Service Worker registration failed:', err));
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e90ff, #ff7f50);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
-    </script>
-</body>
+        header {
+            background: rgba(0,0,0,0.7);
+            padding: 0.8rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.6rem;
+        }
+        main {
+            flex: 1;
+            padding: 0.2rem;
+            margin-top: 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-container {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 0.5rem;
+            width: 100%;
+            max-width: 98vw;
+        }
+        details.form-section {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            box-shadow: 0 4px 2px rgba(0,0,0,0.1);
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+        }
+        details[open] summary {
+            margin-bottom: 0.8rem;
+        }
+        summary {
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0.4rem;
+            touch-action: manipulation;
+        }
+        .stock-tabs {
+            display: flex;
+            gap: 0.4rem;
+            margin-bottom: 0.8rem;
+        }
+        .stock-tab {
+            flex: 1;
+            padding: 0.6rem;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-align: center;
+            touch-action: manipulation;
+            min-height: 40px;
+        }
+        .stock-tab.active {
+            background: #ff7f50;
+        }
+        label {
+            display: block;
+            margin: 0.3rem 0 0.2rem;
+            color: #fff;
+            font-size: 1rem;
+        }
+        .date-ac-label {
+            font-size: 0.7rem;
+            margin-bottom: 0.1rem;
+            white-space: nowrap;
+        }
+        .equipment-label {
+            font-size: 0.65rem;
+            margin-bottom: 0.1rem;
+            white-space: nowrap;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.3rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            background: #fff;
+            color: #000 !important;
+            -webkit-appearance: none;
+            touch-action: manipulation;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .date-ac-input {
+            width: 100%;
+            max-width: 160px;
+            font-size: 12px;
+            height: 40px;
+            padding: 0.2rem;
+        }
+        .captain-fo-input {
+            width: 100%;
+            max-width: 160px;
+            font-size: 12px;
+            height: 40px;
+            padding: 0.4rem;
+        }
+        .sales-input {
+            padding: 0.2rem;
+            font-size: 0.75rem;
+            min-height: 40px;
+        }
+        .sales-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .sales-euro {
+            position: absolute;
+            right: 0.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #000;
+            font-size: 0.7rem;
+        }
+        .crew-input {
+            padding: 0.3rem;
+            font-size: 0.8rem;
+            min-width: 4rem;
+        }
+        .small-input {
+            padding: 0.3rem;
+            font-size: 0.8rem;
+            min-width: 4rem;
+        }
+        .route-input {
+            min-width: 5rem;
+        }
+        .duty-free-input,.seal-input {
+            padding: 0.4rem;
+            font-size: 0.8rem;
+            min-width: 3rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.8rem 0;
+            table-layout: auto;
+            font-size: 0.8rem;
+            display: table;
+            visibility: visible;
+        }
+        .stock-table {
+            display: block;
+            visibility: visible;
+        }
+        table,th,td {
+            border: 1px solid #fff;
+        }
+        th,td {
+            padding: 0.4rem;
+            text-align: center;
+            color: #fff;
+        }
+        .flight-number-cell {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .flight-number-cell:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        table input {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            background: #fff;
+            color: #000 !important;
+        }
+        table .small-input {
+            padding: 0.3rem;
+            font-size: 0.8rem;
+            min-width: 4rem;
+        }
+        table .duty-free-input {
+            padding: 0.4rem;
+            font-size: 0.8rem;
+            min-width: 3rem;
+        }
+        table .flight-number-input {
+            min-width: 6rem;
+        }
+        table .flight-time-input {
+            min-width: 4rem;
+        }
+        table .final-pax-input {
+            min-width: 3rem;
+        }
+        table .fwd-input,table .aft-input {
+            min-width: 3rem;
+        }
+        .difference-cell {
+            background: rgba(255,255,255,0.3);
+            color: #000;
+        }
+        button {
+            width: 100%;
+            padding: 0.8rem;
+            background: #1e90ff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            touch-action: manipulation;
+            min-height: 40px;
+        }
+        button:hover {
+            background: #ff7f50;
+        }
+        .add-crew-button,.remove-crew-button {
+            width: auto;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+            margin: 0.3rem 0.3rem 0 0;
+            min-height: 32px;
+        }
+        .remove-crew-button {
+            background: #ff4d4d;
+        }
+        .remove-crew-button:hover {
+            background: #cc0000;
+        }
+        footer {
+            background: rgba(0,0,0,0.7);
+            text-align: center;
+            padding: 0.8rem;
+            font-size: 0.8rem;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .flight-info-header {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 2px;
+        }
+        .sales-grid {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .sales-label {
+            font-size: 0.7rem;
+            margin-bottom: 0.1rem;
+            white-space: nowrap;
+        }
+        .extra-crew {
+            display: none;
+        }
+        .border-red-500 {
+            border: 1px solid #ff4d4d;
+        }
+        #notification {
+            display: none;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #ff4d4d;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+        @media (min-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            main {
+                padding: 0.4rem;
+            }
+            .form-container {
+                max-width: 95vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="notification"></div>
+    <header>
+        <h1>Flight Report</h1>
+    </header>
+    <main>
+        <div class="form-container">
+            <form id="inflightForm" class="space-y-1">
+                <!-- Flight Information -->
+                <details class="form-section" open aria-expanded="true">
+                    <summary role="button" aria-controls="flight-info-content">Flight Information</summary>
+                    <div id="flight-info-content">
+                        <div class="flight-info-header" id="flightInfoHeader" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                            <div>
+                                <label class="date-ac-label" for="date">Date</label>
+                                <input type="date" id="date" class="date-ac-input" autocomplete="off" tabindex="1">
+                            </div>
+                            <div>
+                                <label class="date-ac-label" for="acReg">A/C Registration</label>
+                                <input type="text" id="acReg" placeholder="e.g., EI-123" class="date-ac-input" autocomplete="off" tabindex="2">
+                            </div>
+                        </div>
+                        <div class="table-wrapper">
+                            <table id="flightTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Route</th>
+                                        <th>Flight No.</th>
+                                        <th>Time</th>
+                                        <th>Departure</th>
+                                        <th>Arrival</th>
+                                        <th>Pax</th>
+                                        <th>FWD</th>
+                                        <th>AFT</th>
+                                        <th>W/C</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="flightsTableBody">
+                                    <tr data-flight="1">
+                                        <td class="flight-number-cell" onclick="toggleFlightView('1')">1</td>
+                                        <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off" tabindex="3"></td>
+                                        <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1234" autocomplete="off" tabindex="4"></td>
+                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="5"></td>
+                                        <td><input type="time" class="departure" tabindex="6"></td>
+                                        <td><input type="time" class="arrival" tabindex="7"></td>
+                                        <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="8"></td>
+                                        <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="9"></td>
+                                        <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="10"></td>
+                                        <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off" tabindex="11"></td>
+                                    </tr>
+                                    <tr data-flight="2">
+                                        <td class="flight-number-cell" onclick="toggleFlightView('2')">2</td>
+                                        <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off" tabindex="12"></td>
+                                        <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1235" autocomplete="off" tabindex="13"></td>
+                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="14"></td>
+                                        <td><input type="time" class="departure" tabindex="15"></td>
+                                        <td><input type="time" class="arrival" tabindex="16"></td>
+                                        <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="17"></td>
+                                        <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="18"></td>
+                                        <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="19"></td>
+                                        <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off" tabindex="20"></td>
+                                    </tr>
+                                    <tr data-flight="3">
+                                        <td class="flight-number-cell" onclick="toggleFlightView('3')">3</td>
+                                        <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off" tabindex="21"></td>
+                                        <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1236" autocomplete="off" tabindex="22"></td>
+                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="23"></td>
+                                        <td><input type="time" class="departure" tabindex="24"></td>
+                                        <td><input type="time" class="arrival" tabindex="25"></td>
+                                        <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="26"></td>
+                                        <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="27"></td>
+                                        <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="28"></td>
+                                        <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off" tabindex="29"></td>
+                                    </tr>
+                                    <tr data-flight="4">
+                                        <td class="flight-number-cell" onclick="toggleFlightView('4')">4</td>
+                                        <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off" tabindex="30"></td>
+                                        <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1237" autocomplete="off" tabindex="31"></td>
+                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="32"></td>
+                                        <td><input type="time" class="departure" tabindex="33"></td>
+                                        <td><input type="time" class="arrival" tabindex="34"></td>
+                                        <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="35"></td>
+                                        <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="36"></td>
+                                        <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="37"></td>
+                                        <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off" tabindex="38"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Crew Information -->
+                <details class="form-section" id="crewSection" aria-expanded="false">
+                    <summary role="button" aria-controls="crew-info-content">Crew Information</summary>
+                    <div id="crew-info-content">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                            <div>
+                                <label for="captain">Captain</label>
+                                <input type="text" id="captain" class="captain-fo-input" placeholder="e.g., J. Smith" autocomplete="off" tabindex="39">
+                            </div>
+                            <div>
+                                <label for="firstOfficer">First Officer</label>
+                                <input type="text" id="firstOfficer" class="captain-fo-input" placeholder="e.g., A. Jones" autocomplete="off" tabindex="40">
+                            </div>
+                        </div>
+                        <table id="crewTable">
+                            <thead>
+                                <tr>
+                                    <th>Crew</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>No. 1</td>
+                                    <td><input type="text" class="crewcode crew-input" id="crewcode1" placeholder="e.g., C123" autocomplete="off" tabindex="41"></td>
+                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., M. Brown" autocomplete="off" tabindex="42"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>No. 2</td>
+                                    <td><input type="text" class="crewcode crew-input" id="crewcode2" placeholder="e.g., C124" autocomplete="off" tabindex="43"></td>
+                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., S. Davis" autocomplete="off" tabindex="44"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>No. 3</td>
+                                    <td><input type="text" class="crewcode crew-input" id="crewcode3" placeholder="e.g., C125" autocomplete="off" tabindex="45"></td>
+                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., L. Wilson" autocomplete="off" tabindex="46"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>No. 4</td>
+                                    <td><input type="text" class="crewcode crew-input" id="crewcode4" placeholder="e.g., C126" autocomplete="off" tabindex="47"></td>
+                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., R. Taylor" autocomplete="off" tabindex="48"></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="extra-crew" id="extraCrew1">
+                                    <td>Extra 1</td>
+                                    <td><input type="text" class="crewcode crew-input" id="crewcode5" placeholder="e.g., C127" autocomplete="off" tabindex="49"></td>
+                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., T. Lee" autocomplete="off" tabindex="50"></td>
+                                    <td><button type="button" class="remove-crew-button" onclick="removeExtraCrew(1)" tabindex="51">Remove</button></td>
+                                </tr>
+                                <tr class="extra-crew" id="extraCrew2">
+                                    <td>Extra 2</td>
+                                    <td><input type="text" class="crewcode crew-input" id="crewcode6" placeholder="e.g., C128" autocomplete="off" tabindex="52"></td>
+                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., K. Clark" autocomplete="off" tabindex="53"></td>
+                                    <td><button type="button" class="remove-crew-button" onclick="removeExtraCrew(2)" tabindex="54">Remove</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="add-crew-button" onclick="addExtraCrew()" tabindex="55">Add Extra Crew</button>
+                        <div style="margin-top: 0.8rem;">
+                            <label for="description">Description</label>
+                            <textarea id="description" rows="4" placeholder="e.g., crew notes, incidents" autocomplete="off" tabindex="56"></textarea>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Product Inventory Section -->
+                <details class="form-section" id="stockSection" open aria-expanded="true">
+                    <summary role="button" aria-controls="inventory-content">Product Inventory</summary>
+                    <div id="inventory-content">
+                        <div id="productStockTable" class="stock-table">
+                            <table id="productTable">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Initial</th>
+                                        <th>Final</th>
+                                        <th>Sold</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>H&C Panini</td>
+                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="57"></td>
+                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="58"></td>
+                                        <td class="difference-cell"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Choco. Croissant</td>
+                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="59"></td>
+                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="60"></td>
+                                        <td class="difference-cell"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>H&C Croissant</td>
+                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="61"></td>
+                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="62"></td>
+                                        <td class="difference-cell"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Choco. Croissant</td>
+                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="63"></td>
+                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="64"></td>
+                                        <td class="difference-cell"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cheese T</td>
+                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="65"></td>
+                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="66"></td>
+                                        <td class="difference-cell"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pizza</td>
+                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="67"></td>
+                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="68"></td>
+                                        <td class="difference-cell"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bacon B</td>
+                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="69"></td>
+                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="70"></td>
+                                        <td class="difference-cell"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>F Sandwich</td>
+                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="71"></td>
+                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="72"></td>
+                                        <td class="difference-cell"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="grid grid-cols-3 gap-1">
+                                <div>
+                                    <label for="yellowSeal">Yellow Seal</label>
+                                    <input type="text" id="yellowSeal" class="seal-input" placeholder="e.g., Y12345" autocomplete="off" tabindex="73"></td>
+                                </div>
+                                <div>
+                                    <label for="greenSeal">Green Seal</label>
+                                    <input type="text" id="greenSeal" class="seal-input" placeholder="e.g., G67890" autocomplete="off" tabindex="74"></td>
+                                </div>
+                                <div>
+                                    <label for="metalSeal">Metal Seal</label>
+                                    <input type="text" id="metalSeal" class="seal-input" placeholder="e.g., M11223" autocomplete="off" tabindex="75"></td>
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-top: 8px;">
+                                <div>
+                                    <label for="kettles" class="equipment-label">Kettles</label>
+                                    <input type="number" id="kettles" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="76"></td>
+                                </div>
+                                <div>
+                                    <label for="cupholder" class="equipment-label">Cupholder</label>
+                                    <input type="number" id="cupholder" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="77"></td>
+                                </div>
+                                <div>
+                                    <label for="babyWarmer" class="equipment-label">Baby Warmer</label>
+                                    <input type="number" id="babyWarmer" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="78"></td>
+                                </div>
+                                <div>
+                                    <label for="coolerBag" class="equipment-label">Cooler Bag</label>
+                                    <input type="number" id="coolerBag" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="79"></td>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Duty-Free Inventory Section -->
+                <details class="form-section" id="dutyFreeSection" aria-expanded="false">
+                    <summary role="button" aria-controls="duty-free-content">Duty-Free Inventory</summary>
+                    <div id="duty-free-content">
+                        <div id="dutyFreeStockTable" class="stock-table">
+                            <table id="dutyFreeTable">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Initial</th>
+                                        <th>Final</th>
+                                        <th>Sold</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Marlboro Gold</td>
+                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="80"></td>
+                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="81"></td>
+                                        <td class="difference-cell"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Marlboro Red</td>
+                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="82"></td>
+                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="83"></td>
+                                        <td class="difference-cell"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lambert</td>
+                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="84"></td>
+                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="85"></td>
+                                        <td class="difference-cell"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Amber Leaf</td>
+                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="86"></td>
+                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="87"></td>
+                                        <td class="difference-cell"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div style="margin-top: 0.8rem;">
+                                <label for="dutyFreeMetalSeal">Metal Seal</label>
+                                <input type="text" id="dutyFreeMetalSeal" class="seal-input" placeholder="e.g., M44556" autocomplete="off" tabindex="88">
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Sales and Totals -->
+                <details class="form-section" id="salesSection" aria-expanded="false">
+                    <summary role="button" aria-controls="sales-content">Sales and Totals</summary>
+                    <div id="sales-content">
+                        <div class="sales-grid">
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px;">
+                                <div>
+                                    <label id="salesLabel1" for="salesCrew1" class="sales-label">Crew 1 Sales</label>
+                                    <div class="sales-wrapper">
+                                        <input type="number" id="salesCrew1" step="0.5" min="0" class="sales-input" placeholder="0.00" tabindex="89">
+                                        <span class="sales-euro">€</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label id="salesLabel2" for="salesCrew2" class="sales-label">Crew 2 Sales</label>
+                                    <div class="sales-wrapper">
+                                        <input type="number" id="salesCrew2" step="0.5" min="0" class="sales-input" placeholder="0.00" tabindex="90">
+                                        <span class="sales-euro">€</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label id="salesLabel3" for="salesCrew3" class="sales-label">Crew 3 Sales</label>
+                                    <div class="sales-wrapper">
+                                        <input type="text" id="salesCrew3" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="91">
+                                        <span class="sales-euro">€</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label id="salesLabel4" for="salesCrew4" class="sales-label">Crew 4 Sales</label>
+                                    <div class="sales-wrapper">
+                                        <input type="text" id="salesCrew4" step="0.01" min="sales-input" class="sales-input" placeholder="0.00" tabindex="92">
+                                        <span class="sales-euro">€</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 4px;">
+                                <div>
+                                    <label for="totalSales" class="sales-label">Total Sales</label>
+                                    <div class="sales-wrapper">
+                                        <input type="number" id="totalSales" step="0.01" readonly class="sales-input" placeholder="0.00" style="background: rgba(255, 255,255,0.7); color: #000;" tabindex="93">
+                                        <span class="sales-euro">€</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div>
+                                        <label for="totalPax" class="sales-label">Total Pax</label>
+                                        <input type="number" id="totalPax" readonly class="sales-input" placeholder="0" style="background: rgba(255,255,255,0.7); color: #000;" tabindex="94"></div>
+                                    </div>
+                                    <div>
+                                        <label for="average" class="sales-label">Average/Pax</label>
+                                        <div class="sales-wrapper">
+                                            <input type="number" id="average" step="0.01" readonly class="sales-input" placeholder="0.00" style="background: rgba(255,255,255,0.7); color: #000;" tabindex="95"></div>
+                                            <span class="sales-euro">€</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <button type="button" id="submitBtn" onclick="handleFormSubmission()" tabindex="96">Submit Report</button>
+                </form>
+            </div>
+        </main>
+        <footer>
+            <p>Flight Report © 2025</p>
+        </footer>
+
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(registration => {
+                            console.log('Service Worker registered successfully:', registration.scope);
+                        })
+                        .catch(error => {
+                            console.error('Error registering Service Worker:', error);
+                        });
+                    });
+            </script>
+        <script src="script.js"></script>
+    </body>
 </html>
