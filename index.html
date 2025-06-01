@@ -1105,14 +1105,10 @@
                 for (let i = 1; i <= 4; i++) {
                     const crewcodeInput = document.getElementById(`crewcode${i}`);
                     const crewNameInput = document.querySelector(`#crewTable tbody tr:nth-child(${i}) .crewName`);
-                    if (crewcodeInput && crewNameInput) {
-                        crewData.push({
-                            crewcode: crewcodeInput.value || 'N/A',
-                            name: crewNameInput.value || 'N/A',
-                        });
-                    } else {
-                        console.warn(`Main crew row ${i} is missing crewcode or crewName input`);
-                    }
+                    crewData.push({
+                        crewcode: crewcodeInput ? crewcodeInput.value || 'N/A' : 'N/A',
+                        name: crewNameInput ? crewNameInput.value || 'N/A' : 'N/A',
+                    });
                 }
 
                 // Process extra crew (if visible)
@@ -1126,17 +1122,12 @@
                                 crewcode: crewcodeInput.value || 'N/A',
                                 name: crewNameInput.value || 'N/A',
                             });
-                        } else {
-                            console.warn(`Extra crew row ${i} is missing crewcode or crewName input`);
                         }
                     }
                 }
 
-                // Debug: Log the collected crew data
-                console.log('Collected crew data:', crewData);
-
                 const formData = {
-                    date: document.getElementById('date').value || '',
+                    date: document.getElementById('date').value || 'N/A',
                     acReg: document.getElementById('acReg').value || 'N/A',
                     flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
                         route: row.querySelector('.route').value || 'N/A',
@@ -1154,7 +1145,7 @@
                     crew: crewData,
                     description: document.getElementById('description').value || 'N/A',
                     products: {
-                        items: Array.from(document.querySelectorAll('#productTable tr')).map(row => ({
+                        items: Array.from(document.querySelectorAll('#productTable tbody tr')).map(row => ({
                             product: row.cells[0].textContent || 'N/A',
                             open: row.querySelector('.open').value || '0',
                             close: row.querySelector('.close').value || '0',
@@ -1172,8 +1163,8 @@
                             coolerBag: document.getElementById('coolerBag').value || '0',
                         },
                     },
-                    dutyFreeProducts: {
-                        items: Array.from(document.querySelectorAll('#dutyFreeTable tr')).map(row => ({
+                    dutyFree: {
+                        items: Array.from(document.querySelectorAll('#dutyFreeTable tbody tr')).map(row => ({
                             product: row.cells[0].textContent || 'N/A',
                             open: row.querySelector('.open').value || '0',
                             close: row.querySelector('.close').value || '0',
@@ -1192,7 +1183,7 @@
                     totalPax: document.getElementById('totalPax').value || '0',
                 };
 
-                const dateStr = formData.date.replace(/-/g, '') || '20250101';
+                const dateStr = formData.date.replaceAll('-', '') || '20250101';
                 const pdfFilename = `flight_report_${dateStr}.pdf`;
 
                 // Generate and download PDF
