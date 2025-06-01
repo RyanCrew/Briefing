@@ -1,21 +1,22 @@
 {
-  "name": "Flight Briefing Tool",
-  "short_name": "Flight Briefing",
-  "start_url": ".",
-  "display": "standalone",
-  "background_color": "#007bff",
-  "theme_color": "#007bff",
-  "description": "An app for managing flight briefings efficiently.",
-  "icons": [
-    {
-      "src": "icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+    "name": "Informe de Vuelo",
+    "short_name": "InformeVuelo",
+    "description": "Formulario de informe de vuelo para uso sin conexión",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#1e90ff",
+    "theme_color": "#ff7f50",
+    "icons": [
+        {
+            "src": "/icon.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "scope": "/"
 }
