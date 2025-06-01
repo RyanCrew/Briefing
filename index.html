@@ -337,11 +337,11 @@
                         <div class="flight-info-header" id="flightInfoHeader" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
                             <div>
                                 <label class="date-ac-label" for="date">Date</label>
-                                <input type="date" id="date" class="date-ac-input" autocomplete="off" tabindex="1" required>
+                                <input type="date" id="date" class="date-ac-input" autocomplete="off" tabindex="1">
                             </div>
                             <div>
                                 <label class="date-ac-label" for="acReg">A/C Registration</label>
-                                <input type="text" id="acReg" placeholder="e.g., EI-123" class="date-ac-input" autocomplete="off" tabindex="2" required>
+                                <input type="text" id="acReg" placeholder="e.g., EI-123" class="date-ac-input" autocomplete="off" tabindex="2">
                             </div>
                         </div>
                         <div class="table-wrapper">
@@ -422,7 +422,7 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
                             <div>
                                 <label for="captain">Captain</label>
-                                <input type="text" id="captain" class="captain-fo-input" placeholder="e.g., J. Smith" autocomplete="off" tabindex="39" required>
+                                <input type="text" id="captain" class="captain-fo-input" placeholder="e.g., J. Smith" autocomplete="off" tabindex="39">
                             </div>
                             <div>
                                 <label for="firstOfficer">First Officer</label>
@@ -453,7 +453,7 @@
                                 </tr>
                                 <tr>
                                     <td>No. 3</td>
-                                    <td><input type="text" class="crewcode crew-input" id="crewcode1" placeholder="e.g., C125" autocomplete="off" tabindex="45"></td>
+                                    <td><input type="text" class="crewcode crew-input" id="crewcode3" placeholder="e.g., C125" autocomplete="off" tabindex="45"></td>
                                     <td><input type="text" class="crewName crew-input" placeholder="e.g., L. Wilson" autocomplete="off" tabindex="46"></td>
                                     <td></td>
                                 </tr>
@@ -564,7 +564,7 @@
                                     <input type="text" id="greenSeal" class="seal-input" placeholder="e.g., G67890" autocomplete="off" tabindex="76"></td>
                                 </div>
                                 <div>
-                                    <label for="metalSeal">Metal Seal</label>
+                                    <label for="metalSeal">metal</label>
                                     <input type="text" id="metalSeal" class="seal-input" placeholder="e.g., M11223" autocomplete="off" tabindex="77"></td>
                                 </div>
                             </div>
@@ -575,7 +575,7 @@
                                 </div>
                                 <div>
                                     <label for="cupholder" class="equipment-label">Cupholder</label>
-                                    <input type="number" id="cupholder" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="79"></td>
+                                    <input type="number" id="cupholder" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="off" tabindex="79"></td>
                                 </div>
                                 <div>
                                     <label for="babyWarmer" class="equipment-label">Baby Warmer</label>
@@ -591,7 +591,7 @@
                             <table id="dutyFreeTable">
                                 <thead>
                                     <tr>
-                                        <th>Product</th>
+                                        <th>Item</th>
                                         <th>Initial</th>
                                         <th>Final</th>
                                         <th>Sold</th>
@@ -611,7 +611,7 @@
                                         <td class="difference-cell"></td>
                                     </tr>
                                     <tr>
-                                        <td>Lambert</td>
+                                        презентация<td>Lambert</td>
                                         <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="86"></td>
                                         <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="87"></td>
                                         <td class="difference-cell"></td>
@@ -625,8 +625,8 @@
                                 </tbody>
                             </table>
                             <div class="mt-3">
-                                <label for="dutyFreeMetalSeal">Metal Seal</label>
-                                <input type="text" id="dutyFreeMetalSeal" class="seal-input" placeholder="e.g., M44556" autocomplete="off" tabindex="90">
+                                <label for="metalSeal">Metal</label>
+                                <input type="text" id="dutyFreeMetalSeal бер_type="text" id="dutyFreeMetalSeal" placeholder="e.g., M44556" autocomplete="off" tabindex="90">
                             </div>
                         </div>
                     </div>
@@ -634,7 +634,7 @@
 
                 <!-- Sales and Totals -->
                 <details class="form-section" id="salesSection" aria-expanded="false">
-                    <summary role="button" aria-controls="sales-content">Sales and Totals</summary>
+                    <summary role="button" sales-content>Sales and Totals</summary>
                     <div id="sales-content">
                         <div class="sales-grid grid">
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px;">
@@ -656,7 +656,6 @@
                                     <label id="salesLabel3" for="salesCrew3" class="sales-label">Crew 3 Sales</label>
                                     <div class="sales-wrapper">
                                         <input type="number" id="salesCrew3" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="93">
-                                        <span class="sales-euro">€</span>
                                     </div>
                                 </div>
                                 <div>
