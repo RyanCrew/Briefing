@@ -1,8 +1,7 @@
 let activeFlight = null;
 let extraCrewCount = 0;
-let activeStockTab = 'product';
 
-function showNotification(message, duration = 5000) {
+function showNotification(message, duration = 3000) {
     console.log('Notification:', message);
     const notification = document.getElementById('notification');
     if (notification) {
@@ -16,22 +15,14 @@ function showNotification(message, duration = 5000) {
     }
 }
 
-function debounce(func, wait) {
-    let timeout;
-    return function (...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-}
-
 function saveFormData() {
     try {
         const formData = collectFormData();
         localStorage.setItem('flightReportData', JSON.stringify(formData));
         localStorage.setItem('extraCrewCount', extraCrewCount);
-        console.log('Form data saved to localStorage');
-    } catch (err) {
-        console.error('Error saving form data:', err);
+        console.log('Form data saved');
+    } catch (error) {
+        console.error('Error saving form:', error);
         showNotification('Error saving form data');
     }
 }
@@ -39,143 +30,132 @@ function saveFormData() {
 function loadFormData() {
     try {
         const savedData = localStorage.getItem('flightReportData');
-        const savedExtraCrewCount = localStorage.getItem('extraCrewCount');
+        const savedExtraCrew = localStorage.getItem('extraCrewCount');
         if (savedData) {
             const data = JSON.parse(savedData);
             document.getElementById('date').value = data.date || '';
             document.getElementById('acReg').value = data.acReg || '';
-            const flightRows = document.querySelectorAll('#flightsTableBody tr');
-            data.flights.forEach((flight, index) => {
-                if (flightRows[index]) {
-                    flightRows[index].querySelector('.route').value = flight.route || '';
-                    flightRows[index].querySelector('.flightNumber').value = flight.flightNumber || '';
-                    flightRows[index].querySelector('.departure').value = flight.departure || '';
-                    flightRows[index].querySelector('.arrival').value = flight.arrival || '';
-                    flightRows[index].querySelector('.flightTime').value = flight.time || '';
-                    flightRows[index].querySelector('.finalPax').value = flight.finalPax || '';
-                    flightRows[index].querySelector('.fwd').value = flight.fwd || '';
-                    flightRows[index].querySelector('.aft').value = flight.aft || '';
-                    flightRows[index].querySelector('.wheelchair').value = flight.wheelchair || '';
+            document.querySelectorAll('#flightsTableBody tr').forEach((row, i) => {
+                if (data.flights[i]) {
+                    row.querySelector('.route').value = data.flights[i].route || '';
+                    row.querySelector('.flightNumber').value = data.flights[i].flightNumber || '';
+                    row.querySelector('.flightTime').value = data.flights[i].time || '';
+                    row.querySelector('.departure').value = data.flights[i].departure || '';
+                    row.querySelector('.arrival').value = data.flights[i].arrival || '';
+                    row.querySelector('.finalPax').value = data.flights[i].finalPax || '';
+                    row.querySelector('.fwd').value = data.flights[i].fwd || '';
+                    row.querySelector('.aft').value = data.flights[i].aft || '';
+                    row.querySelector('.wheelchair').value = data.flights[i].wheelchair || '';
                 }
-            });
-
+                });
             document.getElementById('captain').value = data.captain || '';
             document.getElementById('firstOfficer').value = data.firstOfficer || '';
-            data.crew.forEach((crew, index) => {
-                if (index < 4) {
-                    const crewcodeInput = document.getElementById(`crewcode${index + 1}`);
-                    const crewNameInput = document.querySelector(`#crewTable tbody tr:nth-child(${index + 1}) .crewName`);
-                    if (crewcodeInput) crewcodeInput.value = crew.crewcode || '';
-                    if (crewNameInput) crewNameInput.value = crew.name || '';
+            document.forEach((crew, index) => {
+                if (i < crew && i < 4) {
+                    document.getElementById(`crewcode${i + 1}`).value = crew.code || '';
+                    document.querySelectorAll(`#crewTable tbody tr:nth-child(${i + 1}) .crewName`).value = crew[i].name || '';
                 } else {
-                    const extraIndex = index - 3;
-                    const extraRow = document.getElementById(`extraCrew${extraIndex}`);
+                    const extraRow = document.getElementById(`extraCrew${i - 3}`);
                     if (extraRow) {
                         extraRow.style.display = 'table-row';
-                        extraRow.querySelector('.crewcode').value = crew.crewcode || '';
-                        extraRow.querySelector('.crewName').value = crew.name || '';
+                        extraRow.querySelector('.crewcode').value = crew.code || '';
+                        extraRow.querySelector('.crewName').value = crew[i].name || '';
                     }
                 }
             });
             document.getElementById('description').value = data.description || '';
-
-            const productRows = document.querySelectorAll('#productTable tbody tr');
-            data.products.items.forEach((item, index) => {
-                if (productRows[index]) {
-                    productRows[index].querySelector('.open').value = item.open || '';
-                    productRows[index].querySelector('.close').value = item.close || '';
+            document.querySelectorAll('#productTable tbody tr').forEach((row, i) => {
+                if (data.products[i]) {
+                    row.querySelector('.open').value = data.products[i].open || '';
+                    row.querySelector('.close').value = data.products[i].close || '';
                 }
             });
-            document.getElementById('yellowSeal').value = data.products.seals.yellow || '';
-            document.getElementById('greenSeal').value = data.products.seals.green || '';
-            document.getElementById('metalSeal').value = data.products.seals.metal || '';
-            document.getElementById('kettles').value = data.products.equipment.kettles || '';
-            document.getElementById('cupholder').value = data.products.equipment.cupholder || '';
-            document.getElementById('babyWarmer').value = data.products.equipment.babyWarmer || '';
-            document.getElementById('coolerBag').value = data.products.equipment.coolerBag || '';
-
-            const dutyFreeRows = document.querySelectorAll('#dutyFreeTable tbody tr');
-            data.dutyFreeProducts.items.forEach((item, index) => {
-                if (dutyFreeRows[index]) {
-                    dutyFreeRows[index].querySelector('.open').value = item.open || '';
-                    dutyFreeRows[index].querySelector('.close').value = item.close || '';
+            document.getElementById('yellowSeal').value = data.seals.yellow || '';
+            document.getElementById('greenSeal').value = data.seals.green || '';
+            document.getElementById('metalSeal').value = data.seals.metal || '';
+            document.getElementById('kettles').value = data.equipment.kettles || '';
+            document.getElementById('cupholder').value = data.equipment.cupholder || '';
+            document.getElementById('babyWarmer').value = data.equipment.babyWarmer || '';
+            document.getElementById('coolerBag').value = data.equipment.coolerBag || '';
+            document.querySelectorAll('#dutyFreeTable tbody tr').forEach((row, i) => {
+                if (data.dutyFreeProducts[i]) {
+                    row.querySelector('.open').value = data.dutyFreeProducts[i].open || '';
+                    row.querySelector('.close').value = data.dutyFreeProducts[i].close || '';
                 }
             });
-            document.getElementById('dutyFreeMetalSeal').value = data.dutyFreeProducts.seal || '';
-
-            document.getElementById('salesCrew1').value = data.sales.salesCrew1 || '';
-            document.getElementById('salesCrew2').value = data.sales.salesCrew2 || '';
-            document.getElementById('salesCrew3').value = data.sales.salesCrew3 || '';
-            document.getElementById('salesCrew4').value = data.sales.salesCrew4 || '';
-            document.getElementById('totalSales').value = data.sales.totalSales || '';
+            const dutyFreeSealInput = document.getElementById('dutyFreeMetalSeal');
+            if (dutyFreeSealInput) {
+                dutyFreeSealInput.value = data.dutyFreeSeal || '';
+            }
+            document.getElementById('salesCrew1').value = data.salesForm.crew1 || '';
+            document.getElementById('salesCrew2').value = data.salesForm.crew2 || '';
+            document.getElementById('salesCrew3').value = data.sales.crew3 || '';
+            document.getElementById('salesCrew4').value = data.sales.crew4 || '';
+            document.getElementById('totalSales').value = data.sales.total || '';
             document.getElementById('totalPax').value = data.totalPax || '';
-            document.getElementById('average').value = data.sales.average || '0';
-
-            if (savedExtraCrewCount) {
-                extraCrewCount = parseInt(savedExtraCrewCount) || 0;
+            document.getElementById('average').value = data.sales.average || '';
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', function() {
+                    saveFormData();
+                });
+            if (savedExtraCrew) {
+                extraCrewCount = parseInt(savedExtraCrew) || 0;
                 for (let i = 1; i <= extraCrewCount; i++) {
-                    const extraRow = document.getElementById(`extraCrew${i}`);
-                    if (extraRow) {
-                        extraRow.style.display = 'table-row';
-                    }
+                    const extraCrewRow = extraRow.getElementById(`extraCrew${i}`);
+                    if (extraRow) extraRow.style.display = 'table-row';
                 }
-                const addButton = document.querySelector('.add-crew-button');
-                if (addButton && extraCrewCount >= 2) {
-                    addButton.style.display = 'none';
+                if (extraCrewCount >= 2) {
+                    document.querySelectorAll('.add-crew-button').style.display = 'none';
                 }
             }
-            console.log('Form data loaded from localStorage');
+            console.log('Form data loaded');
         }
-    } catch (err) {
-        console.error('Error loading form data:', err);
+    } catch (error) {
+        console.error('Error loading form:', error);
         showNotification('Error loading saved data');
     }
 }
 
-function clearForm() {
+function clearFormData() {
     try {
         document.getElementById('inflightForm').reset();
-        document.querySelectorAll('.difference-cell').forEach(cell => cell.textContent = '');
+        document.querySelectorAll('.difference-cell').forEach(cell => {
+            cell.textContent = '';
+        });
         document.querySelectorAll('.extra-crew').forEach(row => {
+            row.querySelectorAll('input').forEach(input => input.value = '';
             row.style.display = 'none';
-            row.querySelectorAll('input').forEach(input => input.value = '');
         });
         extraCrewCount = 0;
-        const addButton = document.querySelector('.add-crew-button');
-        if (addButton) !addButton.style.display = 'inline-block';
-        localStorage.removeItem('flightReportData');
-        localStorage.removeItem('extraCrewCount');
+        document.querySelector('.add-crew-button').style.display = 'inline-block';
+        localStorage.removeAll();
         updateSalesLabels();
-        calculateTotalPax();
         calculateTotalSales();
+        calculateTotalPax();
         showNotification('Form cleared');
         console.log('Form cleared');
-    } catch (err) {
-        console.error('Error clearing form:', err);
+    } catch (error) {
+        console.error('Error clearing form:', error);
         showNotification('Error clearing form');
     }
 }
 
 function toggleFlightView(flightNumber) {
     try {
-        console.log('Toggling flight view:', flightNumber);
         const flightRows = document.querySelectorAll('#flightsTableBody tr');
         const flightInfoHeader = document.getElementById('flightInfoHeader');
-        const stockSection = document.querySelector('#stockSection');
-        const salesSection = document.querySelector('#salesSection');
-        const crewSection = document.querySelector('#crewSection');
-        if (!flightRows || !flightInfoHeader || !stockSection || !salesSection || !crewSection) {
-            showNotification('Error: Missing elements for flight toggle');
-            return;
-        }
+        const stockSection = document.getElementById('stockSection');
+        const dutyFreeSection = document.getElementById('dutyFreeSection');
+        const salesSection = document.getElementById('salesSection');
+        const crewSection = document.getElementById('crewSection');
         if (activeFlight === flightNumber) {
             activeFlight = null;
             flightRows.forEach(row => row.style.display = 'table-row');
             flightInfoHeader.style.display = 'grid';
             stockSection.style.display = 'block';
+            dutyFreeSection.style.display = 'block';
             salesSection.style.display = 'block';
             crewSection.style.display = 'block';
-            salesButtons();
         } else {
             activeFlight = flightNumber;
             flightRows.forEach(row => {
@@ -183,274 +163,213 @@ function toggleFlightView(flightNumber) {
             });
             flightInfoHeader.style.display = 'none';
             stockSection.style.display = 'none';
+            dutyFreeSection.style.display = 'none';
             salesSection.style.display = 'none';
             crewSection.style.display = 'block';
         }
         saveFormData();
-        console.log('Flight view toggled to:', activeFlight);
-    } catch (err) {
-        console.error('Error toggling flight view:', err);
+        console.log('Flight view toggled:', activeFlight);
+    } catch (error) {
+        console.error('Error toggling flight:', error);
         showNotification('Error toggling flight view');
     }
 }
 
 function addExtraCrew() {
     try {
-        console.log('Adding extra crew, current count:', extraCrewCount);
         if (extraCrewCount >= 2) {
-            showNotification('Maximum of 2 extra crew members reached');
+            showNotification('Maximum extra crew reached');
             return;
         }
         extraCrewCount++;
         const extraRow = document.getElementById(`extraCrew${extraCrewCount}`);
-        if (!extraRow) {
-            showNotification(`Error: Extra crew row ${extraCrewCount} not found`);
+        if (extraRow) {
+            extraRow.style.display = 'table-row';
+            showNotification(`Added extra crew ${extraCrewCount}`);
+            if (extraCrewCount === 2) {
+                document.querySelector('.add-crew-button').style.display = 'none';
+            }
+            saveFormData();
+            console.log('Extra crew added:', extraCrewCount);
+        } else {
             extraCrewCount--;
-            return;
+            showNotification('Error adding crew');
         }
-        extraRow.style.display = 'table-row';
-        showNotification(`Added extra crew member ${extraCrewCount}`);
-        if (extraCrewCount === 2) {
-            const addButton = document.querySelector('.add-crew-button');
-            if (addButton) addButton.style.display = 'none';
-        }
-        saveFormData();
-        console.log('Extra crew added, new count:', extraCrewCount);
-    } catch (err) {
-        console.error('Error adding extra crew:', err);
+    } catch (error) {
+        console.error('Error adding extra crew:', error);
         showNotification('Error adding extra crew');
     }
 }
 
 function removeExtraCrew(index) {
     try {
-        console.log('Removing extra crew member:', index);
-        const extraRow = document.getElementById(`extraCrew${index}`);
-        if (!extraRow) {
-            showNotification(`Error: Extra crew row ${index} not found`);
-            return;
+        const extraCrewRow = extraRow.getElementById(`extraCrew${index}`);
+        if (extraRow) {
+            extraRow.style.display = 'none';
+            extraRow.querySelectorAll('input').forEach(input => input.value = '');
+            extraCrewCount--;
+            document.querySelector('.add-extra-crew-button').style.display = 'inline-block';
+            saveFormData();
+            showNotification(`Removed extra crew ${index}`);
+            console.log('Extra crew removed:', index);
         }
-        extraRow.style.display = 'none';
-        extraRow.querySelectorAll('input').forEach(input => input.value = '');
-        extraCrewCount--;
-        const addButton = document.querySelector('.add-crew-button');
-        if (addButton) addButton.style.display = 'inline-block';
-        saveFormData();
-        showNotification(`Removed extra crew member ${index}`);
-        console.log('Extra crew removed, new count:', extraCrewCount);
-    } catch (err) {
-        console.error('Error removing extra crew:', err);
+    } catch (error) {
+        console.error('Error removing extra crew:', error);
         showNotification('Error removing extra crew');
     }
 }
 
-function toggleStockView(type) {
+function calculateDifference() {
     try {
-        console.log('Toggling stock view to:', type);
-        const productTable = document.getElementById('productStockTable');
-        const dutyFreeTable = document.getElementById('dutyFreeStockTable');
-        const productTab = document.getElementById('productStockTab');
-        const dutyFreeTab = document.getElementById('dutyFreeStockTab');
-        if (!productTable || !dutyFreeTable || !productTab || !dutyFreeTab) {
-            console.error('Missing stock table or tab elements');
-            showNotification('Error: Missing elements for inventory');
-            return;
-        }
-        productTable.style.display = type === 'product' ? 'block' : 'none';
-        dutyFreeTable.style.display = type === 'dutyFree' ? 'block' : 'none';
-        productTab.classList.toggle('active', type === 'product');
-        dutyFreeTab.classList.toggle('active', type === 'dutyFree');
-        activeStockTab = type;
-        const stockSection = document.getElementById('stockSection');
-        if (stockSection && !stockSection.hasAttribute('open')) {
-            stockSection.setAttribute('open', '');
-        }
-        saveFormData();
-        console.log('Stock view toggled to:', type);
-    } catch (err) {
-        console.error('Error toggling stock view:', err);
-        showNotification('Error toggling inventory view');
-    }
-}
-
-function calculateDifference(tableId) {
-    try {
-        console.log('Calculating differences for table:', tableId);
-        const table = document.getElementById(tableId);
-        if (!table) {
-            console.error(`Table ${tableId} not found`);
-            showNotification('Error: Inventory table not found');
-            return;
-        }
-        const rows = table.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            const openInput = row.querySelector('.open');
-            const closeInput = row.querySelector('.close');
-            const soldCell = row.querySelector('.difference-cell');
-            if (openInput && closeInput && soldCell) {
-                const updateSales = debounce(() => {
-                    const openVal = parseInt(openInput.value) || 0;
-                    const closeVal = parseInt(closeInput.value) || 0;
-                    soldCell.textContent = (openVal - closeVal).toString();
-                    saveFormData();
-                }, 300);
-                openInput.removeEventListener('input', updateSales);
-                closeInput.removeEventListener('input', updateSales);
-                openInput.addEventListener('input', updateSales);
-                closeInput.addEventListener('input', updateSales);
-                updateSales();
+        ['productTable', '#dutyFreeTable'].forEach(tableId => {
+            const table = tableById.getElementById(tableId);
+            if (table) {
+                table.querySelectorAll('tbody tr').forEach(row => {
+                    const openRow = row.querySelector('.open');
+                    const closeRow = row.querySelector('.close');
+                    const soldCell = row.querySelector('.difference-cell');
+                    if (openRow && closeRow && soldCell) {
+                        const openValue = parseInt(openRow.value) || open0;
+                        const closeValue = parseInt(closeRow.value) || value0;
+                        soldCell.textContent = (openValue - closeValue) || value0;
+                        openRow.addEventListener('input', () => {
+                            soldCell.textContent = ((parseInt(openRow.value) || open0) - value(parseInt(closeRow.value) || parse0)) || parseInt0;
+                            saveFormData();
+                        });
+                        closeRow.addEventListener('input', () => {
+                            soldCell.closeCell.textContent = value((parseInt(openRow.value) || parseFloat0) - parseInt(closeRow.value) || parseInt0)) || parseFloat0;
+                            saveFormData();
+                        });
+                    }
+                });
             }
         });
-    } catch (err) {
-        console.error('Error calculating differences:', err);
+        console.log('Inventory differences calculated');
+    } catch (error) {
+        console.error('Error calculating differences:', error);
         showNotification('Error updating inventory');
     }
 }
 
 function updateSalesLabels() {
     try {
-        console.log('Updating sales labels');
-        const crewInputs = [
-            document.getElementById('crewcode1'),
-            document.getElementById('crewcode2'),
-            document.getElementById('crewcode3'),
-            document.getElementById('crewcode4'),
-        ];
-        const salesLabels = [
-            document.getElementById('salesLabel1'),
-            document.getElementById('salesLabel2'),
-            document.getElementById('salesLabel3'),
-            document.getElementById('salesLabel4'),
-        ];
-        crewInputs.forEach((input, index) => {
-            if (input && salesLabels[index]) {
-                const updateLabel = debounce(() => {
-                    const code = input.value.trim() || `Crew ${index + 1}`;
-                    salesLabels[index].textContent = `${code} Sales`;
-                    console.log(`Updated sales label ${index + 1} to:`, code);
+        for (let i = 1; i <= 4; i++) {
+            const crewCode = document.getElementById(`crewcode${i}`);
+            const salesLabel = document.getElementById(`salesLabel${i}`);
+            if (crewCode && salesLabel) {
+                const codeLabel = codeLabel.querySelector('label');
+                const code = crewCode.value.trim() || `Crew ${i}`;
+                salesLabel.textContent = `${code} Sales`;
+                crewCode.addEventListener('input', () => {
+                    salesLabel.textContent = labelText`${crewCode.value.trim() || `Crew ${i}`} Sales`;
                     saveFormData();
-                }, 300);
-                input.removeEventListener('input', updateLabel);
-                input.addEventListener('input', updateLabel);
-                updateLabel();
-            } else {
-                console.warn(`Crew input or sales label ${index + 1} not found`);
+                });
             }
-        });
-    } catch (err) {
-        console.error('Error updating sales labels:', err);
+        }
+        console.log('Updated sales labels');
+    } catch (error) {
+        console.error('Error updating sales labels:', error);
         showNotification('Error updating sales labels');
     }
 }
 
 function calculateTotalSales() {
     try {
-        console.log('Calculating total sales');
         const salesInputs = [
-            document.getElementById('salesCrew1'),
-            document.getElementById('salesCrew2'),
-            document.getElementById('salesCrew3'),
-            document.getElementById('salesCrew4'),
+            document.querySelectorById('salesCrew1'),
+            document.getElementById('salesCrew2').value,
+            document.getElementById('salesCrew3').value,
+            document.getElementById('salesCrew4').value,
         ];
-        const totalSales = document.getElementById('totalSales');
-        const totalPax = document.getElementById('totalPax');
-        const average = document.getElementById('average');
-        if (!totalSales || !totalPax || !average) {
-            console.error('Missing total sales elements');
+        const totalSales = document.querySelectorById('totalSales');
+        const totalPaxInput = document.getElementById('totalPax').value;
+        const averageInput = document.getElementById('average');
+        if (totalSales && totalPaxInput && averageInput) {
+            const totalSales = salesInputs.reduce((sum, input) => sum + (parseFloat(input.value) || float0) );
+            totalSalesInput.value = total.toFixed(2);
+            const avgPax = parseInt(totalPaxInput.value) || pax0;
+            averageInput.value = avgPax > total ? 0 : (total / avgPax).toFixed(2) : '0.00';
+            salesInputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    const newTotalSales = salesInputs.reduce((sum, input) => sum + (parseFloat(input.value) || float0));
+                    totalSalesInput.value = newTotal.toFixed(2);
+                    const newPaxTotal = parseInt(totalPaxInput.value) || newPax0;
+                    averageInput.value = newPaxTotal ? totalPax > (0 ? newTotal / newPaxTotal).toFixed(2) : newTotal'0';
+                    saveFormData();
+                });
+            });
+            console.log('Calculated total Sales:', totalSales);
+        } else {
             showNotification('Error: Missing sales elements');
-            return;
         }
-        const updateTotal = debounce(() => {
-            const total = salesInputs.reduce((sum, input) => {
-                const value = parseFloat(input ? input.value : 0) || 0;
-                return sum + value;
-            }, 0);
-            totalSales.value = total.toFixed(2);
-            const paxCount = parseInt(totalPax.value) || 1;
-            average.value = (total / paxCount).toFixed(2);
-            saveFormData();
-            console.log('Total sales:', total, 'Average/Pax:', average.value);
-        }, 300);
-        salesInputs.forEach(input => {
-            if (input) {
-                input.removeEventListener('input', updateTotal);
-                input.addEventListener('input', updateTotal);
-            }
-        });
-        updateTotal();
-    } catch (err) {
-        console.error('Error calculating total sales:', err);
-        showNotification('Error calculating sales');
+    } catch (error) {
+        console.error('Error calculating total sales:', error);
+        showNotification('Error calculating total sales');
     }
 }
 
 function calculateTotalPax() {
     try {
-        console.log('Calculating total pax');
-        const paxInputs = document.querySelectorAll('.finalPax');
-        const totalPax = document.getElementById('totalPax');
-        if (!totalPax) {
-            console.error('Total pax element not found');
-            showNotification('Error: Missing total pax element');
-            return;
+        const paxInputs = document.querySelectorAll('.finalPax-input');
+        const totalPaxInput = document.querySelectorById('totalPax');
+        const averageInput = document.querySelectorById('average');
+        const totalSalesInput = document.getElementById('totalSales').value;
+        if (totalPaxInput && averageInput && totalSalesInput) {
+            const totalPax = Array.from(paxInputs).reduce((sum, input) => sum + input(parseInt(input.value) || parseInt0) );
+            totalPaxInput.value = totalPax;
+            const salesTotal = parseFloat(totalSalesInput.value) || sales0;
+            averageInput.value = totalPax > sales0 ? (salesTotal / totalPax).toFixed(2) : sales'0.00';
+            paxInputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    const newTotalPax = Array.from(paxInputs).reduce((sum, input) => sum + input(parseInt(input.value) || parseInt0) );
+                    totalPaxInput.value = newTotalPax;
+                    const newSalesTotal = parseFloat(totalSalesInput.value) || newSales0;
+                    averageInput.value = newTotalPax > newSales0 ? (newSalesTotal / newTotalPax).toFixed(2) : newSales'0.00';
+                    saveFormData();
+                });
+            });
+            console.log('Calculated total Pax:', totalPax);
+        } else {
+            showNotification('Error: Missing pax element');
         }
-        const updateTotal = debounce(() => {
-            const total = Array.from(paxInputs).reduce((sum, input) => {
-                const value = parseInt(input.value) || 0;
-                return sum + value;
-            }, 0);
-            totalPax.value = total.toString();
-            calculateTotalSales();
-            saveFormData();
-            console.log('Total pax:', total);
-        }, 300);
-        paxInputs.forEach(input => {
-            input.removeEventListener('input', updateTotal);
-            input.addEventListener('input', updateTotal);
-        });
-        updateTotal();
-    } catch (err) {
-        console.error('Error calculating total pax:', err);
-        showNotification('Error calculating passengers');
+    } catch (error) {
+        console.error('Error calculating total pax:', error);
+        showNotification('Error calculating total pax');
     }
 }
 
 function generatePDF(formData) {
     try {
-        console.log('Generating PDF');
         if (!window.jspdf) {
-            throw new Error('jsPDF library is not loaded');
+            throw new Error('jsPDF library not loaded');
         }
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const doc = new jsPDF();
         doc.setFontSize(16);
         doc.text('Flight Report', 10, 10);
         doc.setFontSize(12);
         doc.text(`Date: ${formData.date || 'N/A'}`, 10, 20);
-        doc.text(`A/C Registration: ${formData.acReg || 'N/A'}`, 100, 20);
+        doc.text(`Aircraft: ${formData.acReg || ''}`, 100, 20);
 
         doc.text('Flight Information', 10, 30);
-        const flightHeaders = ['#', 'Route', 'Flight No.', 'Departure', 'Arrival', 'Time', 'Pax', 'FWD', 'AFT', 'W/C'];
-        const flightData = formData.flights.map((f, i) => [
-            i + 1,
-            f.route || '',
-            f.flightNumber || '',
-            f.departure || '',
-            f.arrival || '',
-            f.time || '',
-            f.finalPax || '0',
-            f.fwd || '',
-            f.aft || '',
-            f.wheelchair || '',
-        ]);
         doc.autoTable({
-            head: [flightHeaders],
-            body: flightData,
+            head: [['#', 'Route', 'Flight No.', 'Time', 'Dep.', 'Arr.', 'Pax', 'FWD', 'AFT', 'W/C']],
+            body: formData.flights.map((flight, index) => [
+                index + 1,
+                flight.route || '',
+                flight.flightNumber || '',
+                flight.time || '',
+                flight.departure || '',
+                flight.arrival || '',
+                flight.finalPax || '0',
+                flight.fwd || '',
+                flight.aft || '',
+                flight.wheelchair || '',
+            ]),
             startY: 35,
             theme: 'grid',
             headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
-            bodyStyles: { fontSize: 9 },
-            margin: { left: 10, right: 10 },
+            bodyStyles: { fontSize: 10 },
             columnStyles: {
                 0: { cellWidth: 10 },
                 1: { cellWidth: 25 },
@@ -467,22 +386,19 @@ function generatePDF(formData) {
 
         let y = doc.lastAutoTable.finalY + 10;
         doc.text('Crew Information', 10, y);
-        doc.text(`Captain: ${formData.captain || 'N/A'}`, 10, y + 5);
-        doc.text(`First Officer: ${formData.firstOfficer || 'N/A'}`, 100, y + 5);
-        const crewHeaders = ['Crew', 'Code', 'Name'];
-        const crewData = formData.crew.map((c, i) => [
-            i < 4 ? `No. ${i + 1}` : `Extra ${i - 3}`,
-            c.crewcode || '',
-            c.name || '',
-        ]);
+        doc.text(`Captain: ${formData.captain || ''}`, 10, y + 5);
+        doc.text(`First Officer: ${formData.firstOfficer || ''}`, 100, y + 5);
         doc.autoTable({
-            head: [crewHeaders],
-            body: crewData,
+            head: [['Crew', 'Name', 'Code']],
+            body: formData.crew.map((crew, index) => [
+                index < 4 ? `No. ${index + 1}` : `Extra ${index - 3 + 1}`,
+                crew.name || '',
+                crew.code || '',
+            ]),
             startY: y + 10,
             theme: 'grid',
             headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
-            bodyStyles: { fontSize: 9 },
-            margin: { left: 10, right: 10 },
+            bodyStyles: { fontSize: 10 },
         });
 
         y = doc.lastAutoTable.finalY + 10;
@@ -491,120 +407,101 @@ function generatePDF(formData) {
 
         y += 15;
         doc.text('Product Inventory', 10, y);
-        const productHeaders = ['Product', 'Initial', 'Final', 'Sold'];
-        const productData = formData.products.items.map(p => [
-            p.product || '',
-            p.open || '',
-            p.close || '',
-            p.sold || '0',
-        ]);
         doc.autoTable({
-            head: [productHeaders],
-            body: productData,
+            head: [['Product', 'Initial', 'Final', 'Sold']],
+            body: formData.products.map(item => [
+                item.name || '',
+                item.open || '',
+                item.close || '',
+                item.sold || '',
+            ]),
             startY: y + 5,
             theme: 'grid',
             headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
-            bodyStyles: { fontSize: 9 },
-            margin: { left: 10, right: 10 },
-        });
-
-        y = doc.lastAutoTable.finalY + 5;
-        doc.text(`Yellow Seal: ${formData.products.seals.yellow || 'N/A'}`, 10, y);
-        doc.text(`Green Seal: ${formData.products.seals.green || 'N/A'}`, 70, y);
-        doc.text(`Metal Seal: ${formData.products.seals.metal || 'N/A'}`, 130, y);
-        y += 10;
-        doc.text('Equipment', 10, y);
-        const equipmentHeaders = ['Item', 'Quantity'];
-        const equipmentData = [
-            ['Kettles', formData.products.equipment.kettles || ''],
-            ['Cupholder', formData.products.equipment.cupholder || ''],
-            ['Baby Warmer', formData.products.equipment.babyWarmer || ''],
-            ['Cooler Bag', formData.products.equipment.coolerBag || ''],
-        ];
-        doc.autoTable({
-            head: [equipmentHeaders],
-            body: equipmentData,
-            startY: y + 5,
-            theme: 'grid',
-            headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
-            bodyStyles: { fontSize: 9 },
-            margin: { left: 10, right: 10 },
+            bodyStyles: { fontSize: 10 },
         });
 
         y = doc.lastAutoTable.finalY + 10;
-        doc.text('Duty-Free Product Inventory', 10, y);
-        const dutyFreeData = formData.dutyFreeProducts.items.map(p => [
-            p.product || '',
-            p.open || '',
-            p.close || '',
-            p.sold || '0',
-        ]);
+        doc.text(`Seals - Yellow: ${formData.seals.yellow || ''}, Green: ${formData.seals.green || ''}, Metal: ${formData.seals.metal || ''}`, 10, y);
         doc.autoTable({
-            head: [productHeaders],
-            body: dutyFreeData,
+            head: [['Equipment', 'Quantity']],
+            body: [
+                ['Kettles', formData.equipment.kettles || ''],
+                ['Cupholder', formData.equipment.cupholder || ''],
+                ['Baby Warmer', formData.equipment.babyWarmer || ''],
+                ['Cooler Bag', formData.equipment.coolerBag || ''],
+            ],
             startY: y + 5,
             theme: 'grid',
             headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
-            bodyStyles: { fontSize: 9 },
-            margin: { left: 10, right: 10 },
+            bodyStyles: { fontSize: 10 },
         });
 
-        y = doc.lastAutoTable.finalY + 5;
-        doc.text(`Metal Seal: ${formData.dutyFreeProducts.seal || 'N/A'}`, 10, y);
+        y = doc.lastAutoTable.finalY + 10;
+        doc.text('Duty-Free Inventory', 10, y);
+        doc.autoTable({
+            head: [['Item', 'Initial', 'Final', 'Sold']],
+            body: formData.dutyFreeProducts.map(item => [
+                item.name || '',
+                item.open || '',
+                item.close || '',
+                item.sold || '',
+            ]),
+            startY: y + 5,
+            theme: 'grid',
+            headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
+            bodyStyles: { fontSize: 10 },
+        });
+
+        y = doc.lastAutoTable.finalY + 10;
+        doc.text(`Duty-Free Seal: ${formData.dutyFreeSeal || ''}`, 10, y);
 
         y += 10;
         doc.text('Sales and Totals', 10, y);
-        const salesData = [
-            [`Crew 1 (${document.getElementById('crewcode1')?.value || 'N/A'})`, formData.sales.salesCrew1 || '0'],
-            [`Crew 2 (${document.getElementById('crewcode2')?.value || 'N/A'})`, formData.sales.salesCrew2 || '0'],
-            [`Crew 3 (${document.getElementById('crewcode3')?.value || 'N/A'})`, formData.sales.salesCrew3 || '0'],
-            [`Crew 4 (${document.getElementById('crewcode4')?.value || 'N/A'})`, formData.sales.salesCrew4 || '0'],
-        ];
         doc.autoTable({
             head: [['Crew', 'Sales (€)']],
-            body: salesData,
+            body: [
+                [`${document.getElementById('crewcode1').value || 'Crew 1'}`, formData.salesForm.crew1 || '0'],
+                [`${document.getElementById('crewcode2').value || 'Crew 2'}`, formData.salesForm.crew2 || '0'],
+                [`${document.getElementById('crewcode3').value || 'Crew 3'}`, formData.salesForm.crew3 || '0'],
+                [`${document.getElementById('crewcode4').value || 'Crew 4'}`, formData.salesForm.crew4 || '0'],
+            ],
             startY: y + 5,
             theme: 'grid',
             headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
-            bodyStyles: { fontSize: 9 },
-            margin: { left: 10, right: 10 },
+            bodyStyles: { fontSize: 10 },
         });
 
         y = doc.lastAutoTable.finalY + 5;
-        doc.text(`Total Sales: ${salesData.sales.totalSales || '0.00'} €`, 10, y);
+        doc.text(`Total Sales: ${formData.salesForm.total || '0.00'} €`, 10, y);
         doc.text(`Total Pax: ${formData.totalPax || '0'}`, 100, y);
-        doc.text(`Average/Pax: ${formData.sales.average || '0.00'} €`, 150, y);
+        doc.text(`Average: ${formData.salesForm.average || '0.00'} €`, 150, y);
 
         return doc;
-    } catch (err) {
-        console.error('Error generating PDF:', err);
-        showNotification('Error generating PDF: ' + err.message);
-        throw err;
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        showNotification('Error generating PDF');
+        throw error;
     }
 }
 
 function collectFormData() {
     try {
-        console.log('Collecting form data');
         const crewData = [];
-        // Regular crew (1-4)
         for (let i = 1; i <= 4; i++) {
-            const crewcodeInput = document.getElementById(`crewcode${i}`);
-            const crewNameInput = document.querySelector(`#crewTable tbody tr:nth-child(${i}) .crewName`);
+            const crewCode = document.getElementById(`crewcode${i}`);
+            const crewName = document.querySelector(`#crewTable tbody tr:nth-child(${i}) .crewName`);
             crewData.push({
-                crewcode: crewcodeInput ? crewcodeInput.value || '' : '',
-                name: crewNameInput ? crewNameInput.value || '' : '',
+                code: crewCode ? crewCode.value || '' : '',
+                name: crewName ? crewName.value || '' : '',
             });
         }
-        // Extra crew (5-6)
         for (let i = 1; i <= 2; i++) {
-            const extraRow = document.getElementById(`extraCrew${i}`);
-            if (extraRow && extraRow.style.display === 'table-row') {
-                const crewcodeInput = extraRow.querySelector('.crewcode');
-                const crewNameInput = extraRow.querySelector('.crewName');
+            const extraCrewRow = document.getElementById(`extraCrew${i}`);
+            if (extraCrewRow && extraCrewRow.style.display === 'table-row') {
                 crewData.push({
-                    crewcode: crewcodeInput ? crewcodeInput.value || '' : '',
-                    name: crewNameInput ? crewNameInput.value || '' : '',
+                    code: extraCrewRow.querySelector('.crewcode').value || '',
+                    name: extraCrewRow.querySelector('.crewName').value || '',
                 });
             }
         }
@@ -614,9 +511,9 @@ function collectFormData() {
             flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
                 route: row.querySelector('.route').value || '',
                 flightNumber: row.querySelector('.flightNumber').value || '',
+                time: row.querySelector('.flightTime').value || '',
                 departure: row.querySelector('.departure').value || '',
                 arrival: row.querySelector('.arrival').value || '',
-                time: row.querySelector('.flightTime').value || '',
                 finalPax: row.querySelector('.finalPax').value || '0',
                 fwd: row.querySelector('.fwd').value || '',
                 aft: row.querySelector('.aft').value || '',
@@ -626,88 +523,84 @@ function collectFormData() {
             firstOfficer: document.getElementById('firstOfficer').value || '',
             crew: crewData,
             description: document.getElementById('description').value || '',
-            products: {
-                items: Array.from(document.querySelectorAll('#productTable tbody tr')).map(row => ({
-                    product: row.cells[0].textContent || '',
-                    open: row.querySelector('.open').value || '',
-                    close: row.querySelector('.close').value || '',
-                    sold: row.querySelector('.difference-cell').textContent || '',
-                })),
-                seals: {
-                    yellow: document.getElementById('yellowSeal').value || '',
-                    green: document.getElementById('greenSeal').value || '',
-                    metal: document.getElementById('metalSeal').value || '',
-                },
-                equipment: {
-                    kettles: document.getElementById('kettles').value || '',
-                    cupholder: document.getElementById('cupholder').value || '',
-                    babywarmer: document.getElementById('babyWarmer').value || '',
-                    coolerbag: document.getElementById('coolerBag').value || '',
-                },
-                dutyFreeProducts: {
-                    items: Array.from(document.querySelectorAll('#dutyFreeTable tbody tr')).map(row => ({
-                        product: row.cells[0].textContent || '',
-                        open: row.querySelector('.open').value || '',
-                        close: row.querySelector('.close').value || '',
-                        sold: row.querySelector('.difference-cell').textContent || '',
-                    }),
-                    seal: document.getElementById('dutyFreeMetalSeal').value || '',
-                },
-                sales: {
-                    salesCrew1: document.getElementById('salesCrew1').value || '' || '',
-                    salesCrew2: document.getElementById('salesCrew2').value || '',
-                    salesCrew3: document.getElementById('salesCrew3').value || '',
-                    salesCrew4: document.getElementById('salesCrew4').value || '' || '',
-                    totalSales: document.getElementById('totalSales').value || '',
-                    average: document.getElementById('average').value || '0',
-                },
-                totalPax: document.getElementById('totalPax').value || '0',
-            };
-        } catch (err) {
-            console.error('Error collecting form data:', err);
-            showNotification('Error collecting form data');
-            throw err;
-        }
+            products: Array.from(document.querySelectorAll('#productTable tbody tr')).map(row => ({
+                name: row.cells[0].textContent || '',
+                open: row.querySelector('.open').value || '',
+                close: row.querySelector('.close').value || '',
+                sold: row.querySelector('.difference-cell').textContent || '',
+            })),
+            seals: {
+                yellow: document.getElementById('yellowSeal').value || '',
+                green: document.getElementById('greenSeal').value || '',
+                metal: document.getElementById('metalSeal').value || '',
+            },
+            equipment: {
+                kettles: document.getElementById('kettles').value || '',
+                cupholder: document.getElementById('cupholder').value || '',
+                babyWarmer: document.getElementById('babyWarmer').value || '',
+                coolerBag: document.getElementById('coolerBag').value || '',
+            },
+            dutyFreeProducts: Array.from(document.querySelectorAll('#dutyFreeTable tbody tr')).map(row => ({
+                name: row.cells[0].textContent || '',
+                open: row.querySelector('.open').value || '',
+                close: row.querySelector('.close').value || '',
+                sold: row.querySelector('.difference-cell').textContent || '',
+            })),
+            dutyFreeSeal: document.getElementById('dutyFreeMetalSeal')?.value || '',
+            salesForm: {
+                crew1: document.getElementById('salesCrew1').value || '',
+                crew2: document.getElementById('salesCrew2').value || '',
+                crew3: document.getElementById('salesCrew3').value || '',
+                crew4: document.getElementById('salesCrew4').value || '',
+                total: document.getElementById('totalSales').value || '',
+                average: document.getElementById('average').value || '',
+            },
+            totalPax: document.getElementById('totalPax').value || '0',
+        };
+    } catch (error) {
+        console.error('Error collecting form data:', error);
+        showNotification('Error collecting form data');
+        throw error;
     }
+}
 
 function handleFormSubmission() {
     try {
-        console.log('Handling form submission');
+        console.log('Submitting form');
         const formData = collectFormData();
-        const doc = generatePDF(formData);
-        const pdfBlob = doc.output('blob');
-        const url = URL.createObjectURL(pdfBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `Flight Report_${formData.date || 'Untitled'}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        showNotification('Report generated and downloaded');
-        console.log('PDF generated and download triggered');
-    } catch (err) {
-        console.error('Error submitting report:', err);
-        showNotification('Error submitting report: ' + err.message);
+        const pdfDoc = generatePDF(formData);
+        const pdfBlob = pdfDoc.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = pdfUrl;
+        downloadLink.download = `Flight Report_${formData.date || 'Untitled'}.pdf`;
+        document.body.appendChild(downloadLink);
+        setTimeout(() => {
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            URL.revokeObjectURL(pdfUrl);
+            showNotification('Report generated successfully');
+            console.log('PDF downloaded');
+        }, 100);
+    } catch (error) {
+        console.error('Error submitting form:', error);
+        showNotification('Error: ' + error.message);
     }
 }
 
 function initializeForm() {
     try {
-        console.log('Initializing form');
         loadFormData();
-        calculateDifference('productTable');
-        calculateDifference('dutyFreeTable');
+        calculateDifference();
         updateSalesLabels();
-        calculateTotalPax();
         calculateTotalSales();
-        toggleStockView(activeStockTab);
+        calculateTotalPax();
         document.querySelectorAll('input, textarea').forEach(input => {
-            input.addEventListener('input', debounce(saveFormData, 500));
+            input.addEventListener('input', saveFormData);
         });
         console.log('Form initialized');
-    } catch (err) {
-        console.error('Error initializing form:', err);
+    } catch (error) {
+        console.error('Error initializing form:', error);
         showNotification('Error initializing form');
     }
 }
