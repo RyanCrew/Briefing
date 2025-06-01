@@ -11,8 +11,9 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/icon.png">
     <link href="./output.css" rel="stylesheet">
-    <script src="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
+    <script src="script.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -212,7 +213,7 @@
         .flight-number-cell:hover {
             background: rgba(255,255,255,0.3);
         }
-        table input {
+        table input, table select {
             width: 100%;
             padding: 0.5rem;
             font-size: 0.9rem;
@@ -357,7 +358,7 @@
                             <tbody id="flightsTableBody">
                                 <tr data-flight="1">
                                     <td class="flight-number-cell" onclick="toggleFlightView('1')">1</td>
-                                    <td><input type="text" class="route route-input" placeholder="e.g., ALC-MAD" autocomplete="off" tabindex="3"></td>
+                                    <td><select class="route route-input airport-select" tabindex="3"></select></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1234" autocomplete="off" tabindex="4"></td>
                                     <td><input type="time" class="departure" tabindex="5"></td>
                                     <td><input type="time" class="arrival" tabindex="6"></td>
@@ -369,11 +370,11 @@
                                 </tr>
                                 <tr data-flight="2">
                                     <td class="flight-number-cell" onclick="toggleFlightView('2')">2</td>
-                                    <td><input type="text" class="route route-input" placeholder="e.g., MAD-ALC" autocomplete="off" tabindex="12"></td>
+                                    <td><select class="route route-input airport-select" tabindex="12"></select></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1235" autocomplete="off" tabindex="13"></td>
                                     <td><input type="time" class="departure" tabindex="14"></td>
                                     <td><input type="time" class="arrival" tabindex="15"></td>
-                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="16"></td>
+                                    <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autoplay="off" tabindex="16"></td>
                                     <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="17"></td>
                                     <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="18"></td>
                                     <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="19"></td>
@@ -381,7 +382,7 @@
                                 </tr>
                                 <tr data-flight="3">
                                     <td class="flight-number-cell" onclick="toggleFlightView('3')">3</td>
-                                    <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off" tabindex="21"></td>
+                                    <td><select class="route route-input airport-select" tabindex="21"></select></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1236" autocomplete="off" tabindex="22"></td>
                                     <td><input type="time" class="departure" tabindex="23"></td>
                                     <td><input type="time" class="arrival" tabindex="24"></td>
@@ -393,7 +394,7 @@
                                 </tr>
                                 <tr data-flight="4">
                                     <td class="flight-number-cell" onclick="toggleFlightView('4')">4</td>
-                                    <td><input type="text" class="route route-input" placeholder="e.g., STN-ALC" autocomplete="off" tabindex="30"></td>
+                                    <td><select class="route route-input airport-select" tabindex="30"></select></td>
                                     <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1237" autocomplete="off" tabindex="31"></td>
                                     <td><input type="time" class="departure" tabindex="32"></td>
                                     <td><input type="time" class="arrival" tabindex="33"></td>
@@ -690,7 +691,6 @@
         let activeFlight = null;
         let extraCrewCount = 0;
         let activeStockTab = 'product';
-        const { jsPDF } = window.jspdf;
 
         // Register service worker for offline use
         if ('serviceWorker' in navigator) {
@@ -703,6 +703,15 @@
                         console.error('Error registering Service Worker:', err);
                     });
             });
+        }
+
+        // Debounce function to optimize localStorage writes
+        function debounce(func, wait) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
         }
 
         // Save form data to localStorage
@@ -1059,7 +1068,10 @@
         // Generate PDF with improved formatting
         function generatePDF(formData) {
             try {
-                const { jsPDF } = window.jspdf;
+                if (!window.jspdf) {
+                    throw new Error('jsPDF library is not loaded');
+                }
+                const jsPDF = window.jspdf;
                 const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
                 doc.setFontSize(16);
                 doc.text('Flight Report', 10, 10);
@@ -1321,6 +1333,15 @@
         function handleFormSubmission() {
             try {
                 const formData = collectFormData();
+                // Basic validation
+                if (!formData.date || !formData.acReg) {
+                    alert('Please fill in Date and A/C Registration.');
+                    return;
+                }
+                if (!formData.flights.some(flight => flight.route || flight.flightNumber)) {
+                    alert('Please fill in at least one flight route and flight number.');
+                    return;
+                }
                 const dateStr = formData.date.replaceAll('-', '') || '20250101';
                 const pdfFilename = `flight_report_${dateStr}.pdf`;
 
@@ -1348,7 +1369,7 @@
         // Setup keyboard navigation for "Next"
         function setupKeyboardNavigation() {
             try {
-                const inputs = document.querySelectorAll('input:not([readonly]), textarea, button:not(.remove-crew-button)');
+                const inputs = document.querySelectorAll('input:not([readonly]), select, textarea, button:not(.remove-crew-button)');
                 inputs.forEach((input, index) => {
                     input.addEventListener('keydown', (event) => {
                         if (event.key === 'Enter' || event.keyCode === 13) {
@@ -1377,10 +1398,10 @@
                 toggleStockView('product');
                 setupKeyboardNavigation();
 
-                // Add input event listeners for saving data
-                const inputs = document.querySelectorAll('input, textarea');
+                // Add input event listeners for saving data with debounce
+                const inputs = document.querySelectorAll('input, select, textarea');
                 inputs.forEach(input => {
-                    input.addEventListener('input', saveFormData);
+                    input.addEventListener('input', debounce(saveFormData, 300));
                 });
             } catch (err) {
                 alert(`Error initializing form: ${err.message}`);
