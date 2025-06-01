@@ -1163,7 +1163,7 @@
                             coolerBag: document.getElementById('coolerBag').value || '0',
                         },
                     },
-                    dutyFree: {
+                    dutyFreeProducts: {
                         items: Array.from(document.querySelectorAll('#dutyFreeTable tbody tr')).map(row => ({
                             product: row.cells[0].textContent || 'N/A',
                             open: row.querySelector('.open').value || '0',
