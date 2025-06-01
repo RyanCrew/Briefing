@@ -1,552 +1,649 @@
-```javascript
-const { jsPDF } = window.jspdf;
+let activeFlight = null;
+let extraCrewCount = 0;
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadFormData();
-    setupEventListeners();
-    calculateDifference();
-    calculateTotals();
-});
-
-function setupEventListeners() {
-    const productTable = document.querySelector('#productTable');
-    const dutyFreeTable = document.querySelector('#dutyFreeTable');
-    const salesInputs = document.querySelectorAll('#salesCrew1, #salesCrew2, #salesCrew3, #salesCrew4');
-    const paxInputs = document.querySelectorAll('.finalPax');
-    const addCrewButton = document.querySelector('.add-crew-button');
-    const removeCrewButtons = document.querySelectorAll('.remove-crew-button');
-
-    if (productTable) {
-        productTable.addEventListener('input', (e) => {
-            if (e.target.classList.contains('open') || e.target.classList.contains('close')) {
-                calculateDifference();
-            }
-        });
-    }
-
-    if (dutyFreeTable) {
-        dutyFreeTable.addEventListener('input', (e) => {
-            if (e.target.classList.contains('open') || e.target.classList.contains('close')) {
-                calculateDifference();
-            }
-        });
-    }
-
-    salesInputs.forEach(input => {
-        input.addEventListener('input', calculateTotals);
-    });
-
-    paxInputs.forEach(input => {
-        input.addEventListener('input', calculateTotals);
-    });
-
-    if (addCrewButton) {
-        addCrewButton.addEventListener('click', addExtraCrew);
-    }
-
-    removeCrewButtons.forEach(button => {
-        button.addEventListener('click', removeExtraCrew);
-    });
-
-    const formInputs = document.querySelectorAll('input, textarea');
-    formInputs.forEach(input => {
-        input.addEventListener('input', saveFormData);
-    });
-}
-
-function calculateDifference() {
-    const tables = [document.querySelector('#productTable'), document.querySelector('#dutyFreeTable')];
-    tables.forEach(table => {
-        if (!table) return;
-        const rows = table.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            const openInput = row.querySelector('.open');
-            const closeInput = row.querySelector('.close');
-            const differenceCell = row.querySelector('.difference-cell');
-            if (openInput && closeInput && differenceCell) {
-                const openValue = parseInt(openInput.value) || 0;
-                const closeValue = parseInt(closeInput.value) || 0;
-                const difference = openValue - closeValue;
-                differenceCell.textContent = difference >= 0 ? difference : 0;
-            }
-        });
-    });
-    console.log('Inventory differences calculated');
-}
-
-function calculateTotals() {
-    const salesInputs = document.querySelectorAll('#salesCrew1, #salesCrew2, #salesCrew3, #salesCrew4');
-    const totalSalesInput = document.querySelector('#totalSales');
-    const totalPaxInput = document.querySelector('#totalPax');
-    const averageInput = document.querySelector('#average');
-    const paxInputs = document.querySelectorAll('.finalPax');
-
-    let totalSales = 0;
-    salesInputs.forEach(input => {
-        totalSales += parseFloat(input.value) || 0;
-    });
-    totalSalesInput.value = totalSales.toFixed(2);
-
-    let totalPax = 0;
-    paxInputs.forEach(input => {
-        totalPax += parseInt(input.value) || 0;
-    });
-    totalPaxInput.value = totalPax;
-
-    const average = totalPax > 0 ? (totalSales / totalPax).toFixed(2) : 0;
-    averageInput.value = average;
-}
-
-function addExtraCrew() {
-    const extraCrewRows = document.querySelectorAll('.extra-crew');
-    for (let row of extraCrewRows) {
-        if (row.style.display === 'none' || row.style.display === '') {
-            row.style.display = 'table-row';
-            break;
-        }
-    }
-}
-
-function removeExtraCrew(event) {
-    const row = event.target.closest('tr');
-    if (row) {
-        row.style.display = 'none';
-        row.querySelectorAll('input').forEach(input => input.value = '');
+function showNotification(message, duration = 3000) {
+    console.log('Notification:', message);
+    const notification = document.getElementById('notification');
+    if (notification) {
+        notification.textContent = message;
+        notification.style.display = 'block';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, duration);
+    } else {
+        console.error('Notification element not found');
     }
 }
 
 function collectFormData() {
-    const formData = {
-        date: document.querySelector('#date').value,
-        acReg: document.querySelector('#acReg').value,
-        flights: [],
-        captain: document.querySelector('#captain').value,
-        firstOfficer: document.querySelector('#firstOfficer').value,
-        crew: [],
-        description: document.querySelector('#description').value,
-        products: [],
-        seals: {
-            yellowSeal: document.querySelector('#yellowSeal').value,
-            greenSeal: document.querySelector('#greenSeal').value,
-            metalSeal: document.querySelector('#metalSeal').value
-        },
-        equipment: {
-            kettles: document.querySelector('#kettles').value,
-            cupholder: document.querySelector('#cupholder').value,
-            babyWarmer: document.querySelector('#babyWarmer').value,
-            coolerBag: document.querySelector('#coolerBag').value
-        },
-        dutyFree: [],
-        dutyFreeMetalSeal: document.querySelector('#dutyFreeMetalSeal').value,
-        sales: {
-            crew1: document.querySelector('#salesCrew1').value,
-            crew2: document.querySelector('#salesCrew2').value,
-            crew3: document.querySelector('#salesCrew3').value,
-            crew4: document.querySelector('#salesCrew4').value,
-            totalSales: document.querySelector('#totalSales').value,
-            totalPax: document.querySelector('#totalPax').value,
-            average: document.querySelector('#average').value
-        }
-    };
-
-    document.querySelectorAll('#flightsTableBody tr').forEach(row => {
-        formData.flights.push({
-            route: row.querySelector('.route').value,
-            flightNumber: row.querySelector('.flightNumber').value,
-            flightTime: row.querySelector('.flightTime').value,
-            departure: row.querySelector('.departure').value,
-            arrival: row.querySelector('.arrival').value,
-            finalPax: row.querySelector('.finalPax').value,
-            fwd: row.querySelector('.fwd').value,
-            aft: row.querySelector('.aft').value,
-            wheelchair: row.querySelector('.wheelchair').value
-        });
-    });
-
-    document.querySelectorAll('#crewTable tbody tr').forEach(row => {
-        const crewCode = row.querySelector('.crewcode').value;
-        const crewName = row.querySelector('.crewName').value;
-        if (crewCode || crewName) {
-            formData.crew.push({
-                code: crewCode,
-                name: crewName
+    try {
+        const crewData = [];
+        for (let i = 1; i <= 4; i++) {
+            const crewCode = document.getElementById(`crewcode${i}`);
+            const crewName = document.querySelector(`#crewTable tbody tr:nth-child(${i}) .crewName`);
+            crewData.push({
+                code: crewCode ? crewCode.value || '' : '',
+                name: crewName ? crewName.value || '' : '',
             });
         }
-    });
-
-    document.querySelectorAll('#productTable tbody tr').forEach(row => {
-        formData.products.push({
-            name: row.cells[0].textContent,
-            initial: row.querySelector('.open').value,
-            final: row.querySelector('.close').value,
-            sold: row.querySelector('.difference-cell').textContent
-        });
-    });
-
-    document.querySelectorAll('#dutyFreeTable tbody tr').forEach(row => {
-        formData.dutyFree.push({
-            name: row.cells[0].textContent,
-            initial: row.querySelector('.open').value,
-            final: row.querySelector('.close').value,
-            sold: row.querySelector('.difference-cell').textContent
-        });
-    });
-
-    return formData;
+        for (let i = 1; i <= 2; i++) {
+            const extraCrewRow = document.getElementById(`extraCrew${i}`);
+            if (extraCrewRow && extraCrewRow.style.display === 'table-row') {
+                crewData.push({
+                    code: extraCrewRow.querySelector('.crewcode').value || '',
+                    name: extraCrewRow.querySelector('.crewName').value || '',
+                });
+            }
+        }
+        return {
+            date: document.getElementById('date').value || '',
+            acReg: document.getElementById('acReg').value || '',
+            flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
+                route: row.querySelector('.route').value || '',
+                flightNumber: row.querySelector('.flightNumber').value || '',
+                time: row.querySelector('.flightTime').value || '',
+                departure: row.querySelector('.departure').value || '',
+                arrival: row.querySelector('.arrival').value || '',
+                finalPax: row.querySelector('.finalPax').value || '0',
+                fwd: row.querySelector('.fwd').value || '',
+                aft: row.querySelector('.aft').value || '',
+                wheelchair: row.querySelector('.wheelchair').value || '',
+            })),
+            captain: document.getElementById('captain').value || '',
+            firstOfficer: document.getElementById('firstOfficer').value || '',
+            crew: crewData,
+            description: document.getElementById('description').value || '',
+            products: Array.from(document.querySelectorAll('#productTable tbody tr')).map(row => ({
+                name: row.cells[0].textContent || '',
+                open: row.querySelector('.open').value || '',
+                close: row.querySelector('.close').value || '',
+                sold: row.querySelector('.difference-cell').textContent || '',
+            })),
+            seals: {
+                yellow: document.getElementById('yellowSeal').value || '',
+                green: document.getElementById('greenSeal').value || '',
+                metal: document.getElementById('metalSeal').value || '',
+            },
+            equipment: {
+                kettles: document.getElementById('kettles').value || '',
+                cupholder: document.getElementById('cupholder').value || '',
+                babyWarmer: document.getElementById('babyWarmer').value || '',
+                coolerBag: document.getElementById('coolerBag').value || '',
+            },
+            dutyFreeProducts: Array.from(document.querySelectorAll('#dutyFreeTable tbody tr')).map(row => ({
+                name: row.cells[0].textContent || '',
+                open: row.querySelector('.open').value || '',
+                close: row.querySelector('.close').value || '',
+                sold: row.querySelector('.difference-cell').textContent || '',
+            })),
+            dutyFreeSeal: document.getElementById('dutyFreeMetalSeal')?.value || '',
+            salesForm: {
+                crew1: document.getElementById('salesCrew1').value || '0',
+                crew2: document.getElementById('salesCrew2').value || '0',
+                crew3: document.getElementById('salesCrew3').value || '0',
+                crew4: document.getElementById('salesCrew4').value || '0',
+                total: document.getElementById('totalSales').value || '0',
+                average: document.getElementById('average').value || '0',
+            },
+            totalPax: document.getElementById('totalPax').value || '0',
+        };
+    } catch (error) {
+        console.error('Error collecting form data:', error);
+        showNotification('Error collecting form data');
+        throw error;
+    }
 }
 
 function saveFormData() {
-    const formData = collectFormData();
     try {
-        localStorage.setItem('inflightFormData', JSON.stringify(formData));
+        const formData = collectFormData();
+        localStorage.setItem('flightReportData', JSON.stringify(formData));
+        localStorage.setItem('extraCrewCount', extraCrewCount);
         console.log('Form data saved');
     } catch (error) {
-        console.error('Error saving form data:', error);
+        console.error('Error saving form:', error);
         showNotification('Error saving form data');
     }
 }
 
 function loadFormData() {
     try {
-        const savedData = localStorage.getItem('inflightFormData');
-        if (!savedData) return;
-
-        const formData = JSON.parse(savedData);
-
-        document.querySelector('#date').value = formData.date || '';
-        document.querySelector('#acReg').value = formData.acReg || '';
-        document.querySelector('#captain').value = formData.captain || '';
-        document.querySelector('#firstOfficer').value = formData.firstOfficer || '';
-        document.querySelector('#description').value = formData.description || '';
-        document.querySelector('#yellowSeal').value = formData.seals?.yellowSeal || '';
-        document.querySelector('#greenSeal').value = formData.seals?.greenSeal || '';
-        document.querySelector('#metalSeal').value = formData.seals?.metalSeal || '';
-        document.querySelector('#kettles').value = formData.equipment?.kettles || '';
-        document.querySelector('#cupholder').value = formData.equipment?.cupholder || '';
-        document.querySelector('#babyWarmer').value = formData.equipment?.babyWarmer || '';
-        document.querySelector('#coolerBag').value = formData.equipment?.coolerBag || '';
-        document.querySelector('#dutyFreeMetalSeal').value = formData.dutyFreeMetalSeal || '';
-        document.querySelector('#salesCrew1').value = formData.sales?.crew1 || '';
-        document.querySelector('#salesCrew2').value = formData.sales?.crew2 || '';
-        document.querySelector('#salesCrew3').value = formData.sales?.crew3 || '';
-        document.querySelector('#salesCrew4').value = formData.sales?.crew4 || '';
-        document.querySelector('#totalSales').value = formData.sales?.totalSales || '';
-        document.querySelector('#totalPax').value = formData.sales?.totalPax || '';
-        document.querySelector('#average').value = formData.sales?.average || '';
-
-        formData.flights.forEach((flight, index) => {
-            const row = document.querySelector(`#flightsTableBody tr:nth-child(${index + 1})`);
-            if (row) {
-                row.querySelector('.route').value = flight.route || '';
-                row.querySelector('.flightNumber').value = flight.flightNumber || '';
-                row.querySelector('.flightTime').value = flight.flightTime || '';
-                row.querySelector('.departure').value = flight.departure || '';
-                row.querySelector('.arrival').value = flight.arrival || '';
-                row.querySelector('.finalPax').value = flight.finalPax || '';
-                row.querySelector('.fwd').value = flight.fwd || '';
-                row.querySelector('.aft').value = flight.aft || '';
-                row.querySelector('.wheelchair').value = flight.wheelchair || '';
-            }
-        });
-
-        formData.crew.forEach((crew, index) => {
-            const row = document.querySelector(`#crewTable tbody tr:nth-child(${index + 1})`);
-            if (row) {
-                row.querySelector('.crewcode').value = crew.code || '';
-                row.querySelector('.crewName').value = crew.name || '';
-                if (index >= 4) {
-                    row.style.display = 'table-row';
+        const savedData = localStorage.getItem('flightReportData');
+        const savedExtraCrew = localStorage.getItem('extraCrewCount');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            document.getElementById('date').value = data.date || '';
+            document.getElementById('acReg').value = data.acReg || '';
+            document.querySelectorAll('#flightsTableBody tr').forEach((row, i) => {
+                if (data.flights[i]) {
+                    row.querySelector('.route').value = data.flights[i].route || '';
+                    row.querySelector('.flightNumber').value = data.flights[i].flightNumber || '';
+                    row.querySelector('.flightTime').value = data.flights[i].time || '';
+                    row.querySelector('.departure').value = data.flights[i].departure || '';
+                    row.querySelector('.arrival').value = data.flights[i].arrival || '';
+                    row.querySelector('.finalPax').value = data.flights[i].finalPax || '';
+                    row.querySelector('.fwd').value = data.flights[i].fwd || '';
+                    row.querySelector('.aft').value = data.flights[i].aft || '';
+                    row.querySelector('.wheelchair').value = data.flights[i].wheelchair || '';
+                }
+            });
+            document.getElementById('captain').value = data.captain || '';
+            document.getElementById('firstOfficer').value = data.firstOfficer || '';
+            data.crew.forEach((crew, i) => {
+                if (i < 4) {
+                    document.getElementById(`crewcode${i + 1}`).value = crew.code || '';
+                    document.querySelector(`#crewTable tbody tr:nth-child(${i + 1}) .crewName`).value = crew.name || '';
+                } else {
+                    const extraRow = document.getElementById(`extraCrew${i - 3}`);
+                    if (extraRow) {
+                        extraRow.style.display = 'table-row';
+                        extraRow.querySelector('.crewcode').value = crew.code || '';
+                        extraRow.querySelector('.crewName').value = crew.name || '';
+                    }
+                }
+            });
+            document.getElementById('description').value = data.description || '';
+            document.querySelectorAll('#productTable tbody tr').forEach((row, i) => {
+                if (data.products[i]) {
+                    row.querySelector('.open').value = data.products[i].open || '';
+                    row.querySelector('.close').value = data.products[i].close || '';
+                }
+            });
+            document.getElementById('yellowSeal').value = data.seals.yellow || '';
+            document.getElementById('greenSeal').value = data.seals.green || '';
+            document.getElementById('metalSeal').value = data.seals.metal || '';
+            document.getElementById('kettles').value = data.equipment.kettles || '';
+            document.getElementById('cupholder').value = data.equipment.cupholder || '';
+            document.getElementById('babyWarmer').value = data.equipment.babyWarmer || '';
+            document.getElementById('coolerBag').value = data.equipment.coolerBag || '';
+            document.querySelectorAll('#dutyFreeTable tbody tr').forEach((row, i) => {
+                if (data.dutyFreeProducts[i]) {
+                    row.querySelector('.open').value = data.dutyFreeProducts[i].open || '';
+                    row.querySelector('.close').value = data.dutyFreeProducts[i].close || '';
+                }
+            });
+            document.getElementById('dutyFreeMetalSeal').value = data.dutyFreeSeal || '';
+            document.getElementById('salesCrew1').value = data.salesForm.crew1 || '0';
+            document.getElementById('salesCrew2').value = data.salesForm.crew2 || '0';
+            document.getElementById('salesCrew3').value = data.salesForm.crew3 || '0';
+            document.getElementById('salesCrew4').value = data.salesForm.crew4 || '0';
+            document.getElementById('totalSales').value = data.salesForm.total || '0';
+            document.getElementById('totalPax').value = data.totalPax || '0';
+            document.getElementById('average').value = data.salesForm.average || '0';
+            if (savedExtraCrew) {
+                extraCrewCount = parseInt(savedExtraCrew) || 0;
+                for (let i = 1; i <= extraCrewCount; i++) {
+                    const extraRow = document.getElementById(`extraCrew${i}`);
+                    if (extraRow) extraRow.style.display = 'table-row';
+                }
+                if (extraCrewCount >= 2) {
+                    document.querySelector('.add-crew-button').style.display = 'none';
                 }
             }
-        });
-
-        const productRows = document.querySelectorAll('#productTable tbody tr');
-        formData.products.forEach((product, index) => {
-            if (productRows[index]) {
-                const row = productRows[index];
-                row.querySelector('.open').value = product.initial || '';
-                row.querySelector('.close').value = product.final || '';
-                const openValue = parseInt(product.initial) || 0;
-                const closeValue = parseInt(product.final) || 0;
-                const difference = openValue - closeValue;
-                row.querySelector('.difference-cell').textContent = difference >= 0 ? difference : 0;
-            }
-        });
-
-        const dutyFreeRows = document.querySelectorAll('#dutyFreeTable tbody tr');
-        formData.dutyFree.forEach((item, index) => {
-            if (dutyFreeRows[index]) {
-                const row = dutyFreeRows[index];
-                row.querySelector('.open').value = item.initial || '';
-                row.querySelector('.close').value = item.final || '';
-                const openValue = parseInt(item.initial) || 0;
-                const closeValue = parseInt(item.final) || 0;
-                const difference = openValue - closeValue;
-                row.querySelector('.difference-cell').textContent = difference >= 0 ? difference : 0;
-            }
-        });
-
-        calculateDifference();
-        calculateTotals();
-        console.log('Form data loaded');
+            console.log('Form data loaded');
+        }
     } catch (error) {
-        console.error('Error loading form data:', error);
-        showNotification('Error loading form data');
+        console.error('Error loading form:', error);
+        showNotification('Error loading saved data');
     }
 }
 
 function clearFormData() {
-    document.querySelector('#inflightForm').reset();
-    document.querySelectorAll('.difference-cell').forEach(cell => cell.textContent = '');
-    document.querySelectorAll('.extra-crew').forEach(row => row.style.display = 'none');
-    localStorage.removeItem('inflightFormData');
-    calculateTotals();
-    showNotification('Form cleared');
-}
-
-function showNotification(message) {
-    const notification = document.querySelector('#notification');
-    notification.textContent = message;
-    notification.style.display = 'block';
-    setTimeout(() => {
-        notification.style.display = 'none';
-    }, 3000);
+    try {
+        document.getElementById('inflightForm').reset();
+        document.querySelectorAll('.difference-cell').forEach(cell => {
+            cell.textContent = '';
+        });
+        document.querySelectorAll('.extra-crew').forEach(row => {
+            row.querySelectorAll('input').forEach(input => input.value = '');
+            row.style.display = 'none';
+        });
+        extraCrewCount = 0;
+        document.querySelector('.add-crew-button').style.display = 'inline-block';
+        localStorage.clear();
+        updateSalesLabels();
+        calculateTotalSales();
+        calculateTotalPax();
+        showNotification('Form cleared');
+        console.log('Form cleared');
+    } catch (error) {
+        console.error('Error clearing form:', error);
+        showNotification('Error clearing form');
+    }
 }
 
 function toggleFlightView(flightNumber) {
-    console.log(`Toggling flight view for flight ${flightNumber}`);
+    try {
+        const flightRows = document.querySelectorAll('#flightsTableBody tr');
+        const flightInfoHeader = document.querySelector('.flight-info-header');
+        const stockSection = document.getElementById('stockSection');
+        const dutyFreeSection = document.getElementById('dutyFreeSection');
+        const salesSection = document.getElementById('salesSection');
+        const crewSection = document.getElementById('crewSection');
+        if (activeFlight === flightNumber) {
+            activeFlight = null;
+            flightRows.forEach(row => row.style.display = 'table-row');
+            flightInfoHeader.style.display = 'grid';
+            stockSection.style.display = 'block';
+            dutyFreeSection.style.display = 'block';
+            salesSection.style.display = 'block';
+            crewSection.style.display = 'block';
+        } else {
+            activeFlight = flightNumber;
+            flightRows.forEach(row => {
+                row.style.display = row.dataset.flight === flightNumber ? 'table-row' : 'none';
+            });
+            flightInfoHeader.style.display = 'none';
+            stockSection.style.display = 'none';
+            dutyFreeSection.style.display = 'none';
+            salesSection.style.display = 'none';
+            crewSection.style.display = 'block';
+        }
+        saveFormData();
+        console.log('Flight view toggled:', activeFlight);
+    } catch (error) {
+        console.error('Error toggling flight:', error);
+        showNotification('Error toggling flight view');
+    }
 }
 
-function handleFormSubmission() {
-    const formData = collectFormData();
-    generatePDF(formData);
+function addExtraCrew() {
+    try {
+        if (extraCrewCount >= 2) {
+            showNotification('Maximum extra crew reached');
+            return;
+        }
+        extraCrewCount++;
+        const extraRow = document.getElementById(`extraCrew${extraCrewCount}`);
+        if (extraRow) {
+            extraRow.style.display = 'table-row';
+            // Add input event listeners to new crew inputs
+            extraRow.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', () => {
+                    saveFormData();
+                    updateSalesLabels();
+                });
+            });
+            showNotification(`Added extra crew ${extraCrewCount}`);
+            if (extraCrewCount === 2) {
+                document.querySelector('.add-crew-button').style.display = 'none';
+            }
+            saveFormData();
+            console.log('Extra crew added:', extraCrewCount);
+        } else {
+            extraCrewCount--;
+            showNotification('Error adding crew');
+            console.error('Extra crew row not found');
+        }
+    } catch (error) {
+        console.error('Error adding extra crew:', error);
+        showNotification('Error adding extra crew');
+    }
+}
+
+function removeExtraCrew(index) {
+    try {
+        const extraRow = document.getElementById(`extraCrew${index}`);
+        if (extraRow) {
+            extraRow.style.display = 'none';
+            extraRow.querySelectorAll('input').forEach(input => input.value = '');
+            extraCrewCount--;
+            document.querySelector('.add-crew-button').style.display = 'inline-block';
+            saveFormData();
+            updateSalesLabels();
+            showNotification(`Removed extra crew ${index}`);
+            console.log('Extra crew removed:', index);
+        } else {
+            showNotification('Error removing crew');
+            console.error('Extra crew row not found');
+        }
+    } catch (error) {
+        console.error('Error removing extra crew:', error);
+        showNotification('Error removing extra crew');
+    }
+}
+
+function calculateDifference() {
+    try {
+        ['productTable', 'dutyFreeTable'].forEach(tableId => {
+            const table = document.getElementById(tableId);
+            if (table) {
+                table.querySelectorAll('tbody tr').forEach(row => {
+                    const openInput = row.querySelector('.open');
+                    const closeInput = row.querySelector('.close');
+                    const soldCell = row.querySelector('.difference-cell');
+                    if (openInput && closeInput && soldCell) {
+                        const openValue = parseInt(openInput.value) || 0;
+                        const closeValue = parseInt(closeInput.value) || 0;
+                        soldCell.textContent = openValue - closeValue >= 0 ? openValue - closeValue : 0;
+                        openInput.addEventListener('input', () => {
+                            const newOpen = parseInt(openInput.value) || 0;
+                            const newClose = parseInt(closeInput.value) || 0;
+                            soldCell.textContent = newOpen - newClose >= 0 ? newOpen - newClose : 0;
+                            saveFormData();
+                        });
+                        closeInput.addEventListener('input', () => {
+                            const newOpen = parseInt(openInput.value) || 0;
+                            const newClose = parseInt(closeInput.value) || 0;
+                            soldCell.textContent = newOpen - newClose >= 0 ? newOpen - newClose : 0;
+                            saveFormData();
+                        });
+                    }
+                });
+            }
+        });
+        console.log('Inventory differences calculated');
+    } catch (error) {
+        console.error('Error calculating differences:', error);
+        showNotification('Error updating inventory');
+    }
+}
+
+function updateSalesLabels() {
+    try {
+        for (let i = 1; i <= 4; i++) {
+            const crewCode = document.getElementById(`crewcode${i}`);
+            const salesLabel = document.getElementById(`salesLabel${i}`);
+            if (crewCode && salesLabel) {
+                const code = crewCode.value.trim() || `Crew ${i}`;
+                salesLabel.textContent = `${code} Sales`;
+                crewCode.addEventListener('input', () => {
+                    salesLabel.textContent = `${crewCode.value.trim() || `Crew ${i}`} Sales`;
+                    saveFormData();
+                });
+            }
+        }
+        // Handle extra crew sales labels
+        for (let i = 1; i <= extraCrewCount; i++) {
+            const crewCode = document.getElementById(`crewcode${i + 4}`);
+            if (crewCode) {
+                crewCode.addEventListener('input', saveFormData);
+            }
+        }
+        console.log('Updated sales labels');
+    } catch (error) {
+        console.error('Error updating sales labels:', error);
+        showNotification('Error updating sales labels');
+    }
+}
+
+function calculateTotalSales() {
+    try {
+        const salesInputs = [
+            document.getElementById('salesCrew1'),
+            document.getElementById('salesCrew2'),
+            document.getElementById('salesCrew3'),
+            document.getElementById('salesCrew4'),
+        ].filter(input => input); // Filter out null inputs
+        const totalSalesInput = document.getElementById('totalSales');
+        const totalPaxInput = document.getElementById('totalPax');
+        const averageInput = document.getElementById('average');
+        if (totalSalesInput && totalPaxInput && averageInput) {
+            const total = salesInputs.reduce((sum, input) => {
+                const value = parseFloat(input.value) || 0;
+                return sum + (value >= 0 ? value : 0);
+            }, 0);
+            totalSalesInput.value = total.toFixed(2);
+            const totalPax = parseInt(totalPaxInput.value) || 0;
+            averageInput.value = totalPax > 0 ? (total / totalPax).toFixed(2) : '0.00';
+            salesInputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    const newTotal = salesInputs.reduce((sum, input) => {
+                        const value = parseFloat(input.value) || 0;
+                        return sum + (value >= 0 ? value : 0);
+                    }, 0);
+                    totalSalesInput.value = newTotal.toFixed(2);
+                    const newTotalPax = parseInt(totalPaxInput.value) || 0;
+                    averageInput.value = newTotalPax > 0 ? (newTotal / newTotalPax).toFixed(2) : '0.00';
+                    saveFormData();
+                });
+            });
+            console.log('Calculated total sales:', total);
+        } else {
+            showNotification('Error: Missing sales elements');
+            console.error('Missing sales elements');
+        }
+    } catch (error) {
+        console.error('Error calculating total sales:', error);
+        showNotification('Error calculating total sales');
+    }
+}
+
+function calculateTotalPax() {
+    try {
+        const paxInputs = document.querySelectorAll('.finalPax');
+        const totalPaxInput = document.getElementById('totalPax');
+        const averageInput = document.getElementById('average');
+        const totalSalesInput = document.getElementById('totalSales');
+        if (totalPaxInput && averageInput && totalSalesInput) {
+            const totalPax = Array.from(paxInputs).reduce((sum, input) => {
+                const value = parseInt(input.value) || 0;
+                return sum + (value >= 0 ? value : 0);
+            }, 0);
+            totalPaxInput.value = totalPax;
+            const totalSales = parseFloat(totalSalesInput.value) || 0;
+            averageInput.value = totalPax > 0 ? (totalSales / totalPax).toFixed(2) : '0.00';
+            paxInputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    const newTotalPax = Array.from(paxInputs).reduce((sum, input) => {
+                        const value = parseInt(input.value) || 0;
+                        return sum + (value >= 0 ? value : 0);
+                    }, 0);
+                    totalPaxInput.value = newTotalPax;
+                    const newTotalSales = parseFloat(totalSalesInput.value) || 0;
+                    averageInput.value = newTotalPax > 0 ? (newTotalSales / newTotalPax).toFixed(2) : '0.00';
+                    saveFormData();
+                });
+            });
+            console.log('Calculated total Pax:', totalPax);
+        } else {
+            showNotification('Error: Missing pax element');
+            console.error('Missing pax element');
+        }
+    } catch (error) {
+        console.error('Error calculating total pax:', error);
+        showNotification('Error calculating total pax');
+    }
 }
 
 function generatePDF(formData) {
-    const doc = new jsPDF();
-    let yOffset = 10;
+    try {
+        if (!window.jspdf) {
+            throw new Error('jsPDF library not loaded');
+        }
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text('Flight Report', 10, 10);
+        doc.setFontSize(12);
+        doc.text(`Date: ${formData.date || 'N/A'}`, 10, 20);
+        doc.text(`Aircraft: ${formData.acReg || ''}`, 100, 20);
 
-    doc.setFontSize(16);
-    doc.text('Flight Report', 105, yOffset, { align: 'center' });
-    yOffset += 10;
+        doc.text('Flight Information', 10, 30);
+        doc.autoTable({
+            head: [['#', 'Route', 'Flight No.', 'Time', 'Dep.', 'Arr.', 'Pax', 'FWD', 'AFT', 'W/C']],
+            body: formData.flights.map((flight, index) => [
+                index + 1,
+                flight.route || '',
+                flight.flightNumber || '',
+                flight.time || '',
+                flight.departure || '',
+                flight.arrival || '',
+                flight.finalPax || '0',
+                flight.fwd || '',
+                flight.aft || '',
+                flight.wheelchair || '',
+            ]),
+            startY: 35,
+            theme: 'grid',
+            headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
+            bodyStyles: { fontSize: 10 },
+            columnStyles: {
+                0: { cellWidth: 10 },
+                1: { cellWidth: 25 },
+                2: { cellWidth: 25 },
+                3: { cellWidth: 20 },
+                4: { cellWidth: 20 },
+                5: { cellWidth: 20 },
+                6: { cellWidth: 15 },
+                7: { cellWidth: 15 },
+                8: { cellWidth: 15 },
+                9: { cellWidth: 20 },
+            },
+        });
 
-    doc.setFontSize(12);
-    doc.text(`Date: ${formData.date || 'N/A'}`, 10, yOffset);
-    doc.text(`A/C Registration: ${formData.acReg || 'N/A'}`, 150, yOffset);
-    yOffset += 10;
+        let y = doc.lastAutoTable.finalY + 10;
+        doc.text('Crew Information', 10, y);
+        doc.text(`Captain: ${formData.captain || ''}`, 10, y + 5);
+        doc.text(`First Officer: ${formData.firstOfficer || ''}`, 100, y + 5);
+        doc.autoTable({
+            head: [['Crew', 'Name', 'Code']],
+            body: formData.crew.map((crew, index) => [
+                index < 4 ? `No. ${index + 1}` : `Extra ${index - 3 + 1}`,
+                crew.name || '',
+                crew.code || '',
+            ]),
+            startY: y + 10,
+            theme: 'grid',
+            headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
+            bodyStyles: { fontSize: 10 },
+        });
 
-    doc.autoTable({
-        startY: yOffset,
-        head: [['#', 'Route', 'Flight No.', 'Time', 'Dep', 'Arr', 'Pax', 'FWD', 'AFT', 'W/C']],
-        body: formData.flights.map((flight, index) => [
-            index + 1,
-            flight.route || '',
-            flight.flightNumber || '',
-            flight.flightTime || '',
-            flight.departure || '',
-            flight.arrival || '',
-            flight.finalPax || '',
-            flight.fwd || '',
-            flight.aft || '',
-            flight.wheelchair || ''
-        ]),
-        theme: 'striped',
-        headStyles: { fillColor: [30, 144, 255] },
-        margin: { left: 10, right: 10 }
-    });
-    yOffset = doc.lastAutoTable.finalY + 10;
+        y = doc.lastAutoTable.finalY + 10;
+        doc.text('Description', 10, y);
+        doc.text(formData.description || 'N/A', 10, y + 5);
 
-    doc.setFontSize(12);
-    doc.text(`Captain: ${formData.captain || 'N/A'}`, 10, yOffset);
-    doc.text(`First Officer: ${formData.firstOfficer || 'N/A'}`, 150, yOffset);
-    yOffset += 10;
+        y += 15;
+        doc.text('Product Inventory', 10, y);
+        doc.autoTable({
+            head: [['Product', 'Initial', 'Final', 'Sold']],
+            body: formData.products.map(item => [
+                item.name || '',
+                item.open || '',
+                item.close || '',
+                item.sold || '',
+            ]),
+            startY: y + 5,
+            theme: 'grid',
+            headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
+            bodyStyles: { fontSize: 10 },
+        });
 
-    doc.autoTable({
-        startY: yOffset,
-        head: [['Crew', 'Code', 'Name']],
-        body: formData.crew.map((crew, index) => [
-            `No. ${index + 1}`,
-            crew.code || '',
-            crew.name || ''
-        ]),
-        theme: 'striped',
-        headStyles: { fillColor: [30, 144, 255] },
-        margin: { left: 10, right: 10 }
-    });
-    yOffset = doc.lastAutoTable.finalY + 10;
+        y = doc.lastAutoTable.finalY + 10;
+        doc.text(`Seals - Yellow: ${formData.seals.yellow || ''}, Green: ${formData.seals.green || ''}, Metal: ${formData.seals.metal || ''}`, 10, y);
+        doc.autoTable({
+            head: [['Equipment', 'Quantity']],
+            body: [
+                ['Kettles', formData.equipment.kettles || ''],
+                ['Cupholder', formData.equipment.cupholder || ''],
+                ['Baby Warmer', formData.equipment.babyWarmer || ''],
+                ['Cooler Bag', formData.equipment.coolerBag || ''],
+            ],
+            startY: y + 5,
+            theme: 'grid',
+            headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
+            bodyStyles: { fontSize: 10 },
+        });
 
-    doc.text(`Description: ${formData.description || 'N/A'}`, 10, yOffset);
-    yOffset += 10;
+        y = doc.lastAutoTable.finalY + 10;
+        doc.text('Duty-Free Inventory', 10, y);
+        doc.autoTable({
+            head: [['Item', 'Initial', 'Final', 'Sold']],
+            body: formData.dutyFreeProducts.map(item => [
+                item.name || '',
+                item.open || '',
+                item.close || '',
+                item.sold || '',
+            ]),
+            startY: y + 5,
+            theme: 'grid',
+            headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
+            bodyStyles: { fontSize: 10 },
+        });
 
-    doc.autoTable({
-        startY: yOffset,
-        head: [['Product', 'Initial', 'Final', 'Sold']],
-        body: formData.products.map(product => [
-            product.name,
-            product.initial || '',
-            product.final || '',
-            product.sold || ''
-        ]),
-        theme: 'striped',
-        headStyles: { fillColor: [30, 144, 255] },
-        margin: { left: 10, right: 10 }
-    });
-    yOffset = doc.lastAutoTable.finalY + 10;
+        y = doc.lastAutoTable.finalY + 10;
+        doc.text(`Duty-Free Seal: ${formData.dutyFreeSeal || ''}`, 10, y);
 
-    doc.text(`Yellow Seal: ${formData.seals.yellowSeal || 'N/A'}`, 10, yOffset);
-    doc.text(`Green Seal: ${formData.seals.greenSeal || 'N/A'}`, 70, yOffset);
-    doc.text(`Metal Seal: ${formData.seals.metalSeal || 'N/A'}`, 130, yOffset);
-    yOffset += 10;
+        y += 10;
+        doc.text('Sales and Totals', 10, y);
+        doc.autoTable({
+            head: [['Crew', 'Sales (€)']],
+            body: [
+                [`${document.getElementById('crewcode1').value || 'Crew 1'}`, formData.salesForm.crew1 || '0'],
+                [`${document.getElementById('crewcode2').value || 'Crew 2'}`, formData.salesForm.crew2 || '0'],
+                [`${document.getElementById('crewcode3').value || 'Crew 3'}`, formData.salesForm.crew3 || '0'],
+                [`${document.getElementById('crewcode4').value || 'Crew 4'}`, formData.salesForm.crew4 || '0'],
+            ],
+            startY: y + 5,
+            theme: 'grid',
+            headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
+            bodyStyles: { fontSize: 10 },
+        });
 
-    doc.text(`Kettles: ${formData.equipment.kettles || 'N/A'}`, 10, yOffset);
-    doc.text(`Cupholder: ${formData.equipment.cupholder || 'N/A'}`, 50, yOffset);
-    doc.text(`Baby Warmer: ${formData.equipment.babyWarmer || 'N/A'}`, 90, yOffset);
-    doc.text(`Cooler Bag: ${formData.equipment.coolerBag || 'N/A'}`, 130, yOffset);
-    yOffset += 10;
+        y = doc.lastAutoTable.finalY + 5;
+        doc.text(`Total Sales: ${formData.salesForm.total || '0.00'} €`, 10, y);
+        doc.text(`Total Pax: ${formData.totalPax || '0'}`, 100, y);
+        doc.text(`Average: ${formData.salesForm.average || '0.00'} €`, 150, y);
 
-    doc.autoTable({
-        startY: yOffset,
-        head: [['Duty-Free Item', 'Initial', 'Final', 'Sold']],
-        body: formData.dutyFree.map(item => [
-            item.name,
-            item.initial || '',
-            item.final || '',
-            item.sold || ''
-        ]),
-        theme: 'striped',
-        headStyles: { fillColor: [30, 144, 255] },
-        margin: { left: 10, right: 10 }
-    });
-    yOffset = doc.lastAutoTable.finalY + 10;
-
-    doc.text(`Duty-Free Metal Seal: ${formData.dutyFreeMetalSeal || 'N/A'}`, 10, yOffset);
-    yOffset += 10;
-
-    doc.autoTable({
-        startY: yOffset,
-        head: [['Crew', 'Sales (€)']],
-        body: [
-            ['Crew 1', formData.sales.crew1 || '0'],
-            ['Crew 2', formData.sales.crew2 || '0'],
-            ['Crew 3', formData.sales.crew3 || '0'],
-            ['Crew 4', formData.sales.crew4 || '0'],
-            ['Total Sales', formData.sales.totalSales || '0'],
-            ['Total Pax', formData.sales.totalPax || '0'],
-            ['Average/Pax', formData.sales.average || '0']
-        ],
-        theme: 'striped',
-        headStyles: { fillColor: [30, 144, 255] },
-        margin: { left: 10, right: 10 }
-    });
-
-    doc.save(`Flight_Report_${formData.date || 'NoDate'}.pdf`);
+        return doc;
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        showNotification('Error generating PDF');
+        throw error;
+    }
 }
-```
 
-### Cambios realizados en `script.js`
-1. **Mejor manejo de errores en `loadFormData`**:
-   - Añadí comprobaciones para evitar errores si `formData.products` tiene menos elementos que las filas actuales (por ejemplo, 7 productos guardados vs. 8 filas).
-   - Usé `if (productRows[index])` para asegurar que solo se asignen valores a filas existentes.
-   - Recalculo las diferencias al cargar datos para asegurar que `difference-cell` se actualice correctamente.
+function handleFormSubmission() {
+    try {
+        console.log('Submitting form');
+        const formData = collectFormData();
+        const pdfDoc = generatePDF(formData);
+        const pdfBlob = pdfDoc.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = pdfUrl;
+        downloadLink.download = `Flight_Report_${formData.date || 'Untitled'}.pdf`;
+        document.body.appendChild(downloadLink);
+        setTimeout(() => {
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            URL.revokeObjectURL(pdfUrl);
+            showNotification('Report generated successfully');
+            console.log('PDF downloaded');
+        }, 100);
+    } catch (error) {
+        console.error('Error submitting form:', error);
+        showNotification('Error: ' + error.message);
+    }
+}
 
-2. **Eventos de entrada robustos**:
-   - Mantuve el listener de `input` en `#productTable` para capturar cambios en cualquier input con clase `open` o `close`, incluyendo la nueva fila de "C&M Panini".
-   - Verifiqué que los eventos se asignen correctamente a todos los inputs.
+function initializeForm() {
+    try {
+        loadFormData();
+        calculateDifference();
+        updateSalesLabels();
+        calculateTotalSales();
+        calculateTotalPax();
+        document.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', () => {
+                saveFormData();
+                calculateTotalSales();
+                calculateTotalPax();
+            });
+        });
+        // Ensure extra crew buttons have event listeners
+        document.querySelector('.add-crew-button').addEventListener('click', addExtraCrew);
+        document.querySelectorAll('.remove-crew-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const index = button.closest('tr').id.replace('extraCrew', '');
+                removeExtraCrew(index);
+            });
+        });
+        console.log('Form initialized');
+    } catch (error) {
+        console.error('Error initializing form:', error);
+        showNotification('Error initializing form');
+    }
+}
 
-3. **Limpieza de `localStorage`**:
-   - En `clearFormData`, aseguré que `localStorage.removeItem('inflightFormData')` elimine datos antiguos que puedan causar conflictos.
-   - Añadí manejo de errores en `saveFormData` y `loadFormData` para notificar al usuario si hay problemas con `localStorage`.
-
-4. **Depuración mejorada**:
-   - Mantuve los `console.log` para confirmar que las funciones se ejecutan (`'Inventory differences calculated'`, `'Form data saved'`, `'Form data loaded'`).
-   - Añadí notificaciones visuales (`showNotification`) para errores de guardado/carga.
-
-### Instrucciones para probar
-1. **Actualiza los archivos**:
-   - Reemplaza tu `index.html` con el código del artifact_id: `889b7cde-3a67-420f-91d2-5da35b768ac7`, versión: `d30218cd-e182-4db9-aefd-a2a1ca19f540`.
-   - Reemplaza tu `script.js` con el código del artifact_id: `015fb05d-510d-4272-8309-ef6d21563efb`, versión: `a7b3f9e2-1c7d-4f0a-b5e3-9c8d7a2f3b4e`.
-
-2. **Limpia la caché**:
-   - Abre la consola del navegador (F12), ve a la pestaña "Application", selecciona "Storage" > "Local Storage" y elimina la entrada para `inflightFormData`.
-   - Si usas un Service Worker, limpia la caché del navegador o actualiza `sw.js` para incluir las nuevas versiones de `index.html` y `script.js`. Por ejemplo, en `sw.js`, asegúrate de que el array `filesToCache` incluya:
-     ```javascript
-     const filesToCache = [
-         '/',
-         '/index.html',
-         '/script.js',
-         '/output.css',
-         '/manifest.json',
-         '/icon.png'
-     ];
-     ```
-     y cambia el `CACHE_NAME` para forzar una actualización (por ejemplo, `CACHE_NAME = 'flight-report-v3'`).
-
-3. **Prueba las variables**:
-   - **Tabla de inventario**:
-     - Ingresa valores en `Initial` y `Final` para "C&M Panini" (por ejemplo, `Initial: 20`, `Final: 8`) y verifica que la columna `Sold` muestre `12`.
-     - Haz lo mismo para otros productos (por ejemplo, "H&C Panini", "Pizza").
-     - Confirma que los cálculos se actualizan en tiempo real.
-   - **Guardado y carga**:
-     - Ingresa datos en varios campos (incluyendo "C&M Panini"), recarga la página, y verifica que los valores persisten.
-     - Usa el botón "Clear Form" y confirma que todos los campos, incluyendo "C&M Panini", se limpian y `localStorage` se vacía.
-   - **Totales de ventas**:
-     - Ingresa valores en los campos de ventas (`salesCrew1`, etc.) y verifica que `totalSales`, `totalPax`, y `average` se actualicen correctamente.
-   - **PDF**:
-     - Haz clic en "Submit Report" y verifica que el PDF incluye "C&M Panini" en la tabla "Product Inventory" con los valores correctos.
-
-4. **Revisa la consola**:
-   - Abre la consola (F12) y busca mensajes como:
-     - `'Inventory differences calculated'` al modificar inputs de inventario.
-     - `'Form data saved'` al ingresar datos.
-     - `'Form data loaded'` al cargar la página.
-   - Si ves errores (por ejemplo, `Cannot read property 'value' of null`), copia el mensaje exacto y compártelo para depurar.
-
-### Preguntas para aclarar
-Para afinar la solución, por favor proporciona más detalles:
-- ¿Qué variables específicas no funcionan? Por ejemplo:
-  - ¿La columna "Sold" en "C&M Panini" no se actualiza?
-  - ¿Los datos no se guardan al recargar la página?
-  - ¿Los totales de ventas (`totalSales`, `average`) están mal?
-  - ¿El PDF no incluye "C&M Panini"?
-- ¿Ves algún mensaje de error en la consola del navegador?
-- ¿El problema ocurre solo con "C&M Panini" o también con otros productos?
-- ¿Estás usando un Service Worker? Si es así, ¿has actualizado la caché?
-
-### Notas adicionales
-- **Service Worker**: Si el problema persiste, prueba desactivar temporalmente el Service Worker en `index.html` comentando:
-  ```html
-  <!--
-  <script>
-      if ('serviceWorker' in navigator) {
-          document.addEventListener('DOMContentLoaded', () => {
-              navigator.serviceWorker.register('/sw.js')
-                  .then(registration => {
-                      console.log('Service Worker registered:', registration.scope);
-                  })
-                  .catch(error => {
-                      console.error('Error registering Service Worker:', error);
-                  });
-          });
-      }
-  </script>
-  -->
-  ```
-  y limpia la caché del navegador.
-
-- **Datos antiguos**: Si `localStorage` tiene datos con 7 productos, puede causar errores al cargar en una tabla con 8. Limpiar `localStorage` (como se indicó) debería resolverlo.
-
-- **Validaciones**: Si necesitas validaciones específicas para "C&M Panini" (por ejemplo, un máximo de 30 unidades iniciales), puedo añadirlas. Por ejemplo:
-  ```javascript
-  if (row.cells[0].textContent === 'C&M Panini' && parseInt(openInput.value) > 30) {
-      showNotification('C&M Panini cannot exceed 30 units initial stock');
-      openInput.value = 30;
-  }
-  ```
-
-### Siguientes pasos
-- Actualiza `index.html` y `script.js` con los códigos proporcionados.
-- Limpia `localStorage` y la caché del navegador.
-- Prueba las funcionalidades descritas y verifica la consola.
-- Responde con detalles sobre qué funciona y qué no, o con cualquier mensaje de error.
-
-¡Vamos a hacer que las variables funcionen perfectamente! 😊 Si necesitas ayuda urgente o prefieres que revise algo específico, avísame.
+document.addEventListener('DOMContentLoaded', initializeForm);
