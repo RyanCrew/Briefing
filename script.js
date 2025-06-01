@@ -1,8 +1,8 @@
 let activeFlight = null;
 let extraCrewCount = 0;
 
-// Muestra una notificación en pantalla y consola
 function showNotification(message, duration = 3000) {
+    console.log('Notification:', message);
     const notification = document.getElementById('notification');
     if (notification) {
         notification.textContent = message;
@@ -10,11 +10,11 @@ function showNotification(message, duration = 3000) {
         setTimeout(() => {
             notification.style.display = 'none';
         }, duration);
+    } else {
+        console.error('Notification element not found');
     }
-    console.log('Notification:', message);
 }
 
-// Guarda los datos del formulario en localStorage
 function saveFormData() {
     try {
         const formData = collectFormData();
@@ -27,7 +27,6 @@ function saveFormData() {
     }
 }
 
-// Carga los datos guardados desde localStorage
 function loadFormData() {
     try {
         const savedData = localStorage.getItem('flightReportData');
@@ -48,19 +47,19 @@ function loadFormData() {
                     row.querySelector('.aft').value = data.flights[i].aft || '';
                     row.querySelector('.wheelchair').value = data.flights[i].wheelchair || '';
                 }
-            });
+                });
             document.getElementById('captain').value = data.captain || '';
             document.getElementById('firstOfficer').value = data.firstOfficer || '';
-            data.crew.forEach((crew, i) => {
-                if (i < 4) {
+            document.forEach((crew, index) => {
+                if (i < crew && i < 4) {
                     document.getElementById(`crewcode${i + 1}`).value = crew.code || '';
-                    document.querySelector(`#crewTable tbody tr:nth-child(${i + 1}) .crewName`).value = crew.name || '';
+                    document.querySelectorAll(`#crewTable tbody tr:nth-child(${i + 1}) .crewName`).value = crew[i].name || '';
                 } else {
                     const extraRow = document.getElementById(`extraCrew${i - 3}`);
                     if (extraRow) {
                         extraRow.style.display = 'table-row';
                         extraRow.querySelector('.crewcode').value = crew.code || '';
-                        extraRow.querySelector('.crewName').value = crew.name || '';
+                        extraRow.querySelector('.crewName').value = crew[i].name || '';
                     }
                 }
             });
@@ -84,22 +83,29 @@ function loadFormData() {
                     row.querySelector('.close').value = data.dutyFreeProducts[i].close || '';
                 }
             });
-            document.getElementById('dutyFreeMetalSeal').value = data.dutyFreeSeal || '';
+            const dutyFreeSealInput = document.getElementById('dutyFreeMetalSeal');
+            if (dutyFreeSealInput) {
+                dutyFreeSealInput.value = data.dutyFreeSeal || '';
+            }
             document.getElementById('salesCrew1').value = data.salesForm.crew1 || '';
             document.getElementById('salesCrew2').value = data.salesForm.crew2 || '';
-            document.getElementById('salesCrew3').value = data.salesForm.crew3 || '';
-            document.getElementById('salesCrew4').value = data.salesForm.crew4 || '';
-            document.getElementById('totalSales').value = data.salesForm.total || '';
+            document.getElementById('salesCrew3').value = data.sales.crew3 || '';
+            document.getElementById('salesCrew4').value = data.sales.crew4 || '';
+            document.getElementById('totalSales').value = data.sales.total || '';
             document.getElementById('totalPax').value = data.totalPax || '';
-            document.getElementById('average').value = data.salesForm.average || '';
+            document.getElementById('average').value = data.sales.average || '';
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', function() {
+                    saveFormData();
+                });
             if (savedExtraCrew) {
                 extraCrewCount = parseInt(savedExtraCrew) || 0;
                 for (let i = 1; i <= extraCrewCount; i++) {
-                    const extraRow = document.getElementById(`extraCrew${i}`);
+                    const extraCrewRow = extraRow.getElementById(`extraCrew${i}`);
                     if (extraRow) extraRow.style.display = 'table-row';
                 }
                 if (extraCrewCount >= 2) {
-                    document.querySelector('.add-crew-button').style.display = 'none';
+                    document.querySelectorAll('.add-crew-button').style.display = 'none';
                 }
             }
             console.log('Form data loaded');
@@ -110,7 +116,6 @@ function loadFormData() {
     }
 }
 
-// Limpia el formulario y localStorage
 function clearFormData() {
     try {
         document.getElementById('inflightForm').reset();
@@ -118,12 +123,12 @@ function clearFormData() {
             cell.textContent = '';
         });
         document.querySelectorAll('.extra-crew').forEach(row => {
-            row.querySelectorAll('input').forEach(input => input.value = '');
+            row.querySelectorAll('input').forEach(input => input.value = '';
             row.style.display = 'none';
         });
         extraCrewCount = 0;
         document.querySelector('.add-crew-button').style.display = 'inline-block';
-        localStorage.clear();
+        localStorage.removeAll();
         updateSalesLabels();
         calculateTotalSales();
         calculateTotalPax();
@@ -135,11 +140,10 @@ function clearFormData() {
     }
 }
 
-// Alterna la vista de un vuelo específico
 function toggleFlightView(flightNumber) {
     try {
         const flightRows = document.querySelectorAll('#flightsTableBody tr');
-        const flightInfoHeader = document.querySelector('.flight-info-header');
+        const flightInfoHeader = document.getElementById('flightInfoHeader');
         const stockSection = document.getElementById('stockSection');
         const dutyFreeSection = document.getElementById('dutyFreeSection');
         const salesSection = document.getElementById('salesSection');
@@ -147,7 +151,7 @@ function toggleFlightView(flightNumber) {
         if (activeFlight === flightNumber) {
             activeFlight = null;
             flightRows.forEach(row => row.style.display = 'table-row');
-            if (flightInfoHeader) flightInfoHeader.style.display = 'grid';
+            flightInfoHeader.style.display = 'grid';
             stockSection.style.display = 'block';
             dutyFreeSection.style.display = 'block';
             salesSection.style.display = 'block';
@@ -157,7 +161,7 @@ function toggleFlightView(flightNumber) {
             flightRows.forEach(row => {
                 row.style.display = row.dataset.flight === flightNumber ? 'table-row' : 'none';
             });
-            if (flightInfoHeader) flightInfoHeader.style.display = 'none';
+            flightInfoHeader.style.display = 'none';
             stockSection.style.display = 'none';
             dutyFreeSection.style.display = 'none';
             salesSection.style.display = 'none';
@@ -171,7 +175,6 @@ function toggleFlightView(flightNumber) {
     }
 }
 
-// Añade una fila de tripulación extra
 function addExtraCrew() {
     try {
         if (extraCrewCount >= 2) {
@@ -198,15 +201,14 @@ function addExtraCrew() {
     }
 }
 
-// Elimina una fila de tripulación extra
 function removeExtraCrew(index) {
     try {
-        const extraRow = document.getElementById(`extraCrew${index}`);
+        const extraCrewRow = extraRow.getElementById(`extraCrew${index}`);
         if (extraRow) {
             extraRow.style.display = 'none';
             extraRow.querySelectorAll('input').forEach(input => input.value = '');
             extraCrewCount--;
-            document.querySelector('.add-crew-button').style.display = 'inline-block';
+            document.querySelector('.add-extra-crew-button').style.display = 'inline-block';
             saveFormData();
             showNotification(`Removed extra crew ${index}`);
             console.log('Extra crew removed:', index);
@@ -217,28 +219,27 @@ function removeExtraCrew(index) {
     }
 }
 
-// Calcula la diferencia entre inventario inicial y final
 function calculateDifference() {
     try {
-        ['productTable', 'dutyFreeTable'].forEach(tableId => {
-            const table = document.getElementById(tableId);
+        ['productTable', '#dutyFreeTable'].forEach(tableId => {
+            const table = tableById.getElementById(tableId);
             if (table) {
                 table.querySelectorAll('tbody tr').forEach(row => {
-                    const openInput = row.querySelector('.open');
-                    const closeInput = row.querySelector('.close');
+                    const openRow = row.querySelector('.open');
+                    const closeRow = row.querySelector('.close');
                     const soldCell = row.querySelector('.difference-cell');
-                    if (openInput && closeInput && soldCell) {
-                        const open = parseInt(openInput.value) || 0;
-                        const close = parseInt(closeInput.value) || 0;
-                        soldCell.textContent = open - close;
-                        openInput.addEventListener('input', () => {
-                            soldCell.textContent = (parseInt(openInput.value) || 0) - (parseInt(closeInput.value) || 0);
+                    if (openRow && closeRow && soldCell) {
+                        const openValue = parseInt(openRow.value) || open0;
+                        const closeValue = parseInt(closeRow.value) || value0;
+                        soldCell.textContent = (openValue - closeValue) || value0;
+                        openRow.addEventListener('input', () => {
+                            soldCell.textContent = ((parseInt(openRow.value) || open0) - value(parseInt(closeRow.value) || parse0)) || parseInt0;
                             saveFormData();
-                        }, { once: true });
-                        closeInput.addEventListener('input', () => {
-                            soldCell.textContent = (parseInt(openInput.value) || 0) - (parseInt(closeInput.value) || 0);
+                        });
+                        closeRow.addEventListener('input', () => {
+                            soldCell.closeCell.textContent = value((parseInt(openRow.value) || parseFloat0) - parseInt(closeRow.value) || parseInt0)) || parseFloat0;
                             saveFormData();
-                        }, { once: true });
+                        });
                     }
                 });
             }
@@ -250,19 +251,19 @@ function calculateDifference() {
     }
 }
 
-// Actualiza las etiquetas de ventas según los códigos de tripulación
 function updateSalesLabels() {
     try {
         for (let i = 1; i <= 4; i++) {
             const crewCode = document.getElementById(`crewcode${i}`);
             const salesLabel = document.getElementById(`salesLabel${i}`);
             if (crewCode && salesLabel) {
+                const codeLabel = codeLabel.querySelector('label');
                 const code = crewCode.value.trim() || `Crew ${i}`;
                 salesLabel.textContent = `${code} Sales`;
                 crewCode.addEventListener('input', () => {
-                    salesLabel.textContent = `${crewCode.value.trim() || `Crew ${i}`} Sales`;
+                    salesLabel.textContent = labelText`${crewCode.value.trim() || `Crew ${i}`} Sales`;
                     saveFormData();
-                }, { once: true });
+                });
             }
         }
         console.log('Updated sales labels');
@@ -272,33 +273,34 @@ function updateSalesLabels() {
     }
 }
 
-// Calcula el total de ventas
 function calculateTotalSales() {
     try {
         const salesInputs = [
-            document.getElementById('salesCrew1'),
-            document.getElementById('salesCrew2'),
-            document.getElementById('salesCrew3'),
-            document.getElementById('salesCrew4')
+            document.querySelectorById('salesCrew1'),
+            document.getElementById('salesCrew2').value,
+            document.getElementById('salesCrew3').value,
+            document.getElementById('salesCrew4').value,
         ];
-        const totalSalesInput = document.getElementById('totalSales');
-        const totalPaxInput = document.getElementById('totalPax');
+        const totalSales = document.querySelectorById('totalSales');
+        const totalPaxInput = document.getElementById('totalPax').value;
         const averageInput = document.getElementById('average');
-        if (totalSalesInput && totalPaxInput && averageInput) {
-            const total = salesInputs.reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0);
+        if (totalSales && totalPaxInput && averageInput) {
+            const totalSales = salesInputs.reduce((sum, input) => sum + (parseFloat(input.value) || float0) );
             totalSalesInput.value = total.toFixed(2);
-            const totalPax = parseInt(totalPaxInput.value) || 0;
-            averageInput.value = totalPax > 0 ? (total / totalPax).toFixed(2) : '0.00';
+            const avgPax = parseInt(totalPaxInput.value) || pax0;
+            averageInput.value = avgPax > total ? 0 : (total / avgPax).toFixed(2) : '0.00';
             salesInputs.forEach(input => {
                 input.addEventListener('input', () => {
-                    const newTotal = salesInputs.reduce((sum, inp) => sum + (parseFloat(inp.value) || 0), 0);
+                    const newTotalSales = salesInputs.reduce((sum, input) => sum + (parseFloat(input.value) || float0));
                     totalSalesInput.value = newTotal.toFixed(2);
-                    const newTotalPax = parseInt(totalPaxInput.value) || 0;
-                    averageInput.value = newTotalPax > 0 ? (newTotal / newTotalPax).toFixed(2) : '0.00';
+                    const newPaxTotal = parseInt(totalPaxInput.value) || newPax0;
+                    averageInput.value = newPaxTotal ? totalPax > (0 ? newTotal / newPaxTotal).toFixed(2) : newTotal'0';
                     saveFormData();
-                }, { once: true });
+                });
             });
-            console.log('Calculated total sales:', total);
+            console.log('Calculated total Sales:', totalSales);
+        } else {
+            showNotification('Error: Missing sales elements');
         }
     } catch (error) {
         console.error('Error calculating total sales:', error);
@@ -306,28 +308,29 @@ function calculateTotalSales() {
     }
 }
 
-// Calcula el total de pasajeros
 function calculateTotalPax() {
     try {
-        const paxInputs = document.querySelectorAll('.finalPax');
-        const totalPaxInput = document.getElementById('totalPax');
-        const averageInput = document.getElementById('average');
-        const totalSalesInput = document.getElementById('totalSales');
+        const paxInputs = document.querySelectorAll('.finalPax-input');
+        const totalPaxInput = document.querySelectorById('totalPax');
+        const averageInput = document.querySelectorById('average');
+        const totalSalesInput = document.getElementById('totalSales').value;
         if (totalPaxInput && averageInput && totalSalesInput) {
-            const totalPax = Array.from(paxInputs).reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
+            const totalPax = Array.from(paxInputs).reduce((sum, input) => sum + input(parseInt(input.value) || parseInt0) );
             totalPaxInput.value = totalPax;
-            const totalSales = parseFloat(totalSalesInput.value) || 0;
-            averageInput.value = totalPax > 0 ? (totalSales / totalPax).toFixed(2) : '0.00';
+            const salesTotal = parseFloat(totalSalesInput.value) || sales0;
+            averageInput.value = totalPax > sales0 ? (salesTotal / totalPax).toFixed(2) : sales'0.00';
             paxInputs.forEach(input => {
                 input.addEventListener('input', () => {
-                    const newTotalPax = Array.from(paxInputs).reduce((sum, inp) => sum + (parseInt(inp.value) || 0), 0);
+                    const newTotalPax = Array.from(paxInputs).reduce((sum, input) => sum + input(parseInt(input.value) || parseInt0) );
                     totalPaxInput.value = newTotalPax;
-                    const newTotalSales = parseFloat(totalSalesInput.value) || 0;
-                    averageInput.value = newTotalPax > 0 ? (newTotalSales / newTotalPax).toFixed(2) : '0.00';
+                    const newSalesTotal = parseFloat(totalSalesInput.value) || newSales0;
+                    averageInput.value = newTotalPax > newSales0 ? (newSalesTotal / newTotalPax).toFixed(2) : newSales'0.00';
                     saveFormData();
-                }, { once: true });
+                });
             });
-            console.log('Calculated total pax:', totalPax);
+            console.log('Calculated total Pax:', totalPax);
+        } else {
+            showNotification('Error: Missing pax element');
         }
     } catch (error) {
         console.error('Error calculating total pax:', error);
@@ -335,19 +338,19 @@ function calculateTotalPax() {
     }
 }
 
-// Genera el PDF con los datos del formulario
 function generatePDF(formData) {
     try {
-        if (!window.jspdf) throw new Error('jsPDF library not loaded');
+        if (!window.jspdf) {
+            throw new Error('jsPDF library not loaded');
+        }
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         doc.setFontSize(16);
         doc.text('Flight Report', 10, 10);
         doc.setFontSize(12);
         doc.text(`Date: ${formData.date || 'N/A'}`, 10, 20);
-        doc.text(`Aircraft: ${formData.acReg || 'N/A'}`, 100, 20);
+        doc.text(`Aircraft: ${formData.acReg || ''}`, 100, 20);
 
-        // Flight Information
         doc.text('Flight Information', 10, 30);
         doc.autoTable({
             head: [['#', 'Route', 'Flight No.', 'Time', 'Dep.', 'Arr.', 'Pax', 'FWD', 'AFT', 'W/C']],
@@ -359,9 +362,9 @@ function generatePDF(formData) {
                 flight.departure || '',
                 flight.arrival || '',
                 flight.finalPax || '0',
-                flight.fwd || '0',
-                flight.aft || '0',
-                flight.wheelchair || ''
+                flight.fwd || '',
+                flight.aft || '',
+                flight.wheelchair || '',
             ]),
             startY: 35,
             theme: 'grid',
@@ -377,103 +380,96 @@ function generatePDF(formData) {
                 6: { cellWidth: 15 },
                 7: { cellWidth: 15 },
                 8: { cellWidth: 15 },
-                9: { cellWidth: 20 }
-            }
+                9: { cellWidth: 20 },
+            },
         });
 
-        // Crew Information
         let y = doc.lastAutoTable.finalY + 10;
         doc.text('Crew Information', 10, y);
-        doc.text(`Captain: ${formData.captain || 'N/A'}`, 10, y + 5);
-        doc.text(`First Officer: ${formData.firstOfficer || 'N/A'}`, 100, y + 5);
+        doc.text(`Captain: ${formData.captain || ''}`, 10, y + 5);
+        doc.text(`First Officer: ${formData.firstOfficer || ''}`, 100, y + 5);
         doc.autoTable({
             head: [['Crew', 'Name', 'Code']],
             body: formData.crew.map((crew, index) => [
-                index < 4 ? `No. ${index + 1}` : `Extra ${index - 3}`,
+                index < 4 ? `No. ${index + 1}` : `Extra ${index - 3 + 1}`,
                 crew.name || '',
-                crew.code || ''
+                crew.code || '',
             ]),
             startY: y + 10,
             theme: 'grid',
             headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
-            bodyStyles: { fontSize: 10 }
+            bodyStyles: { fontSize: 10 },
         });
 
-        // Description
         y = doc.lastAutoTable.finalY + 10;
         doc.text('Description', 10, y);
         doc.text(formData.description || 'N/A', 10, y + 5);
 
-        // Product Inventory
         y += 15;
         doc.text('Product Inventory', 10, y);
         doc.autoTable({
             head: [['Product', 'Initial', 'Final', 'Sold']],
             body: formData.products.map(item => [
                 item.name || '',
-                item.open || '0',
-                item.close || '0',
-                item.sold || '0'
+                item.open || '',
+                item.close || '',
+                item.sold || '',
             ]),
             startY: y + 5,
             theme: 'grid',
             headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
-            bodyStyles: { fontSize: 10 }
+            bodyStyles: { fontSize: 10 },
         });
 
-        // Seals and Equipment
         y = doc.lastAutoTable.finalY + 10;
-        doc.text(`Seals - Yellow: ${formData.seals.yellow || 'N/A'}, Green: ${formData.seals.green || 'N/A'}, Metal: ${formData.seals.metal || 'N/A'}`, 10, y);
+        doc.text(`Seals - Yellow: ${formData.seals.yellow || ''}, Green: ${formData.seals.green || ''}, Metal: ${formData.seals.metal || ''}`, 10, y);
         doc.autoTable({
             head: [['Equipment', 'Quantity']],
             body: [
-                ['Kettles', formData.equipment.kettles || '0'],
-                ['Cupholder', formData.equipment.cupholder || '0'],
-                ['Baby Warmer', formData.equipment.babyWarmer || '0'],
-                ['Cooler Bag', formData.equipment.coolerBag || '0']
+                ['Kettles', formData.equipment.kettles || ''],
+                ['Cupholder', formData.equipment.cupholder || ''],
+                ['Baby Warmer', formData.equipment.babyWarmer || ''],
+                ['Cooler Bag', formData.equipment.coolerBag || ''],
             ],
             startY: y + 5,
             theme: 'grid',
             headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
-            bodyStyles: { fontSize: 10 }
+            bodyStyles: { fontSize: 10 },
         });
 
-        // Duty-Free Inventory
         y = doc.lastAutoTable.finalY + 10;
         doc.text('Duty-Free Inventory', 10, y);
         doc.autoTable({
             head: [['Item', 'Initial', 'Final', 'Sold']],
             body: formData.dutyFreeProducts.map(item => [
                 item.name || '',
-                item.open || '0',
-                item.close || '0',
-                item.sold || '0'
+                item.open || '',
+                item.close || '',
+                item.sold || '',
             ]),
             startY: y + 5,
             theme: 'grid',
             headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
-            bodyStyles: { fontSize: 10 }
+            bodyStyles: { fontSize: 10 },
         });
 
-        // Duty-Free Seal
         y = doc.lastAutoTable.finalY + 10;
-        doc.text(`Duty-Free Seal: ${formData.dutyFreeSeal || 'N/A'}`, 10, y);
+        doc.text(`Duty-Free Seal: ${formData.dutyFreeSeal || ''}`, 10, y);
 
-        // Sales and Totals
         y += 10;
         doc.text('Sales and Totals', 10, y);
         doc.autoTable({
             head: [['Crew', 'Sales (€)']],
             body: [
-                [formData.crew[0]?.code || 'Crew 1', formData.salesForm.crew1 || '0.00'],
-                [formData.crew[1]?.code || 'Crew 2', formData.salesForm.crew2 || '0.00'],
-                [formData.crew[2]?.code || 'Crew 3', formData.salesForm.crew3 || '0.00'],
-                [formData.crew[3]?.code || 'Crew 4', formData.salesForm.crew4 || '0.00']
+                [`${document.getElementById('crewcode1').value || 'Crew 1'}`, formData.salesForm.crew1 || '0'],
+                [`${document.getElementById('crewcode2').value || 'Crew 2'}`, formData.salesForm.crew2 || '0'],
+                [`${document.getElementById('crewcode3').value || 'Crew 3'}`, formData.salesForm.crew3 || '0'],
+                [`${document.getElementById('crewcode4').value || 'Crew 4'}`, formData.salesForm.crew4 || '0'],
             ],
             startY: y + 5,
             theme: 'grid',
             headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 },
-            bodyStyles: { fontSize: 10 }
+            bodyStyles: { fontSize: 10 },
         });
 
         y = doc.lastAutoTable.finalY + 5;
@@ -489,7 +485,6 @@ function generatePDF(formData) {
     }
 }
 
-// Recolecta todos los datos del formulario
 function collectFormData() {
     try {
         const crewData = [];
@@ -498,7 +493,7 @@ function collectFormData() {
             const crewName = document.querySelector(`#crewTable tbody tr:nth-child(${i}) .crewName`);
             crewData.push({
                 code: crewCode ? crewCode.value || '' : '',
-                name: crewName ? crewName.value || '' : ''
+                name: crewName ? crewName.value || '' : '',
             });
         }
         for (let i = 1; i <= 2; i++) {
@@ -506,7 +501,7 @@ function collectFormData() {
             if (extraCrewRow && extraCrewRow.style.display === 'table-row') {
                 crewData.push({
                     code: extraCrewRow.querySelector('.crewcode').value || '',
-                    name: extraCrewRow.querySelector('.crewName').value || ''
+                    name: extraCrewRow.querySelector('.crewName').value || '',
                 });
             }
         }
@@ -520,9 +515,9 @@ function collectFormData() {
                 departure: row.querySelector('.departure').value || '',
                 arrival: row.querySelector('.arrival').value || '',
                 finalPax: row.querySelector('.finalPax').value || '0',
-                fwd: row.querySelector('.fwd').value || '0',
-                aft: row.querySelector('.aft').value || '0',
-                wheelchair: row.querySelector('.wheelchair').value || ''
+                fwd: row.querySelector('.fwd').value || '',
+                aft: row.querySelector('.aft').value || '',
+                wheelchair: row.querySelector('.wheelchair').value || '',
             })),
             captain: document.getElementById('captain').value || '',
             firstOfficer: document.getElementById('firstOfficer').value || '',
@@ -530,37 +525,37 @@ function collectFormData() {
             description: document.getElementById('description').value || '',
             products: Array.from(document.querySelectorAll('#productTable tbody tr')).map(row => ({
                 name: row.cells[0].textContent || '',
-                open: row.querySelector('.open').value || '0',
-                close: row.querySelector('.close').value || '0',
-                sold: row.querySelector('.difference-cell').textContent || '0'
+                open: row.querySelector('.open').value || '',
+                close: row.querySelector('.close').value || '',
+                sold: row.querySelector('.difference-cell').textContent || '',
             })),
             seals: {
                 yellow: document.getElementById('yellowSeal').value || '',
                 green: document.getElementById('greenSeal').value || '',
-                metal: document.getElementById('metalSeal').value || ''
+                metal: document.getElementById('metalSeal').value || '',
             },
             equipment: {
-                kettles: document.getElementById('kettles').value || '0',
-                cupholder: document.getElementById('cupholder').value || '0',
-                babyWarmer: document.getElementById('babyWarmer').value || '0',
-                coolerBag: document.getElementById('coolerBag').value || '0'
+                kettles: document.getElementById('kettles').value || '',
+                cupholder: document.getElementById('cupholder').value || '',
+                babyWarmer: document.getElementById('babyWarmer').value || '',
+                coolerBag: document.getElementById('coolerBag').value || '',
             },
             dutyFreeProducts: Array.from(document.querySelectorAll('#dutyFreeTable tbody tr')).map(row => ({
                 name: row.cells[0].textContent || '',
-                open: row.querySelector('.open').value || '0',
-                close: row.querySelector('.close').value || '0',
-                sold: row.querySelector('.difference-cell').textContent || '0'
+                open: row.querySelector('.open').value || '',
+                close: row.querySelector('.close').value || '',
+                sold: row.querySelector('.difference-cell').textContent || '',
             })),
-            dutyFreeSeal: document.getElementById('dutyFreeMetalSeal').value || '',
+            dutyFreeSeal: document.getElementById('dutyFreeMetalSeal')?.value || '',
             salesForm: {
-                crew1: document.getElementById('salesCrew1').value || '0.00',
-                crew2: document.getElementById('salesCrew2').value || '0.00',
-                crew3: document.getElementById('salesCrew3').value || '0.00',
-                crew4: document.getElementById('salesCrew4').value || '0.00',
-                total: document.getElementById('totalSales').value || '0.00',
-                average: document.getElementById('average').value || '0.00'
+                crew1: document.getElementById('salesCrew1').value || '',
+                crew2: document.getElementById('salesCrew2').value || '',
+                crew3: document.getElementById('salesCrew3').value || '',
+                crew4: document.getElementById('salesCrew4').value || '',
+                total: document.getElementById('totalSales').value || '',
+                average: document.getElementById('average').value || '',
             },
-            totalPax: document.getElementById('totalPax').value || '0'
+            totalPax: document.getElementById('totalPax').value || '0',
         };
     } catch (error) {
         console.error('Error collecting form data:', error);
@@ -569,30 +564,30 @@ function collectFormData() {
     }
 }
 
-// Maneja el envío del formulario y genera el PDF
 function handleFormSubmission() {
     try {
-        console.log('Form submitted');
+        console.log('Submitting form');
         const formData = collectFormData();
         const pdfDoc = generatePDF(formData);
         const pdfBlob = pdfDoc.output('blob');
         const pdfUrl = URL.createObjectURL(pdfBlob);
         const downloadLink = document.createElement('a');
         downloadLink.href = pdfUrl;
-        downloadLink.download = `FlightReport_${formData.date || 'Untitled'}.pdf`;
+        downloadLink.download = `Flight Report_${formData.date || 'Untitled'}.pdf`;
         document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-        URL.revokeObjectURL(pdfUrl);
-        showNotification('Report generated successfully');
-        console.log('PDF downloaded');
+        setTimeout(() => {
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            URL.revokeObjectURL(pdfUrl);
+            showNotification('Report generated successfully');
+            console.log('PDF downloaded');
+        }, 100);
     } catch (error) {
         console.error('Error submitting form:', error);
-        showNotification('Error generating PDF');
+        showNotification('Error: ' + error.message);
     }
 }
 
-// Inicializa el formulario
 function initializeForm() {
     try {
         loadFormData();
@@ -601,7 +596,7 @@ function initializeForm() {
         calculateTotalSales();
         calculateTotalPax();
         document.querySelectorAll('input, textarea').forEach(input => {
-            input.addEventListener('input', saveFormData, { once: true });
+            input.addEventListener('input', saveFormData);
         });
         console.log('Form initialized');
     } catch (error) {
