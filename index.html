@@ -73,27 +73,6 @@
             padding: 0.4rem;
             touch-action: manipulation;
         }
-        .stock-tabs {
-            display: flex;
-            gap: 0.4rem;
-            margin-bottom: 0.8rem;
-        }
-        .stock-tab {
-            flex: 1;
-            padding: 0.6rem;
-            background: rgba(255,255,255,0.2);
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            text-align: center;
-            touch-action: manipulation;
-            min-height: 40px;
-        }
-        .stock-tab.active {
-            background: #ff7f50;
-        }
         label {
             display: block;
             margin: 0.3rem 0 0.2rem;
@@ -119,7 +98,7 @@
             font-size: 0.9rem;
             box-sizing: border-box;
             background: #fff;
-            color: #000 !important;
+            color: #000;
             -webkit-appearance: none;
             touch-action: manipulation;
         }
@@ -172,7 +151,7 @@
         .route-input {
             min-width: 5rem;
         }
-        .duty-free-input,.seal-input {
+        .duty-free-input, .seal-input {
             padding: 0.4rem;
             font-size: 0.8rem;
             min-width: 3rem;
@@ -183,17 +162,11 @@
             margin: 0.8rem 0;
             table-layout: auto;
             font-size: 0.8rem;
-            display: table;
-            visibility: visible;
         }
-        .stock-table {
-            display: block;
-            visibility: visible;
-        }
-        table,th,td {
+        table, th, td {
             border: 1px solid #fff;
         }
-        th,td {
+        th, td {
             padding: 0.4rem;
             text-align: center;
             color: #fff;
@@ -211,7 +184,7 @@
             font-size: 0.9rem;
             box-sizing: border-box;
             background: #fff;
-            color: #000 !important;
+            color: #000;
         }
         table .small-input {
             padding: 0.3rem;
@@ -232,7 +205,7 @@
         table .final-pax-input {
             min-width: 3rem;
         }
-        table .fwd-input,table .aft-input {
+        table .fwd-input, table .aft-input {
             min-width: 3rem;
         }
         .difference-cell {
@@ -255,7 +228,7 @@
         button:hover {
             background: #ff7f50;
         }
-        .add-crew-button,.remove-crew-button {
+        .add-crew-button, .remove-crew-button {
             width: auto;
             padding: 0.4rem 0.8rem;
             font-size: 0.9rem;
@@ -295,9 +268,6 @@
         .extra-crew {
             display: none;
         }
-        .border-red-500 {
-            border: 1px solid #ff4d4d;
-        }
         #notification {
             display: none;
             position: fixed;
@@ -331,10 +301,10 @@
         <div class="form-container">
             <form id="inflightForm" class="space-y-1">
                 <!-- Flight Information -->
-                <details class="form-section" open aria-expanded="true">
-                    <summary role="button" aria-controls="flight-info-content">Flight Information</summary>
-                    <div id="flight-info-content">
-                        <div class="flight-info-header" id="flightInfoHeader" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                <details class="form-section" open>
+                    <summary>Flight Information</summary>
+                    <div>
+                        <div class="flight-info-header" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
                             <div>
                                 <label class="date-ac-label" for="date">Date</label>
                                 <input type="date" id="date" class="date-ac-input" autocomplete="off" tabindex="1">
@@ -416,9 +386,9 @@
                 </details>
 
                 <!-- Crew Information -->
-                <details class="form-section" id="crewSection" aria-expanded="false">
-                    <summary role="button" aria-controls="crew-info-content">Crew Information</summary>
-                    <div id="crew-info-content">
+                <details class="form-section" id="crewSection">
+                    <summary>Crew Information</summary>
+                    <div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
                             <div>
                                 <label for="captain">Captain</label>
@@ -486,186 +456,176 @@
                 </details>
 
                 <!-- Product Inventory Section -->
-                <details class="form-section" id="stockSection" open aria-expanded="true">
-                    <summary role="button" aria-controls="inventory-content">Product Inventory</summary>
-                    <div id="inventory-content">
-                        <div id="productStockTable" class="stock-table">
-                            <table id="productTable">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Initial</th>
-                                        <th>Final</th>
-                                        <th>Sold</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>H&C Panini</td>
-                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="57"></td>
-                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="58"></td>
-                                        <td class="difference-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Choco. Croissant</td>
-                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="59"></td>
-                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="60"></td>
-                                        <td class="difference-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>H&C Croissant</td>
-                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="61"></td>
-                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="62"></td>
-                                        <td class="difference-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Choco. Croissant</td>
-                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="63"></td>
-                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="64"></td>
-                                        <td class="difference-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Cheese T</td>
-                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="65"></td>
-                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="66"></td>
-                                        <td class="difference-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Pizza</td>
-                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="67"></td>
-                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="68"></td>
-                                        <td class="difference-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Bacon B</td>
-                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="69"></td>
-                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="70"></td>
-                                        <td class="difference-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>F Sandwich</td>
-                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="71"></td>
-                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="72"></td>
-                                        <td class="difference-cell"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="grid grid-cols-3 gap-1">
-                                <div>
-                                    <label for="yellowSeal">Yellow Seal</label>
-                                    <input type="text" id="yellowSeal" class="seal-input" placeholder="e.g., Y12345" autocomplete="off" tabindex="73"></td>
-                                </div>
-                                <div>
-                                    <label for="greenSeal">Green Seal</label>
-                                    <input type="text" id="greenSeal" class="seal-input" placeholder="e.g., G67890" autocomplete="off" tabindex="74"></td>
-                                </div>
-                                <div>
-                                    <label for="metalSeal">Metal Seal</label>
-                                    <input type="text" id="metalSeal" class="seal-input" placeholder="e.g., M11223" autocomplete="off" tabindex="75"></td>
-                                </div>
+                <details class="form-section" id="stockSection" open>
+                    <summary>Product Inventory</summary>
+                    <div>
+                        <table id="productTable">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Initial</th>
+                                    <th>Final</th>
+                                    <th>Sold</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>H&C Panini</td>
+                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="57"></td>
+                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="58"></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>Choco. Croissant</td>
+                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="59"></td>
+                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="60"></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>H&C Croissant</td>
+                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="61"></td>
+                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="62"></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>Cheese T</td>
+                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="63"></td>
+                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="64"></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>Pizza</td>
+                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="65"></td>
+                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="66"></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>Bacon B</td>
+                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="67"></td>
+                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="68"></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>F Sandwich</td>
+                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="69"></td>
+                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="70"></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;">
+                            <div>
+                                <label for="yellowSeal">Yellow Seal</label>
+                                <input type="text" id="yellowSeal" class="seal-input" placeholder="e.g., Y12345" autocomplete="off" tabindex="71">
                             </div>
-                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-top: 8px;">
-                                <div>
-                                    <label for="kettles" class="equipment-label">Kettles</label>
-                                    <input type="number" id="kettles" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="76"></td>
-                                </div>
-                                <div>
-                                    <label for="cupholder" class="equipment-label">Cupholder</label>
-                                    <input type="number" id="cupholder" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="77"></td>
-                                </div>
-                                <div>
-                                    <label for="babyWarmer" class="equipment-label">Baby Warmer</label>
-                                    <input type="number" id="babyWarmer" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="78"></td>
-                                </div>
-                                <div>
-                                    <label for="coolerBag" class="equipment-label">Cooler Bag</label>
-                                    <input type="number" id="coolerBag" min="0" class="small-input" placeholder="0" autocomplete="off" tabindex="79"></td>
-                                </div>
+                            <div>
+                                <label for="greenSeal">Green Seal</label>
+                                <input type="text" id="greenSeal" class="seal-input" placeholder="e.g., G67890" autocomplete="off" tabindex="72">
+                            </div>
+                            <div>
+                                <label for="metalSeal">Metal Seal</label>
+                                <input type="text" id="metalSeal" class="seal-input" placeholder="e.g., M11223" autocomplete="off" tabindex="73">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-top: 4px;">
+                            <div>
+                                <label for="kettles" class="equipment-label">Kettles</label>
+                                <input type="number" id="kettles" min="0" class="small-input" placeholder="0" tabindex="74">
+                            </div>
+                            <div>
+                                <label for="cupholder" class="equipment-label">Cupholder</label>
+                                <input type="number" id="cupholder" min="0" class="small-input" placeholder="0" tabindex="75">
+                            </div>
+                            <div>
+                                <label for="babyWarmer" class="equipment-label">Baby Warmer</label>
+                                <input type="number" id="babyWarmer" min="0" class="small-input" placeholder="0" tabindex="76">
+                            </div>
+                            <div>
+                                <label for="coolerBag" class="equipment-label">Cooler Bag</label>
+                                <input type="number" id="coolerBag" min="0" class="small-input" placeholder="0" tabindex="77">
                             </div>
                         </div>
                     </div>
                 </details>
 
                 <!-- Duty-Free Inventory Section -->
-                <details class="form-section" id="dutyFreeSection" aria-expanded="false">
-                    <summary role="button" aria-controls="duty-free-content">Duty-Free Inventory</summary>
-                    <div id="duty-free-content">
-                        <div id="dutyFreeStockTable" class="stock-table">
-                            <table id="dutyFreeTable">
-                                <thead>
-                                    <tr>
-                                        <th>Item</th>
-                                        <th>Initial</th>
-                                        <th>Final</th>
-                                        <th>Sold</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Marlboro Gold</td>
-                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="80"></td>
-                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="81"></td>
-                                        <td class="difference-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Marlboro Red</td>
-                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="82"></td>
-                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="83"></td>
-                                        <td class="difference-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lambert</td>
-                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="84"></td>
-                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="85"></td>
-                                        <td class="difference-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Amber Leaf</td>
-                                        <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="86"></td>
-                                        <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="87"></td>
-                                        <td class="difference-cell"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div style="margin-top: 0.8rem;">
-                                <label for="dutyFreeMetalSeal">Metal Seal</label>
-                                <input type="text" id="dutyFreeMetalSeal" class="seal-input" placeholder="e.g., M44556" autocomplete="off" tabindex="88">
-                            </div>
+                <details class="form-section" id="dutyFreeSection">
+                    <summary>Duty-Free Inventory</summary>
+                    <div>
+                        <table id="dutyFreeTable">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Initial</th>
+                                    <th>Final</th>
+                                    <th>Sold</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Marlboro Gold</td>
+                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="78"></td>
+                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="79"></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>Marlboro Red</td>
+                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="80"></td>
+                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="81"></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>Lambert</td>
+                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="82"></td>
+                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="83"></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td>Amber Leaf</td>
+                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="84"></td>
+                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="85"></td>
+                                    <td class="difference-cell"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="margin-top: 0.8rem;">
+                            <label for="dutyFreeMetalSeal">Metal Seal</label>
+                            <input type="text" id="dutyFreeMetalSeal" class="seal-input" placeholder="e.g., M44556" autocomplete="off" tabindex="86">
                         </div>
                     </div>
                 </details>
 
                 <!-- Sales and Totals -->
-                <details class="form-section" id="salesSection" aria-expanded="false">
-                    <summary role="button" aria-controls="sales-content">Sales and Totals</summary>
-                    <div id="sales-content">
+                <details class="form-section" id="salesSection">
+                    <summary>Sales and Totals</summary>
+                    <div>
                         <div class="sales-grid">
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px;">
                                 <div>
                                     <label id="salesLabel1" for="salesCrew1" class="sales-label">Crew 1 Sales</label>
                                     <div class="sales-wrapper">
-                                        <input type="number" id="salesCrew1" step="0.5" min="0" class="sales-input" placeholder="0.00" tabindex="89">
+                                        <input type="number" id="salesCrew1" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="89">
                                         <span class="sales-euro">€</span>
                                     </div>
                                 </div>
                                 <div>
                                     <label id="salesLabel2" for="salesCrew2" class="sales-label">Crew 2 Sales</label>
                                     <div class="sales-wrapper">
-                                        <input type="number" id="salesCrew2" step="0.5" min="0" class="sales-input" placeholder="0.00" tabindex="90">
+                                        <input type="number" id="salesCrew2" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="90">
                                         <span class="sales-euro">€</span>
                                     </div>
                                 </div>
                                 <div>
                                     <label id="salesLabel3" for="salesCrew3" class="sales-label">Crew 3 Sales</label>
                                     <div class="sales-wrapper">
-                                        <input type="text" id="salesCrew3" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="91">
+                                        <input type="number" id="salesCrew3" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="91">
                                         <span class="sales-euro">€</span>
                                     </div>
                                 </div>
                                 <div>
                                     <label id="salesLabel4" for="salesCrew4" class="sales-label">Crew 4 Sales</label>
                                     <div class="sales-wrapper">
-                                        <input type="text" id="salesCrew4" step="0.01" min="sales-input" class="sales-input" placeholder="0.00" tabindex="92">
+                                        <input type="number" id="salesCrew4" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="92">
                                         <span class="sales-euro">€</span>
                                     </div>
                                 </div>
@@ -674,47 +634,47 @@
                                 <div>
                                     <label for="totalSales" class="sales-label">Total Sales</label>
                                     <div class="sales-wrapper">
-                                        <input type="number" id="totalSales" step="0.01" readonly class="sales-input" placeholder="0.00" style="background: rgba(255, 255,255,0.7); color: #000;" tabindex="93">
+                                        <input type="number" id="totalSales" step="0.01" readonly class="sales-input" placeholder="0.00" style="background: rgba(255,255,255,0.7); color: #000;" tabindex="93">
                                         <span class="sales-euro">€</span>
                                     </div>
                                 </div>
                                 <div>
-                                    <div>
-                                        <label for="totalPax" class="sales-label">Total Pax</label>
-                                        <input type="number" id="totalPax" readonly class="sales-input" placeholder="0" style="background: rgba(255,255,255,0.7); color: #000;" tabindex="94"></div>
-                                    </div>
-                                    <div>
-                                        <label for="average" class="sales-label">Average/Pax</label>
-                                        <div class="sales-wrapper">
-                                            <input type="number" id="average" step="0.01" readonly class="sales-input" placeholder="0.00" style="background: rgba(255,255,255,0.7); color: #000;" tabindex="95"></div>
-                                            <span class="sales-euro">€</span>
-                                        </div>
+                                    <label for="totalPax" class="sales-label">Total Pax</label>
+                                    <input type="number" id="totalPax" readonly class="sales-input" placeholder="0" style="background: rgba(255,255,255,0.7); color: #000;" tabindex="94">
+                                </div>
+                                <div>
+                                    <label for="average" class="sales-label">Average/Pax</label>
+                                    <div class="sales-wrapper">
+                                        <input type="number" id="average" step="0.01" readonly class="sales-input" placeholder="0.00" style="background: rgba(255,255,255,0.7); color: #000;" tabindex="95">
+                                        <span class="sales-euro">€</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </details>
+                    </div>
+                </details>
 
-                    <button type="button" id="submitBtn" onclick="handleFormSubmission()" tabindex="96">Submit Report</button>
-                </form>
-            </div>
-        </main>
-        <footer>
-            <p>Flight Report © 2025</p>
-        </footer>
+                <button type="button" id="submitBtn" onclick="handleFormSubmission()" tabindex="96">Submit Report</button>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <p>Flight Report © 2025</p>
+    </footer>
 
-        <script>
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/sw.js')
-                        .then(registration => {
-                            console.log('Service Worker registered successfully:', registration.scope);
-                        })
-                        .catch(error => {
-                            console.error('Error registering Service Worker:', error);
-                        });
+    <script>
+        if ('serviceWorker' in navigator) {
+            document.addEventListener('DOMContentLoaded', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Error registering Service Worker:', error);
                     });
-            </script>
-        <script src="script.js"></script>
-    </body>
+            });
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
 </html>
