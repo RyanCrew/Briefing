@@ -1,51 +1,75 @@
-const CACHE_NAME = 'flight-report-v2'; // Update version for cache refresh
+const CACHE_NAME = 'flight-report-v3';
 const urlsToCache = [
     '/',
     '/index.html',
+    '/script.js',
     '/output.css',
     '/icon.png',
-    '/manifest.json',
-    '/script.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js'
 ];
 
 self.addEventListener('install', event => {
+    console.log('Service Worker: Installing');
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(urlsToCache))
-            .then(() => self.skipWaiting())
-            .catch(err => console.error('Cache add failed:', err))
+            .then(cache => {
+                console.log('Service Worker: Caching files');
+                return cache.addAll(urlsToCache);
+            })
+            .then(() => {
+                console.log('Service Worker: Installation complete');
+                return self.skipWaiting();
+            })
+            .catch(err => console.error('Service Worker: Cache add error:', err))
     );
 });
 
 self.addEventListener('activate', event => {
-    const cacheWhitelist = [CACHE_NAME];
+    console.log('Service Worker: Activating');
     event.waitUntil(
-        caches.keys().then(cacheNames =>
-            Promise.all(
-                cacheNames.map(cacheName => {
-                    if (!cacheWhitelist.includes(cacheName)) {
-                        return caches.delete(cacheName);
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cache => {
+                    if (cache !== CACHE_NAME) {
+                        console.log('Service Worker: Deleting old cache:', cache);
+                        return caches.delete(cache);
                     }
                 })
-            )
-        ).then(() => self.clients.claim())
+            );
+        }).then(() => {
+            console.log('Service Worker: Activation complete');
+            return self.clients.claim();
+        })
     );
 });
 
 self.addEventListener('fetch', event => {
+    console.log('Service Worker: Fetching', event.request.url);
     event.respondWith(
         caches.match(event.request)
             .then(response => {
-                if (response) return response;
-                return fetch(event.request).catch(() => {
-                    // Fallback for offline external resources
-                    if (event.request.url.includes('jspdf')) {
-                        return new Response('/* Fallback jsPDF content */', {
-                            headers: { 'Content-Type': 'application/javascript' }
-                        });
-                    }
-                });
+                if (response) {
+                    console.log('Service Worker: Serving from cache', event.request.url);
+                    return response;
+                }
+                return fetch(event.request)
+                    .then(networkResponse => {
+                        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+                            return networkResponse;
+                        }
+                        const responseToCache = networkResponse.clone();
+                        caches.open(CACHE_NAME)
+                            .then(cache => {
+                                cache.put(event.request, responseToCache);
+                                console.log('Service Worker: Cached', event.request.url);
+                            });
+                        return networkResponse;
+                    })
+                    .catch(err => {
+                        console.error('Service Worker: Fetch error:', err);
+                        return caches.match('/index.html');
+                    });
             })
-            .catch(err => console.error('Fetch failed:', err))
     );
 });
