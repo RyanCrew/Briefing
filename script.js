@@ -1,4 +1,3 @@
-```javascript
 let activeFlight = null;
 let extraCrewCount = 0;
 
@@ -79,12 +78,12 @@ function collectFormData() {
             })),
             dutyFreeSeal: document.getElementById('dutyFreeMetalSeal')?.value || '',
             salesForm: {
-                crew1: document.getElementById('salesCrew1').value || '',
-                crew2: document.getElementById('salesCrew2').value || '',
-                crew3: document.getElementById('salesCrew3').value || '',
-                crew4: document.getElementById('salesCrew4').value || '',
-                total: document.getElementById('totalSales').value || '',
-                average: document.getElementById('average').value || '',
+                crew1: document.getElementById('salesCrew1').value || '0',
+                crew2: document.getElementById('salesCrew2').value || '0',
+                crew3: document.getElementById('salesCrew3').value || '0',
+                crew4: document.getElementById('salesCrew4').value || '0',
+                total: document.getElementById('totalSales').value || '0',
+                average: document.getElementById('average').value || '0',
             },
             totalPax: document.getElementById('totalPax').value || '0',
         };
@@ -164,13 +163,13 @@ function loadFormData() {
                 }
             });
             document.getElementById('dutyFreeMetalSeal').value = data.dutyFreeSeal || '';
-            document.getElementById('salesCrew1').value = data.salesForm.crew1 || '';
-            document.getElementById('salesCrew2').value = data.salesForm.crew2 || '';
-            document.getElementById('salesCrew3').value = data.salesForm.crew3 || '';
-            document.getElementById('salesCrew4').value = data.salesForm.crew4 || '';
-            document.getElementById('totalSales').value = data.salesForm.total || '';
-            document.getElementById('totalPax').value = data.totalPax || '';
-            document.getElementById('average').value = data.salesForm.average || '';
+            document.getElementById('salesCrew1').value = data.salesForm.crew1 || '0';
+            document.getElementById('salesCrew2').value = data.salesForm.crew2 || '0';
+            document.getElementById('salesCrew3').value = data.salesForm.crew3 || '0';
+            document.getElementById('salesCrew4').value = data.salesForm.crew4 || '0';
+            document.getElementById('totalSales').value = data.salesForm.total || '0';
+            document.getElementById('totalPax').value = data.totalPax || '0';
+            document.getElementById('average').value = data.salesForm.average || '0';
             if (savedExtraCrew) {
                 extraCrewCount = parseInt(savedExtraCrew) || 0;
                 for (let i = 1; i <= extraCrewCount; i++) {
@@ -258,6 +257,13 @@ function addExtraCrew() {
         const extraRow = document.getElementById(`extraCrew${extraCrewCount}`);
         if (extraRow) {
             extraRow.style.display = 'table-row';
+            // Add input event listeners to new crew inputs
+            extraRow.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', () => {
+                    saveFormData();
+                    updateSalesLabels();
+                });
+            });
             showNotification(`Added extra crew ${extraCrewCount}`);
             if (extraCrewCount === 2) {
                 document.querySelector('.add-crew-button').style.display = 'none';
@@ -267,6 +273,7 @@ function addExtraCrew() {
         } else {
             extraCrewCount--;
             showNotification('Error adding crew');
+            console.error('Extra crew row not found');
         }
     } catch (error) {
         console.error('Error adding extra crew:', error);
@@ -283,8 +290,12 @@ function removeExtraCrew(index) {
             extraCrewCount--;
             document.querySelector('.add-crew-button').style.display = 'inline-block';
             saveFormData();
+            updateSalesLabels();
             showNotification(`Removed extra crew ${index}`);
             console.log('Extra crew removed:', index);
+        } else {
+            showNotification('Error removing crew');
+            console.error('Extra crew row not found');
         }
     } catch (error) {
         console.error('Error removing extra crew:', error);
@@ -304,13 +315,17 @@ function calculateDifference() {
                     if (openInput && closeInput && soldCell) {
                         const openValue = parseInt(openInput.value) || 0;
                         const closeValue = parseInt(closeInput.value) || 0;
-                        soldCell.textContent = openValue - closeValue || 0;
+                        soldCell.textContent = openValue - closeValue >= 0 ? openValue - closeValue : 0;
                         openInput.addEventListener('input', () => {
-                            soldCell.textContent = (parseInt(openInput.value) || 0) - (parseInt(closeInput.value) || 0) || 0;
+                            const newOpen = parseInt(openInput.value) || 0;
+                            const newClose = parseInt(closeInput.value) || 0;
+                            soldCell.textContent = newOpen - newClose >= 0 ? newOpen - newClose : 0;
                             saveFormData();
                         });
                         closeInput.addEventListener('input', () => {
-                            soldCell.textContent = (parseInt(openInput.value) || 0) - (parseInt(closeInput.value) || 0) || 0;
+                            const newOpen = parseInt(openInput.value) || 0;
+                            const newClose = parseInt(closeInput.value) || 0;
+                            soldCell.textContent = newOpen - newClose >= 0 ? newOpen - newClose : 0;
                             saveFormData();
                         });
                     }
@@ -338,6 +353,13 @@ function updateSalesLabels() {
                 });
             }
         }
+        // Handle extra crew sales labels
+        for (let i = 1; i <= extraCrewCount; i++) {
+            const crewCode = document.getElementById(`crewcode${i + 4}`);
+            if (crewCode) {
+                crewCode.addEventListener('input', saveFormData);
+            }
+        }
         console.log('Updated sales labels');
     } catch (error) {
         console.error('Error updating sales labels:', error);
@@ -352,18 +374,24 @@ function calculateTotalSales() {
             document.getElementById('salesCrew2'),
             document.getElementById('salesCrew3'),
             document.getElementById('salesCrew4'),
-        ];
+        ].filter(input => input); // Filter out null inputs
         const totalSalesInput = document.getElementById('totalSales');
         const totalPaxInput = document.getElementById('totalPax');
         const averageInput = document.getElementById('average');
         if (totalSalesInput && totalPaxInput && averageInput) {
-            const total = salesInputs.reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0);
+            const total = salesInputs.reduce((sum, input) => {
+                const value = parseFloat(input.value) || 0;
+                return sum + (value >= 0 ? value : 0);
+            }, 0);
             totalSalesInput.value = total.toFixed(2);
             const totalPax = parseInt(totalPaxInput.value) || 0;
             averageInput.value = totalPax > 0 ? (total / totalPax).toFixed(2) : '0.00';
             salesInputs.forEach(input => {
                 input.addEventListener('input', () => {
-                    const newTotal = salesInputs.reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0);
+                    const newTotal = salesInputs.reduce((sum, input) => {
+                        const value = parseFloat(input.value) || 0;
+                        return sum + (value >= 0 ? value : 0);
+                    }, 0);
                     totalSalesInput.value = newTotal.toFixed(2);
                     const newTotalPax = parseInt(totalPaxInput.value) || 0;
                     averageInput.value = newTotalPax > 0 ? (newTotal / newTotalPax).toFixed(2) : '0.00';
@@ -373,6 +401,7 @@ function calculateTotalSales() {
             console.log('Calculated total sales:', total);
         } else {
             showNotification('Error: Missing sales elements');
+            console.error('Missing sales elements');
         }
     } catch (error) {
         console.error('Error calculating total sales:', error);
@@ -387,13 +416,19 @@ function calculateTotalPax() {
         const averageInput = document.getElementById('average');
         const totalSalesInput = document.getElementById('totalSales');
         if (totalPaxInput && averageInput && totalSalesInput) {
-            const totalPax = Array.from(paxInputs).reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
+            const totalPax = Array.from(paxInputs).reduce((sum, input) => {
+                const value = parseInt(input.value) || 0;
+                return sum + (value >= 0 ? value : 0);
+            }, 0);
             totalPaxInput.value = totalPax;
             const totalSales = parseFloat(totalSalesInput.value) || 0;
             averageInput.value = totalPax > 0 ? (totalSales / totalPax).toFixed(2) : '0.00';
             paxInputs.forEach(input => {
                 input.addEventListener('input', () => {
-                    const newTotalPax = Array.from(paxInputs).reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
+                    const newTotalPax = Array.from(paxInputs).reduce((sum, input) => {
+                        const value = parseInt(input.value) || 0;
+                        return sum + (value >= 0 ? value : 0);
+                    }, 0);
                     totalPaxInput.value = newTotalPax;
                     const newTotalSales = parseFloat(totalSalesInput.value) || 0;
                     averageInput.value = newTotalPax > 0 ? (newTotalSales / newTotalPax).toFixed(2) : '0.00';
@@ -403,6 +438,7 @@ function calculateTotalPax() {
             console.log('Calculated total Pax:', totalPax);
         } else {
             showNotification('Error: Missing pax element');
+            console.error('Missing pax element');
         }
     } catch (error) {
         console.error('Error calculating total pax:', error);
@@ -589,7 +625,19 @@ function initializeForm() {
         calculateTotalSales();
         calculateTotalPax();
         document.querySelectorAll('input, textarea').forEach(input => {
-            input.addEventListener('input', saveFormData);
+            input.addEventListener('input', () => {
+                saveFormData();
+                calculateTotalSales();
+                calculateTotalPax();
+            });
+        });
+        // Ensure extra crew buttons have event listeners
+        document.querySelector('.add-crew-button').addEventListener('click', addExtraCrew);
+        document.querySelectorAll('.remove-crew-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const index = button.closest('tr').id.replace('extraCrew', '');
+                removeExtraCrew(index);
+            });
         });
         console.log('Form initialized');
     } catch (error) {
@@ -599,4 +647,3 @@ function initializeForm() {
 }
 
 document.addEventListener('DOMContentLoaded', initializeForm);
-```
