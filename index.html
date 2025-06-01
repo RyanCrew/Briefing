@@ -1098,6 +1098,43 @@
         // Handle form submission
         function handleFormSubmission() {
             try {
+                // Collect crew data explicitly for main and extra crew
+                const crewData = [];
+                
+                // Process main crew (rows 1-4)
+                for (let i = 1; i <= 4; i++) {
+                    const crewcodeInput = document.getElementById(`crewcode${i}`);
+                    const crewNameInput = document.querySelector(`#crewTable tbody tr:nth-child(${i}) .crewName`);
+                    if (crewcodeInput && crewNameInput) {
+                        crewData.push({
+                            crewcode: crewcodeInput.value || 'N/A',
+                            name: crewNameInput.value || 'N/A',
+                        });
+                    } else {
+                        console.warn(`Main crew row ${i} is missing crewcode or crewName input`);
+                    }
+                }
+
+                // Process extra crew (if visible)
+                for (let i = 1; i <= 2; i++) {
+                    const extraRow = document.getElementById(`extraCrew${i}`);
+                    if (extraRow && extraRow.style.display !== 'none') {
+                        const crewcodeInput = extraRow.querySelector('.crewcode');
+                        const crewNameInput = extraRow.querySelector('.crewName');
+                        if (crewcodeInput && crewNameInput) {
+                            crewData.push({
+                                crewcode: crewcodeInput.value || 'N/A',
+                                name: crewNameInput.value || 'N/A',
+                            });
+                        } else {
+                            console.warn(`Extra crew row ${i} is missing crewcode or crewName input`);
+                        }
+                    }
+                }
+
+                // Debug: Log the collected crew data
+                console.log('Collected crew data:', crewData);
+
                 const formData = {
                     date: document.getElementById('date').value || '',
                     acReg: document.getElementById('acReg').value || 'N/A',
@@ -1114,18 +1151,7 @@
                     })),
                     captain: document.getElementById('captain').value || 'N/A',
                     firstOfficer: document.getElementById('firstOfficer').value || 'N/A',
-                    crew: Array.from(document.querySelectorAll('#crewTable tbody tr')).map(row => {
-                        const crewcodeInput = row.querySelector('.crewcode');
-                        const crewNameInput = row.querySelector('.crewName');
-                        // Only include visible rows and ensure inputs exist
-                        if ((row.style.display !== 'none' || !row.classList.contains('extra-crew')) && crewcodeInput && crewNameInput) {
-                            return {
-                                crewcode: crewcodeInput.value || 'N/A',
-                                name: crewNameInput.value || 'N/A',
-                            };
-                        }
-                        return null; // Skip invalid rows
-                    }).filter(crew => crew !== null), // Filter out null entries
+                    crew: crewData,
                     description: document.getElementById('description').value || 'N/A',
                     products: {
                         items: Array.from(document.querySelectorAll('#productTable tr')).map(row => ({
