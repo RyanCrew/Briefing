@@ -258,11 +258,27 @@ function initializeCalendar() {
         generateCalendar(2025, 6); // Generate calendar for June 2025
 
         const imageInput = document.getElementById('scheduleImage');
-        imageInput.addEventListener('change', async (event) => {
-            const file = event.target.files[0];
+        const updateButton = document.getElementById('updateCalendarBtn');
+        if (!updateButton) {
+            console.error('Update Calendar button not found');
+            return;
+        }
+
+        updateButton.addEventListener('click', async () => {
+            const file = imageInput.files[0];
             if (file) {
                 const img = new Image();
                 img.src = URL.createObjectURL(file);
+                await parseScheduleImage(file);
+            } else {
+                showNotification('Please select a schedule image first.');
+            }
+        });
+
+        // Optional: Trigger update when file is selected (can be removed if button is preferred)
+        imageInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (file) {
                 await parseScheduleImage(file);
             }
         });
@@ -295,15 +311,16 @@ function initializeForm() {
             });
         });
 
-        // Add event listener to date-ac field for autofill
         const dateField = document.getElementById('date-ac');
-        dateField.addEventListener('change', () => {
-            const selectedDate = dateField.value; // Format: YYYY-MM-DD
-            if (scheduleData[selectedDate]) {
-                const [year, month, day] = selectedDate.split('-').map(Number);
-                showDayDetails(day, month, year, scheduleData[selectedDate].details);
-            }
-        });
+        if (dateField) {
+            dateField.addEventListener('change', () => {
+                const selectedDate = dateField.value;
+                if (scheduleData[selectedDate]) {
+                    const [year, month, day] = selectedDate.split('-').map(Number);
+                    showDayDetails(day, month, year, scheduleData[selectedDate].details);
+                }
+            });
+        }
 
         console.log('Form initialized');
     } catch (error) {
