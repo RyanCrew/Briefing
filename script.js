@@ -1,6 +1,204 @@
 let activeFlight = null;
 let extraCrewCount = 0;
 
+// Initial schedule data (to be updated with new uploads) (Added)
+let scheduleData = {
+    "2025-06-01": { type: "HSBY", details: "11:35Z - 21:00Z" },
+    "2025-06-02": { type: "AD", details: "CHECK-IN: 10:00Z, CHECK-OUT: 18:00Z" },
+    "2025-06-03": { type: "OTHER", details: "C/SICK" },
+    "2025-06-04": { type: "OFF", details: "" },
+    "2025-06-05": { type: "OFF", details: "" },
+    "2025-06-06": { type: "OFF", details: "" },
+    "2025-06-07": { type: "OFF", details: "" },
+    "2025-06-08": { type: "F", details: "CHECK-IN: 03:20Z, F: 04:05Z - 06:30Z, CHECK-OUT: 09:45Z" },
+    "2025-06-09": { type: "F", details: "CHECK-IN: 05:50Z, F: 06:35Z - 09:20Z, CHECK-OUT: 13:00Z" },
+    "2025-06-10": { type: "F", details: "CHECK-IN: 03:15Z, F: 04:00Z - 09:35Z, CHECK-OUT: 13:00Z" },
+    "2025-06-11": { type: "F", details: "CHECK-IN: 05:30Z, F: 06:15Z - 10:05Z, CHECK-OUT: 13:40Z" },
+    "2025-06-12": { type: "F", details: "CHECK-IN: 06:05Z, F: 06:50Z - 13:55Z, CHECK-OUT: Z" },
+    "2025-06-13": { type: "OFF", details: "" },
+    "2025-06-14": { type: "OFF", details: "" },
+    "2025-06-15": { type: "OFF", details: "" },
+    "2025-06-16": { type: "HSBY", details: "09:00Z - 20:00Z" },
+    "2025-06-17": { type: "HSBY", details: "08:30Z - 19:30Z" },
+    "2025-06-18": { type: "F", details: "CHECK-IN: 10:40Z, F: 11:25Z - 14:10Z, CHECK-OUT: Z" },
+    "2025-06-19": { type: "F", details: "CHECK-IN: 10:25Z, F: 11:10Z - 13:30Z, CHECK-OUT: Z" },
+    "2025-06-20": { type: "F", details: "CHECK-IN: 11:10Z, F: 11:55Z - 16:05Z, CHECK-OUT: Z" },
+    "2025-06-21": { type: "OFF", details: "" },
+    "2025-06-22": { type: "OFF", details: "" },
+    "2025-06-23": { type: "OFF", details: "" },
+    "2025-06-24": { type: "OTHER", details: "A/L(TZ)" },
+    "2025-06-25": { type: "OTHER", details: "A/L(TZ)" },
+    "2025-06-26": { type: "OTHER", details: "A/L(TZ)" },
+    "2025-06-27": { type: "OTHER", details: "A/L(TZ)" },
+    "2025-06-28": { type: "OTHER", details: "A/L(TZ)" },
+    "2025-06-29": { type: "OFF", details: "" },
+};
+
+function generateCalendar(year, month) {
+    try {
+        const calendarDiv = document.getElementById('calendar');
+        calendarDiv.innerHTML = '';
+
+        const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        daysOfWeek.forEach(day => {
+            const dayHeader = document.createElement('div');
+            dayHeader.className = 'day-header';
+            dayHeader.textContent = day;
+            calendarDiv.appendChild(dayHeader);
+        });
+
+        const firstDay = new Date(year, month - 1, 1).getDay();
+        const daysInMonth = new Date(year, month, 0).getDate();
+        const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+
+        for (let i = 0; i < adjustedFirstDay; i++) {
+            const emptyDay = document.createElement('div');
+            calendarDiv.appendChild(emptyDay);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'calendar-day';
+            dayDiv.textContent = day;
+
+            if (scheduleData[dateStr]) {
+                const { type } = scheduleData[dateStr];
+                if (type === 'OFF') dayDiv.classList.add('day-off');
+                else if (type === 'F') dayDiv.classList.add('day-flight');
+                else if (type === 'AD') dayDiv.classList.add('day-ad');
+                else if (type === 'HSBY') dayDiv.classList.add('day-hsby');
+                else if (type === 'OTHER') dayDiv.classList.add('day-other');
+
+                dayDiv.addEventListener('click', () => showDayDetails(day, month, year, scheduleData[dateStr].details));
+            }
+
+            calendarDiv.appendChild(dayDiv);
+        }
+    } catch (error) {
+        console.error('Error generating calendar:', error);
+        showNotification('Error generating calendar');
+    }
+}
+
+function showDayDetails(day, month, year, details) {
+    try {
+        const popup = document.getElementById('dayPopup');
+        const popupTitle = document.getElementById('popupTitle');
+        const popupDetails = document.getElementById('popupDetails');
+
+        popupTitle.textContent = `${day}/${month}/${year}`;
+        popupDetails.textContent = details || 'No details available';
+        popup.style.display = 'block';
+    } catch (error) {
+        console.error('Error showing day details:', error);
+        showNotification('Error showing day details');
+    }
+}
+
+function closePopup() {
+    try {
+        const popup = document.getElementById('dayPopup');
+        popup.style.display = 'none';
+    } catch (error) {
+        console.error('Error closing popup:', error);
+        showNotification('Error closing popup');
+    }
+}
+
+async function parseScheduleImage(file) {
+    try {
+        showNotification('Processing image... This may take a moment.');
+        const result = await Tesseract.recognize(
+            file,
+            'eng',
+            { logger: m => console.log(m) }
+        );
+        const text = result.data.text;
+
+        // Simple parsing logic based on the image format (adjust as needed)
+        const lines = text.split('\n').filter(line => line.trim());
+        let currentDate = null;
+        scheduleData = {}; // Reset schedule data
+
+        for (let line of lines) {
+            line = line.trim();
+            const dateMatch = line.match(/(\d{2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{2})/i);
+            if (dateMatch) {
+                const day = parseInt(dateMatch[1], 10);
+                const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(dateMatch[2].substring(0, 3)) + 1;
+                currentDate = `2025-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                continue;
+            }
+
+            if (currentDate) {
+                const typeMatch = line.match(/(OFF|CHECK-IN|CHECK-OUT|F|HSBY|AD|OTHER)/i);
+                if (typeMatch) {
+                    const type = typeMatch[1].toUpperCase() === 'CHECK-IN' || typeMatch[1].toUpperCase() === 'CHECK-OUT' ? 'AD' : typeMatch[1].toUpperCase();
+                    const details = line.replace(/(OFF|CHECK-IN|CHECK-OUT|F|HSBY|AD|OTHER)/i, '').trim() || '';
+                    scheduleData[currentDate] = { type: type === 'AD' && !details.includes('CHECK') ? 'F' : type, details };
+                }
+            }
+        }
+
+        generateCalendar(2025, 6);
+        showNotification('Schedule updated successfully.');
+    } catch (error) {
+        console.error('Error parsing image:', error);
+        showNotification('Error parsing image. Please ensure the image contains a valid schedule.');
+    }
+}
+
+function initializeCalendar() {
+    try {
+        generateCalendar(2025, 6);
+
+        const imageInput = document.getElementById('scheduleImage');
+        imageInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const img = new Image();
+                img.src = URL.createObjectURL(file);
+                await parseScheduleImage(file);
+            }
+        });
+    } catch (error) {
+        console.error('Error initializing calendar:', error);
+        showNotification('Error initializing calendar');
+    }
+}
+
+function initializeForm() {
+    try {
+        loadFormData();
+        calculateDifference();
+        updateSalesLabels();
+        calculateTotalSales();
+        calculateTotalPax();
+        initializeCalendar();
+        document.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', () => {
+                saveFormData();
+                calculateTotalSales();
+                calculateTotalPax();
+            });
+        });
+        document.querySelector('.add-crew-button').addEventListener('click', addExtraCrew);
+        document.querySelectorAll('.remove-crew-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const index = button.closest('tr').id.replace('extraCrew', '');
+                removeExtraCrew(index);
+            });
+        });
+        console.log('Form initialized');
+    } catch (error) {
+        console.error('Error initializing form:', error);
+        showNotification('Error initializing form');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initializeForm);
+
 function showNotification(message, duration = 3000) {
     console.log('Notification:', message);
     const notification = document.getElementById('notification');
