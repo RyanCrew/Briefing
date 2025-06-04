@@ -191,62 +191,68 @@ async function parseScheduleImage(file) {
         const result = await Tesseract.recognize(
             file,
             'eng',
-            { logger: m => console.log(m) }
+            { logger: m => console.log(m) } // Logs progress to console
         );
         const text = result.data.text;
+        console.log('Raw OCR Text:', text); // Debug: Log raw text for inspection
 
         const lines = text.split('\n').filter(line => line.trim());
         let currentDate = null;
-        scheduleData = {};
+        scheduleData = {}; // Reset schedule data
 
         for (let line of lines) {
-            line = line.trim();
+            line = line.trim().replace(/\s+/g, ' '); // Normalize whitespace
 
+            // Match dates like "9 Jun 25" or "30 May 25"
             const dateMatch = line.match(/^(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{2})/i);
             if (dateMatch) {
                 const day = parseInt(dateMatch[1], 10);
                 const monthName = dateMatch[2].substring(0, 3).toLowerCase();
                 const month = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'].indexOf(monthName) + 1;
-                const year = parseInt(dateMatch[3], 10) + 2000;
+                const year = parseInt(dateMatch[3], 10) + 2000; // Convert "25" to 2025
                 currentDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 continue;
             }
 
+            // If we have a current date, parse the schedule details
             if (currentDate) {
                 let type = 'OFF';
-                let details = '';
+                let details = line;
 
                 if (line.includes('OFF')) {
                     type = 'OFF';
                     details = '';
                 } else if (line.includes('HSBY')) {
                     type = 'HSBY';
-                    const timeMatch = line.match(/(\d{2}:\d{2}Z)-(\d{2}:\d{2}Z)/);
-                    details = timeMatch ? `${timeMatch[1]} - ${timeMatch[2]}` : line;
+                    const timeMatch = line.match(/(\d{2}:\d{2}Z)\s*-\s*(\d{2}:\d{2}Z)/);
+                    details = timeMatch ? `${timeMatch[1]} - ${timeMatch[2]}` : line.replace('HSBY', '').trim();
                 } else if (line.includes('CHECK-IN') || line.includes('CHECK-OUT')) {
                     type = 'AD';
                     details = line;
-                } else if (line.includes('F ') || line.match(/F\s*\([^)]+\)/)) {
+                } else if (line.includes('F') && !line.includes('CHECK')) {
                     type = 'F';
-                    const flightMatch = line.match(/(?:F\s*\()?(.*?)(?:\))?/);
-                    details = flightMatch ? flightMatch[1].trim() : line;
-                } else {
+                    // Extract flight details like "ALC-TFN 15:45Z-19:14Z TFN-ALC 20:05Z-23:23Z"
+                    const flightDetails = line.replace('F', '').trim();
+                    details = flightDetails;
+                } else if (line.includes('C/SICK') || line.includes('A/L')) {
                     type = 'OTHER';
                     details = line;
                 }
 
-                scheduleData[currentDate] = { type, details };
+                if (details || type !== 'OFF') {
+                    scheduleData[currentDate] = { type, details };
+                }
             }
         }
 
-        generateCalendar(2025, 6);
+        console.log('Parsed Schedule Data:', scheduleData); // Debug: Log parsed data
+        generateCalendar(2025, 6); // Regenerate calendar with new data
         showNotification('Schedule updated successfully.');
     } catch (error) {
         console.error('Error parsing image:', error);
-        showNotification('Error parsing image. Please ensure the image contains a valid schedule.');
+        showNotification('Error parsing image. Check console for details.');
     }
 }
-
 function initializeCalendar() {
     try {
         generateCalendar(2025, 6); // Generate calendar for June 2025
