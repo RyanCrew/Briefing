@@ -130,6 +130,42 @@
             display: inline-block;
             width: 100%;
         }
+        .calendar-day {
+    padding: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.9rem;
+}
+.calendar-day:hover {
+    background: rgba(255,255,255,0.3);
+}
+.day-off {
+    background: #666; /* Gray for OFF */
+    color: #fff;
+}
+.day-flight {
+    background: #87cefa; /* Light blue for F */
+    color: #000;
+}
+.day-ad {
+    background: #00008b; /* Dark blue for AD */
+    color: #fff;
+}
+.day-hsby {
+    background: #87cefa; /* Light blue for HSBY */
+    color: #000;
+}
+.day-other {
+    background: #800000; /* Maroon for training/other */
+    color: #fff;
+}
+.day-header {
+    font-weight: bold;
+    padding: 0.5rem;
+    background: rgba(0,0,0,0.5);
+    color: #fff; /* Ensure headers are readable */
+}
         .sales-euro {
             position: absolute;
             right: 0.2rem;
@@ -665,7 +701,7 @@
                         </div>
                     </div>
                 </details>
-                <!-- Calendar Section (Added) -->
+                <!-- Calendar Section -->
 <details class="form-section" id="calendarSection" open>
     <summary>Schedule Calendar</summary>
     <div>
@@ -677,13 +713,15 @@
     </div>
 </details>
 
-<!-- Popup for Day Details (Added) -->
+<!-- Popup for Day Details -->
 <div id="dayPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,0.9); border-radius: 10px; padding: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000; color: #000;">
     <h3 id="popupTitle"></h3>
     <p id="popupDetails"></p>
     <button type="button" onclick="closePopup()" style="background: #ff4d4d; padding: 0.4rem 0.8rem; font-size: 0.9rem;">Close</button>
 </div>
 
+<!-- Include Tesseract.js -->
+<script src="https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js"></script>
                 <button type="button" id="submitBtn" onclick="handleFormSubmission()" tabindex="96">Submit Report</button>
                 <button type="button" class="clear-form-button" onclick="clearFormData()" tabindex="97">Clear Form</button>
             </form>
@@ -692,7 +730,6 @@
     <footer>
         <p>Flight Report © 2025</p>
     </footer>
-    <script src="https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             document.addEventListener('DOMContentLoaded', () => {
