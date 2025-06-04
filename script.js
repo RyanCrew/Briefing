@@ -37,8 +37,14 @@ let scheduleData = {
 function generateCalendar(year, month) {
     try {
         const calendarDiv = document.getElementById('calendar');
+        if (!calendarDiv) {
+            console.error('Calendar div not found');
+            showNotification('Calendar container not found');
+            return;
+        }
         calendarDiv.innerHTML = '';
 
+        // Create header for days of the week
         const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
         daysOfWeek.forEach(day => {
             const dayHeader = document.createElement('div');
@@ -91,30 +97,32 @@ function showDayDetails(day, month, year, details) {
         popupDetails.textContent = details || 'No details available';
         popup.style.display = 'block';
 
-        // Autofill form fields in the "Flight Details" section if they are empty
+        // Autofill form fields in the "Flight Details" section
         const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const scheduleEntry = scheduleData[dateStr];
         if (!scheduleEntry) return;
 
         // Get form fields
         const dateField = document.getElementById('date-ac');
+        const flightNumberField = document.getElementById('flight-number');
         const arrivalTimeField = document.getElementById('arrival-time');
         const departureTimeField = document.getElementById('departure-time');
         const routeField = document.getElementById('route');
 
-        // Autofill Date if empty
-        if (!dateField.value) {
-            dateField.value = dateStr;
-        }
+        // Set Date field
+        dateField.value = dateStr;
 
-        // Autofill Arrival/Departure Times and Route based on the schedule type
+        // Autofill other fields based on schedule type
         if (scheduleEntry.type === 'F') {
-            // Parse flight details for arrival and departure times
             const timeMatches = scheduleEntry.details.match(/(\d{2}:\d{2}Z)-(\d{2}:\d{2}Z)/g);
             const routeMatches = scheduleEntry.details.match(/[A-Z]{3}-[A-Z]{3}/g);
+            const flightNumMatch = scheduleEntry.details.match(/F\s*\((.*?)\)/);
+
+            if (flightNumMatch && !flightNumberField.value) {
+                flightNumberField.value = flightNumMatch[1].split(' ')[0]; // Simplified; adjust based on actual flight number format
+            }
 
             if (timeMatches) {
-                // First flight's departure and arrival times
                 const firstFlightTimes = timeMatches[0].split('-');
                 if (!departureTimeField.value) {
                     departureTimeField.value = firstFlightTimes[0];
@@ -123,7 +131,6 @@ function showDayDetails(day, month, year, details) {
                     arrivalTimeField.value = firstFlightTimes[1];
                 }
 
-                // If there's a return flight
                 if (timeMatches.length > 1) {
                     const lastFlightTimes = timeMatches[timeMatches.length - 1].split('-');
                     if (!arrivalTimeField.value) {
@@ -133,10 +140,9 @@ function showDayDetails(day, month, year, details) {
             }
 
             if (routeMatches && !routeField.value) {
-                routeField.value = routeMatches.join(' '); // e.g., "ALC-TFN TFN-ALC"
+                routeField.value = routeMatches.join(' ');
             }
         } else if (scheduleEntry.type === 'AD') {
-            // Parse CHECK-IN and CHECK-OUT times
             const checkInMatch = scheduleEntry.details.match(/CHECK-IN\s*\((\d{2}:\d{2}Z)/);
             const checkOutMatch = scheduleEntry.details.match(/CHECK-OUT\s*\((\d{2}:\d{2}Z)/);
 
@@ -147,7 +153,6 @@ function showDayDetails(day, month, year, details) {
                 arrivalTimeField.value = checkOutMatch[1];
             }
         } else if (scheduleEntry.type === 'HSBY') {
-            // Parse HSBY times
             const timeMatch = scheduleEntry.details.match(/(\d{2}:\d{2}Z)-(\d{2}:\d{2}Z)/);
             if (timeMatch) {
                 if (!departureTimeField.value) {
@@ -159,9 +164,9 @@ function showDayDetails(day, month, year, details) {
             }
         }
 
-        // Trigger input events to update any dependent calculations
-        [dateField, arrivalTimeField, departureTimeField, routeField].forEach(field => {
-            if (field.value) {
+        // Trigger input events
+        [dateField, flightNumberField, arrivalTimeField, departureTimeField, routeField].forEach(field => {
+            if (field && field.value) {
                 field.dispatchEvent(new Event('input'));
             }
         });
@@ -170,7 +175,6 @@ function showDayDetails(day, month, year, details) {
         showNotification('Error showing day details');
     }
 }
-
 function closePopup() {
     try {
         const popup = document.getElementById('dayPopup');
@@ -191,31 +195,27 @@ async function parseScheduleImage(file) {
         );
         const text = result.data.text;
 
-        // Split the text into lines and filter out empty ones
         const lines = text.split('\n').filter(line => line.trim());
         let currentDate = null;
-        scheduleData = {}; // Reset schedule data for the new image
+        scheduleData = {};
 
         for (let line of lines) {
             line = line.trim();
 
-            // Match dates like "30 May 25" or "1 Jun 25"
             const dateMatch = line.match(/^(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{2})/i);
             if (dateMatch) {
                 const day = parseInt(dateMatch[1], 10);
                 const monthName = dateMatch[2].substring(0, 3).toLowerCase();
                 const month = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'].indexOf(monthName) + 1;
-                const year = parseInt(dateMatch[3], 10) + 2000; // Convert "25" to 2025
+                const year = parseInt(dateMatch[3], 10) + 2000;
                 currentDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 continue;
             }
 
-            // If we have a current date, parse the schedule details
             if (currentDate) {
-                let type = 'OFF'; // Default type
+                let type = 'OFF';
                 let details = '';
 
-                // Check for specific types
                 if (line.includes('OFF')) {
                     type = 'OFF';
                     details = '';
@@ -228,11 +228,10 @@ async function parseScheduleImage(file) {
                     details = line;
                 } else if (line.includes('F ') || line.match(/F\s*\([^)]+\)/)) {
                     type = 'F';
-                    // Extract flight details like "ALC-TFN 15:45Z-19:14Z TFN-ALC 20:05Z-23:23Z"
                     const flightMatch = line.match(/(?:F\s*\()?(.*?)(?:\))?/);
                     details = flightMatch ? flightMatch[1].trim() : line;
                 } else {
-                    type = 'OTHER'; // For entries like C/SICK, A/L(TZ), etc.
+                    type = 'OTHER';
                     details = line;
                 }
 
@@ -240,7 +239,6 @@ async function parseScheduleImage(file) {
             }
         }
 
-        // Regenerate the calendar with the new data
         generateCalendar(2025, 6);
         showNotification('Schedule updated successfully.');
     } catch (error) {
@@ -251,7 +249,7 @@ async function parseScheduleImage(file) {
 
 function initializeCalendar() {
     try {
-        generateCalendar(2025, 6);
+        generateCalendar(2025, 6); // Generate calendar for June 2025
 
         const imageInput = document.getElementById('scheduleImage');
         imageInput.addEventListener('change', async (event) => {
@@ -290,6 +288,17 @@ function initializeForm() {
                 removeExtraCrew(index);
             });
         });
+
+        // Add event listener to date-ac field for autofill
+        const dateField = document.getElementById('date-ac');
+        dateField.addEventListener('change', () => {
+            const selectedDate = dateField.value; // Format: YYYY-MM-DD
+            if (scheduleData[selectedDate]) {
+                const [year, month, day] = selectedDate.split('-').map(Number);
+                showDayDetails(day, month, year, scheduleData[selectedDate].details);
+            }
+        });
+
         console.log('Form initialized');
     } catch (error) {
         console.error('Error initializing form:', error);
