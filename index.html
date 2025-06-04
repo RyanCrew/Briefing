@@ -665,6 +665,24 @@
                         </div>
                     </div>
                 </details>
+                <!-- Calendar Section (Added) -->
+<details class="form-section" id="calendarSection" open>
+    <summary>Schedule Calendar</summary>
+    <div>
+        <div style="margin-bottom: 0.8rem;">
+            <label for="scheduleImage">Upload Schedule Image</label>
+            <input type="file" id="scheduleImage" accept="image/*" tabindex="98">
+        </div>
+        <div id="calendar" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center;"></div>
+    </div>
+</details>
+
+<!-- Popup for Day Details (Added) -->
+<div id="dayPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,0.9); border-radius: 10px; padding: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000; color: #000;">
+    <h3 id="popupTitle"></h3>
+    <p id="popupDetails"></p>
+    <button type="button" onclick="closePopup()" style="background: #ff4d4d; padding: 0.4rem 0.8rem; font-size: 0.9rem;">Close</button>
+</div>
 
                 <button type="button" id="submitBtn" onclick="handleFormSubmission()" tabindex="96">Submit Report</button>
                 <button type="button" class="clear-form-button" onclick="clearFormData()" tabindex="97">Clear Form</button>
@@ -674,7 +692,7 @@
     <footer>
         <p>Flight Report © 2025</p>
     </footer>
-
+    <script src="https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             document.addEventListener('DOMContentLoaded', () => {
