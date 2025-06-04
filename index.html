@@ -705,9 +705,10 @@
 <details class="form-section" id="calendarSection" open>
     <summary>Schedule Calendar</summary>
     <div>
-        <div style="margin-bottom: 0.8rem;">
+        <div style="margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
             <label for="scheduleImage">Upload Schedule Image</label>
             <input type="file" id="scheduleImage" accept="image/*" tabindex="98">
+            <button id="updateCalendarBtn" style="background: #1e90ff; color: #fff; padding: 0.4rem 0.8rem; border: none; border-radius: 5px; cursor: pointer;">Update Calendar</button>
         </div>
         <div id="calendar" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center;"></div>
     </div>
