@@ -90,6 +90,81 @@ function showDayDetails(day, month, year, details) {
         popupTitle.textContent = `${day}/${month}/${year}`;
         popupDetails.textContent = details || 'No details available';
         popup.style.display = 'block';
+
+        // Autofill form fields in the "Flight Details" section if they are empty
+        const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const scheduleEntry = scheduleData[dateStr];
+        if (!scheduleEntry) return;
+
+        // Get form fields
+        const dateField = document.getElementById('date-ac');
+        const arrivalTimeField = document.getElementById('arrival-time');
+        const departureTimeField = document.getElementById('departure-time');
+        const routeField = document.getElementById('route');
+
+        // Autofill Date if empty
+        if (!dateField.value) {
+            dateField.value = dateStr;
+        }
+
+        // Autofill Arrival/Departure Times and Route based on the schedule type
+        if (scheduleEntry.type === 'F') {
+            // Parse flight details for arrival and departure times
+            const timeMatches = scheduleEntry.details.match(/(\d{2}:\d{2}Z)-(\d{2}:\d{2}Z)/g);
+            const routeMatches = scheduleEntry.details.match(/[A-Z]{3}-[A-Z]{3}/g);
+
+            if (timeMatches) {
+                // First flight's departure and arrival times
+                const firstFlightTimes = timeMatches[0].split('-');
+                if (!departureTimeField.value) {
+                    departureTimeField.value = firstFlightTimes[0];
+                }
+                if (!arrivalTimeField.value && timeMatches.length === 1) {
+                    arrivalTimeField.value = firstFlightTimes[1];
+                }
+
+                // If there's a return flight
+                if (timeMatches.length > 1) {
+                    const lastFlightTimes = timeMatches[timeMatches.length - 1].split('-');
+                    if (!arrivalTimeField.value) {
+                        arrivalTimeField.value = lastFlightTimes[1];
+                    }
+                }
+            }
+
+            if (routeMatches && !routeField.value) {
+                routeField.value = routeMatches.join(' '); // e.g., "ALC-TFN TFN-ALC"
+            }
+        } else if (scheduleEntry.type === 'AD') {
+            // Parse CHECK-IN and CHECK-OUT times
+            const checkInMatch = scheduleEntry.details.match(/CHECK-IN\s*\((\d{2}:\d{2}Z)/);
+            const checkOutMatch = scheduleEntry.details.match(/CHECK-OUT\s*\((\d{2}:\d{2}Z)/);
+
+            if (checkInMatch && !departureTimeField.value) {
+                departureTimeField.value = checkInMatch[1];
+            }
+            if (checkOutMatch && !arrivalTimeField.value) {
+                arrivalTimeField.value = checkOutMatch[1];
+            }
+        } else if (scheduleEntry.type === 'HSBY') {
+            // Parse HSBY times
+            const timeMatch = scheduleEntry.details.match(/(\d{2}:\d{2}Z)-(\d{2}:\d{2}Z)/);
+            if (timeMatch) {
+                if (!departureTimeField.value) {
+                    departureTimeField.value = timeMatch[1];
+                }
+                if (!arrivalTimeField.value) {
+                    arrivalTimeField.value = timeMatch[2];
+                }
+            }
+        }
+
+        // Trigger input events to update any dependent calculations
+        [dateField, arrivalTimeField, departureTimeField, routeField].forEach(field => {
+            if (field.value) {
+                field.dispatchEvent(new Event('input'));
+            }
+        });
     } catch (error) {
         console.error('Error showing day details:', error);
         showNotification('Error showing day details');
@@ -116,31 +191,56 @@ async function parseScheduleImage(file) {
         );
         const text = result.data.text;
 
-        // Simple parsing logic based on the image format (adjust as needed)
+        // Split the text into lines and filter out empty ones
         const lines = text.split('\n').filter(line => line.trim());
         let currentDate = null;
-        scheduleData = {}; // Reset schedule data
+        scheduleData = {}; // Reset schedule data for the new image
 
         for (let line of lines) {
             line = line.trim();
-            const dateMatch = line.match(/(\d{2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{2})/i);
+
+            // Match dates like "30 May 25" or "1 Jun 25"
+            const dateMatch = line.match(/^(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{2})/i);
             if (dateMatch) {
                 const day = parseInt(dateMatch[1], 10);
-                const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(dateMatch[2].substring(0, 3)) + 1;
-                currentDate = `2025-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const monthName = dateMatch[2].substring(0, 3).toLowerCase();
+                const month = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'].indexOf(monthName) + 1;
+                const year = parseInt(dateMatch[3], 10) + 2000; // Convert "25" to 2025
+                currentDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 continue;
             }
 
+            // If we have a current date, parse the schedule details
             if (currentDate) {
-                const typeMatch = line.match(/(OFF|CHECK-IN|CHECK-OUT|F|HSBY|AD|OTHER)/i);
-                if (typeMatch) {
-                    const type = typeMatch[1].toUpperCase() === 'CHECK-IN' || typeMatch[1].toUpperCase() === 'CHECK-OUT' ? 'AD' : typeMatch[1].toUpperCase();
-                    const details = line.replace(/(OFF|CHECK-IN|CHECK-OUT|F|HSBY|AD|OTHER)/i, '').trim() || '';
-                    scheduleData[currentDate] = { type: type === 'AD' && !details.includes('CHECK') ? 'F' : type, details };
+                let type = 'OFF'; // Default type
+                let details = '';
+
+                // Check for specific types
+                if (line.includes('OFF')) {
+                    type = 'OFF';
+                    details = '';
+                } else if (line.includes('HSBY')) {
+                    type = 'HSBY';
+                    const timeMatch = line.match(/(\d{2}:\d{2}Z)-(\d{2}:\d{2}Z)/);
+                    details = timeMatch ? `${timeMatch[1]} - ${timeMatch[2]}` : line;
+                } else if (line.includes('CHECK-IN') || line.includes('CHECK-OUT')) {
+                    type = 'AD';
+                    details = line;
+                } else if (line.includes('F ') || line.match(/F\s*\([^)]+\)/)) {
+                    type = 'F';
+                    // Extract flight details like "ALC-TFN 15:45Z-19:14Z TFN-ALC 20:05Z-23:23Z"
+                    const flightMatch = line.match(/(?:F\s*\()?(.*?)(?:\))?/);
+                    details = flightMatch ? flightMatch[1].trim() : line;
+                } else {
+                    type = 'OTHER'; // For entries like C/SICK, A/L(TZ), etc.
+                    details = line;
                 }
+
+                scheduleData[currentDate] = { type, details };
             }
         }
 
+        // Regenerate the calendar with the new data
         generateCalendar(2025, 6);
         showNotification('Schedule updated successfully.');
     } catch (error) {
