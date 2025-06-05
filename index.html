@@ -775,10 +775,14 @@
                     if (info.el) {
                         info.el.classList.add('fc-day-' + flightType.toLowerCase());
                     }
+                },
+                eventContent: function(arg) {
+                    return { html: `<div>${arg.event.title}</div>` };
                 }
             });
             calendar.render();
             window.calendar = calendar;
+            console.log('Calendar initialized');
         }
 
         document.getElementById('scheduleUpload').addEventListener('change', function(event) {
@@ -804,24 +808,34 @@
                 { date: new Date(year, 5, 11), type: 'AD' },
                 { date: new Date(year, 5, 12), type: 'OFF' },
             ];
-            return sampleData;
+            return sampleData.map(item => ({
+                date: item.date,
+                type: item.type
+            }));
         }
 
         function updateCalendarFromPending() {
-            if (pendingSchedule) {
+            if (pendingSchedule && window.calendar) {
                 updateCalendar(pendingSchedule);
                 document.getElementById('updateCalendarBtn').style.display = 'none';
                 pendingSchedule = null;
                 showNotification('Calendar updated successfully.');
+            } else {
+                console.error('Calendar not initialized or no pending schedule');
+                showNotification('Error updating calendar. Please try again.');
             }
         }
 
         function updateCalendar(newSchedule) {
+            if (!window.calendar) {
+                console.error('Calendar instance not available');
+                return;
+            }
             var existingSchedule = JSON.parse(localStorage.getItem('flightSchedule') || '[]');
             newSchedule.forEach(function(newEvent) {
                 var existingEventIndex = existingSchedule.findIndex(function(e) {
                     var existingDate = new Date(e.start);
-                    return existingDate.getTime() === newEvent.date.getTime();
+                    return existingDate.toDateString() === newEvent.date.toDateString();
                 });
                 if (existingEventIndex > -1) {
                     existingSchedule[existingEventIndex].title = newEvent.type;
@@ -834,10 +848,10 @@
                 }
             });
             localStorage.setItem('flightSchedule', JSON.stringify(existingSchedule));
-            calendar.removeAllEvents();
-            calendar.addEventSource(existingSchedule);
-            calendar.render();
-            saveFormData();
+            window.calendar.removeAllEvents();
+            window.calendar.addEventSource(existingSchedule);
+            window.calendar.render();
+            console.log('Calendar updated with new events');
         }
 
         function updateDateTime() {
@@ -853,16 +867,24 @@
                 hour12: false
             };
             var formatter = new Intl.DateTimeFormat('es-ES', options);
-            var formattedDate = formatter.format(now);
-            document.getElementById('currentDateTime').textContent = formattedDate;
+            var formattedDate = formatter.format(now).replace(/(\w+),/, '$1, ').replace(/\b(\d)\b/g, '0$1'); // Ensure two-digit day
+            var datetimeDisplay = document.getElementById('currentDateTime');
+            if (datetimeDisplay) {
+                datetimeDisplay.textContent = formattedDate;
+            } else {
+                console.error('DateTime display element not found');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             initializeForm();
             initializeCalendar();
             updateDateTime();
-            setInterval(updateDateTime, 60000);
+            setInterval(updateDateTime, 60000); // Update every minute
+            console.log('DOM fully loaded, initializing components');
         });
+
+        // Existing functions from script.js (collectFormData, saveFormData, etc.) remain unchanged
     </script>
     <script src="script.js"></script>
 </body>
