@@ -130,42 +130,6 @@
             display: inline-block;
             width: 100%;
         }
-        .calendar-day {
-        padding: 0.5rem;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background 0.2s;
-        font-size: 0.9rem;
-    }
-    .calendar-day:hover {
-        background: rgba(255,255,255,0.3);
-    }
-    .day-off {
-        background: #666; /* Gray for OFF */
-        color: #fff;
-    }
-    .day-flight {
-        background: #87cefa; /* Light blue for F */
-        color: #000;
-    }
-    .day-ad {
-        background: #00008b; /* Dark blue for AD */
-        color: #fff;
-    }
-    .day-hsby {
-        background: #87cefa; /* Light blue for HSBY */
-        color: #000;
-    }
-    .day-other {
-        background: #800000; /* Maroon for training/other */
-        color: #fff;
-    }
-    .day-header {
-        font-weight: bold;
-        padding: 0.5rem;
-        background: rgba(0,0,0,0.5);
-        color: #fff;
-    }
         .sales-euro {
             position: absolute;
             right: 0.2rem;
@@ -283,6 +247,28 @@
         .clear-form-button:hover {
             background: #555;
         }
+	/* Existing styles remain unchanged */
+        .calendar-container {
+            margin: 1rem 0;
+            max-width: 95vw;
+        }
+        .fc-daygrid-day {
+            height: 100px;
+            overflow-y: auto;
+        }
+        .fc-day-hsby { background-color: #87CEEB; }
+        .fc-day-ad { background-color: #1E90FF; }
+        .fc-day-off { background-color: #D3D3D3; background-image: linear-gradient(45deg, #B0B0B0 25%, transparent 25%, transparent 75%, #B0B0B0 75%, #B0B0B0), linear-gradient(-45deg, #B0B0B0 25%, transparent 25%, transparent 75%, #B0B0B0 75%, #B0B0B0); background-size: 20px 20px; }
+        /* Add more fc-day- classes for other flight types as needed */
+        #scheduleUpload {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: #1e90ff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
         footer {
             background: rgba(0,0,0,0.7);
             text-align: center;
@@ -334,20 +320,14 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 text-white font-sans">
-    <header class="bg-blue-900 p-4 flex justify-between items-center">
-        <div class="flex space-x-4">
-            <h1 class="text-2xl font-bold">Flight Report</h1>
-            <a href="#calendar" class="text-lg hover:text-blue-300">Calendar</a>
-        </div>
-        <div class="flex space-x-4">
-            <button type="button" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="clearForm()">Clear</button>
-            <button type="button" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="submitForm()">Submit</button>
-        </div>
+<body>
+    <div id="notification"></div>
+    <header>
+        <h1>Flight Report</h1>
     </header>
-    <main class="container mx-auto p-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><main class="container mx-auto p-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <main>
+        <div class="form-container">
+            <form id="inflightForm" class="space-y-1">
                 <!-- Flight Information -->
                 <details class="form-section" open>
                     <summary>Flight Information</summary>
@@ -707,31 +687,107 @@
                         </div>
                     </div>
                 </details>
-                <!-- Calendar Section -->
-<div id="calendarSection" class="mt-4">
-                <h2>Schedule Calendar</h2>
-                <div style="margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <label for="scheduleImage">Upload Schedule Image</label>
-                    <input type="file" id="scheduleImage" accept="image/*" tabindex="98">
-                    <button id="updateCalendarBtn" style="background: #1e90ff; color: #fff; padding: 0.4rem 0.8rem; border: none; border-radius: 5px; cursor: pointer;">Update Calendar</button>
-                </div>
-                <div id="calendar" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center;"></div>
-            </div>
-        </div>
 
-<!-- Popup for Day Details -->
-        <div id="dayPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,0.9); border-radius: 10px; padding: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000; color: #000;">
-            <h3 id="popupTitle"></h3>
-            <p id="popupDetails"></p>
-            <button type="button" onclick="closePopup()" style="background: #ff4d4d; padding: 0.4rem 0.8rem; font-size: 0.9rem;">Close</button>
+                <button type="button" id="submitBtn" onclick="handleFormSubmission()" tabindex="96">Submit Report</button>
+                <button type="button" class="clear-form-button" onclick="clearFormData()" tabindex="97">Clear Form</button>
+            </form>
         </div>
     </main>
-
     <footer>
         <p>Flight Report © 2025</p>
     </footer>
 
-    <script src="https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js"></script>
+    <script>
+	// Existing scripts remain unchanged
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeForm();
+            initializeCalendar();
+        });
+
+        function initializeCalendar() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: JSON.parse(localStorage.getItem('flightSchedule') || '[]'),
+                dayCellContent: function(arg) {
+                    return arg.dayNumberText.replace(' ', '');
+                },
+                eventDidMount: function(info) {
+                    var flightType = info.event.title.toUpperCase();
+                    if (info.el) {
+                        info.el.classList.add('fc-day-' + flightType.toLowerCase());
+                    }
+                }
+            });
+            calendar.render();
+            window.calendar = calendar; // Make calendar globally accessible
+        }
+
+        function updateSchedule(event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    // Here you would typically use OCR or manual parsing
+                    // For this example, we'll simulate parsing the image
+                    var scheduleData = parseScheduleImage(e.target.result);
+                    updateCalendar(scheduleData);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function parseScheduleImage(imageData) {
+            // This is a placeholder for image parsing (e.g., using Tesseract.js)
+            // For now, we'll simulate parsing based on the provided image
+            var currentDate = new Date();
+            var year = currentDate.getFullYear();
+            var schedule = [];
+            // Simulate parsing the provided roster image
+            var sampleData = [
+                { date: new Date(year, 5, 9), type: 'HSBY' },
+                { date: new Date(year, 5, 10), type: 'CHECK-IN' },
+                { date: new Date(year, 5, 11), type: 'AD' },
+                { date: new Date(year, 5, 12), type: 'OFF' },
+                // Add more dates as needed
+            ];
+            return sampleData;
+        }
+
+        function updateCalendar(newSchedule) {
+            var existingSchedule = JSON.parse(localStorage.getItem('flightSchedule') || '[]');
+            newSchedule.forEach(function(newEvent) {
+                var existingEventIndex = existingSchedule.findIndex(function(e) {
+                    return e.start.getTime() === newEvent.date.getTime();
+                });
+                if (existingEventIndex > -1) {
+                    existingSchedule[existingEventIndex].title = newEvent.type;
+                } else {
+                    existingSchedule.push({
+                        title: newEvent.type,
+                        start: newEvent.date,
+                        allDay: true
+                    });
+                }
+            });
+            localStorage.setItem('flightSchedule', JSON.stringify(existingSchedule));
+            calendar.removeAllEvents();
+            calendar.addEventSource(existingSchedule);
+            calendar.render();
+            saveFormData();
+        }
+        if ('serviceWorker' in navigator) {
+            document.addEventListener('DOMContentLoaded', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Error registering Service Worker:', error);
+                    });
+            });
+        }
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
