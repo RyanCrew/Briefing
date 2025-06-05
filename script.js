@@ -1,8 +1,7 @@
 let activeFlight = null;
 let extraCrewCount = 0;
 
-// Initial schedule data (to be updated with new uploads) (Added)
-// Initial schedule data based on the provided image
+// Initial schedule data
 let scheduleData = {
     "2025-06-01": { type: "HSBY", details: "11:35Z - 21:00Z" },
     "2025-06-02": { type: "AD", details: "CHECK-IN: 10:00Z, CHECK-OUT: 18:00Z" },
@@ -35,79 +34,61 @@ let scheduleData = {
     "2025-06-29": { type: "OFF", details: "" },
 };
 
-function generateCalendar(year, month) {
-    try {
-        const calendarDiv = document.getElementById('calendar');
-        if (!calendarDiv) {
-            console.error('Calendar div not found');
-            showNotification('Calendar container not found');
-            return;
-        }
-        calendarDiv.innerHTML = '';
+let pendingSchedule = null;
 
-        // Create header for days of the week
-        const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        daysOfWeek.forEach(day => {
-            const dayHeader = document.createElement('div');
-            dayHeader.className = 'day-header';
-            dayHeader.textContent = day;
-            calendarDiv.appendChild(dayHeader);
-        });
-
-        const firstDay = new Date(year, month - 1, 1).getDay();
-        const daysInMonth = new Date(year, month, 0).getDate();
-        const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
-
-        for (let i = 0; i < adjustedFirstDay; i++) {
-            const emptyDay = document.createElement('div');
-            calendarDiv.appendChild(emptyDay);
-        }
-
-        for (let day = 1; day <= daysInMonth; day++) {
-            const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            const dayDiv = document.createElement('div');
-            dayDiv.className = 'calendar-day';
-            dayDiv.textContent = day;
-
-            if (scheduleData[dateStr]) {
-                const { type } = scheduleData[dateStr];
-                if (type === 'OFF') dayDiv.classList.add('day-off');
-                else if (type === 'F') dayDiv.classList.add('day-flight');
-                else if (type === 'AD') dayDiv.classList.add('day-ad');
-                else if (type === 'HSBY') dayDiv.classList.add('day-hsby');
-                else if (type === 'OTHER') dayDiv.classList.add('day-other');
-
-                dayDiv.addEventListener('click', () => showDayDetails(day, month, year, scheduleData[dateStr].details));
-            }
-
-            calendarDiv.appendChild(dayDiv);
-        }
-    } catch (error) {
-        console.error('Error generating calendar:', error);
-        showNotification('Error generating calendar');
+function updateCalendarFromPending() {
+    if (pendingSchedule && window.calendar) {
+        updateCalendar(pendingSchedule);
+        document.getElementById('updateCalendarBtn').style.display = 'none';
+        pendingSchedule = null;
+        showNotification('Calendar updated successfully.');
+    } else {
+        console.error('Calendar not initialized or no pending schedule');
+        showNotification('Error updating calendar. Please try again.');
     }
+}
+
+function updateCalendar(newSchedule) {
+    if (!window.calendar) {
+        console.error('Calendar instance not available');
+        return;
+    }
+    var existingSchedule = JSON.parse(localStorage.getItem('flightSchedule') || '[]');
+    newSchedule.forEach(function(newEvent) {
+        var existingEventIndex = existingSchedule.findIndex(function(e) {
+            var existingDate = new Date(e.start);
+            return existingDate.toDateString() === new Date(newEvent.date).toDateString();
+        });
+        if (existingEventIndex > -1) {
+            existingSchedule[existingEventIndex].title = newEvent.type;
+        } else {
+            existingSchedule.push({
+                title: newEvent.type,
+                start: newEvent.date,
+                allDay: true
+            });
+        }
+    });
+    localStorage.setItem('flightSchedule', JSON.stringify(existingSchedule));
+    window.calendar.removeAllEvents();
+    window.calendar.addEventSource(existingSchedule);
+    window.calendar.render();
+    console.log('Calendar updated with new events');
 }
 
 function showDayDetails(day, month, year, details) {
     try {
-        const popup = document.getElementById('dayPopup');
-        const popupTitle = document.getElementById('popupTitle');
-        const popupDetails = document.getElementById('popupDetails');
+        alert(`${day}/${month}/${year}\n${details || 'No details available'}`);
 
-        popupTitle.textContent = `${day}/${month}/${year}`;
-        popupDetails.textContent = details || 'No details available';
-        popup.style.display = 'block';
-
-        // Autofill form fields
         const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const scheduleEntry = scheduleData[dateStr];
         if (!scheduleEntry) return;
 
-        const dateField = document.getElementById('date-ac');
-        const flightNumberField = document.getElementById('flight-number');
-        const arrivalTimeField = document.getElementById('arrival-time');
-        const departureTimeField = document.getElementById('departure-time');
-        const routeField = document.getElementById('route');
+        const dateField = document.getElementById('date');
+        const flightNumberField = document.querySelector('#flightsTableBody tr[data-flight="1"] .flightNumber');
+        const arrivalTimeField = document.querySelector('#flightsTableBody tr[data-flight="1"] .arrival');
+        const departureTimeField = document.querySelector('#flightsTableBody tr[data-flight="1"] .departure');
+        const routeField = document.querySelector('#flightsTableBody tr[data-flight="1"] .route');
 
         dateField.value = dateStr;
 
@@ -117,30 +98,30 @@ function showDayDetails(day, month, year, details) {
             const flightNumMatch = scheduleEntry.details.match(/F\s*\((.*?)\)/);
 
             if (flightNumMatch && !flightNumberField.value) {
-                flightNumberField.value = flightNumMatch[1].split(' ')[0]; // Simplified
+                flightNumberField.value = flightNumMatch[1].split(' ')[0];
             }
 
             if (timeMatches) {
                 const firstFlightTimes = timeMatches[0].split('-');
-                if (!departureTimeField.value) departureTimeField.value = firstFlightTimes[0];
-                if (!arrivalTimeField.value && timeMatches.length === 1) arrivalTimeField.value = firstFlightTimes[1];
+                if (!departureTimeField.value) departureTimeField.value = firstFlightTimes[0].replace('Z', '');
+                if (!arrivalTimeField.value && timeMatches.length === 1) arrivalTimeField.value = firstFlightTimes[1].replace('Z', '');
                 if (timeMatches.length > 1) {
                     const lastFlightTimes = timeMatches[timeMatches.length - 1].split('-');
-                    if (!arrivalTimeField.value) arrivalTimeField.value = lastFlightTimes[1];
+                    if (!arrivalTimeField.value) arrivalTimeField.value = lastFlightTimes[1].replace('Z', '');
                 }
             }
 
             if (routeMatches && !routeField.value) routeField.value = routeMatches.join(' ');
         } else if (scheduleEntry.type === 'AD') {
-            const checkInMatch = scheduleEntry.details.match(/CHECK-IN\s*\((\d{2}:\d{2}Z)/);
-            const checkOutMatch = scheduleEntry.details.match(/CHECK-OUT\s*\((\d{2}:\d{2}Z)/);
-            if (checkInMatch && !departureTimeField.value) departureTimeField.value = checkInMatch[1];
-            if (checkOutMatch && !arrivalTimeField.value) arrivalTimeField.value = checkOutMatch[1];
+            const checkInMatch = scheduleEntry.details.match(/CHECK-IN:\s*(\d{2}:\d{2}Z)/);
+            const checkOutMatch = scheduleEntry.details.match(/CHECK-OUT:\s*(\d{2}:\d{2}Z)/);
+            if (checkInMatch && !departureTimeField.value) departureTimeField.value = checkInMatch[1].replace('Z', '');
+            if (checkOutMatch && !arrivalTimeField.value) arrivalTimeField.value = checkOutMatch[1].replace('Z', '');
         } else if (scheduleEntry.type === 'HSBY') {
             const timeMatch = scheduleEntry.details.match(/(\d{2}:\d{2}Z)-(\d{2}:\d{2}Z)/);
             if (timeMatch) {
-                if (!departureTimeField.value) departureTimeField.value = timeMatch[1];
-                if (!arrivalTimeField.value) arrivalTimeField.value = timeMatch[2];
+                if (!departureTimeField.value) departureTimeField.value = timeMatch[1].replace('Z', '');
+                if (!arrivalTimeField.value) arrivalTimeField.value = timeMatch[2].replace('Z', '');
             }
         }
 
@@ -150,16 +131,6 @@ function showDayDetails(day, month, year, details) {
     } catch (error) {
         console.error('Error showing day details:', error);
         showNotification('Error showing day details');
-    }
-}
-
-function closePopup() {
-    try {
-        const popup = document.getElementById('dayPopup');
-        popup.style.display = 'none';
-    } catch (error) {
-        console.error('Error closing popup:', error);
-        showNotification('Error closing popup');
     }
 }
 
@@ -221,8 +192,13 @@ async function parseScheduleImage(file) {
         }
 
         console.log('Parsed Schedule Data:', scheduleData);
-        generateCalendar(2025, 6);
-        showNotification('Schedule updated successfully.');
+        const newSchedule = Object.keys(scheduleData).map(date => ({
+            date: new Date(date),
+            type: scheduleData[date].type
+        }));
+        pendingSchedule = newSchedule;
+        document.getElementById('updateCalendarBtn').style.display = 'inline-block';
+        showNotification('Schedule parsed. Click "Update Calendar" to apply changes.');
     } catch (error) {
         console.error('Error parsing image:', error);
         showNotification('Error parsing image. Check console for details.');
@@ -231,93 +207,37 @@ async function parseScheduleImage(file) {
 
 function initializeCalendar() {
     try {
-        generateCalendar(2025, 6);
-
-        const imageInput = document.getElementById('scheduleImage');
+        const imageInput = document.getElementById('scheduleUpload');
         const updateButton = document.getElementById('updateCalendarBtn');
         if (!updateButton) {
             console.error('Update Calendar button not found');
             return;
         }
 
-        updateButton.addEventListener('click', async () => {
+        imageInput.addEventListener('change', async () => {
             const file = imageInput.files[0];
             if (file) {
-                const img = new Image();
-                img.src = URL.createObjectURL(file);
                 await parseScheduleImage(file);
             } else {
                 showNotification('Please select a schedule image first.');
             }
         });
+
+        const dateField = document.getElementById('date');
+        if (dateField) {
+            dateField.addEventListener('change', () => {
+                const selectedDate = dateField.value;
+                if (scheduleData[selectedDate]) {
+                    const [year, month, day] = selectedDate.split('-').map(Number);
+                    showDayDetails(day, month, year, scheduleData[selectedDate].details);
+                }
+            });
+        }
     } catch (error) {
         console.error('Error initializing calendar:', error);
         showNotification('Error initializing calendar');
     }
 }
-
-function initializeForm() {
-    try {
-        loadFormData();
-        calculateDifference();
-        updateSalesLabels();
-        calculateTotalSales();
-        calculateTotalPax();
-        initializeCalendar();
-        document.querySelectorAll('input, textarea').forEach(input => {
-            input.addEventListener('input', () => {
-                saveFormData();
-                calculateTotalSales();
-                calculateTotalPax();
-            });
-        });
-        document.querySelector('.add-crew-button').addEventListener('click', addExtraCrew);
-        document.querySelectorAll('.remove-crew-button').forEach(button => {
-            button.addEventListener('click', () => {
-                const index = button.closest('tr').id.replace('extraCrew', '');
-                removeExtraCrew(index);
-            });
-        });
-
-        const dateField = document.getElementById('date-ac');
-        if (dateField) {
-            dateField.addEventListener('change', () => {
-                const selectedDate = dateField.value;
-                if (scheduleData[selectedDate]) {
-                    const [year, month, day] = selectedDate.split('-').map(Number);
-                    showDayDetails(day, month, year, scheduleData[selectedDate].details);
-                }
-            });
-        }
-
-        console.log('Form initialized');
-    } catch (error) {
-        console.error('Error initializing form:', error);
-        showNotification('Error initializing form');
-    }
-}
-
-document.addEventListener('DOMContentLoaded', initializeForm);
-
-        const dateField = document.getElementById('date-ac');
-        if (dateField) {
-            dateField.addEventListener('change', () => {
-                const selectedDate = dateField.value;
-                if (scheduleData[selectedDate]) {
-                    const [year, month, day] = selectedDate.split('-').map(Number);
-                    showDayDetails(day, month, year, scheduleData[selectedDate].details);
-                }
-            });
-        }
-
-        console.log('Form initialized');
-    } catch (error) {
-        console.error('Error initializing form:', error);
-        showNotification('Error initializing form');
-    }
-}
-
-document.addEventListener('DOMContentLoaded', initializeForm);
 
 function showNotification(message, duration = 3000) {
     console.log('Notification:', message);
@@ -575,7 +495,6 @@ function addExtraCrew() {
         const extraRow = document.getElementById(`extraCrew${extraCrewCount}`);
         if (extraRow) {
             extraRow.style.display = 'table-row';
-            // Add input event listeners to new crew inputs
             extraRow.querySelectorAll('input').forEach(input => {
                 input.addEventListener('input', () => {
                     saveFormData();
@@ -671,7 +590,6 @@ function updateSalesLabels() {
                 });
             }
         }
-        // Handle extra crew sales labels
         for (let i = 1; i <= extraCrewCount; i++) {
             const crewCode = document.getElementById(`crewcode${i + 4}`);
             if (crewCode) {
@@ -692,7 +610,7 @@ function calculateTotalSales() {
             document.getElementById('salesCrew2'),
             document.getElementById('salesCrew3'),
             document.getElementById('salesCrew4'),
-        ].filter(input => input); // Filter out null inputs
+        ].filter(input => input);
         const totalSalesInput = document.getElementById('totalSales');
         const totalPaxInput = document.getElementById('totalPax');
         const averageInput = document.getElementById('average');
@@ -942,6 +860,7 @@ function initializeForm() {
         updateSalesLabels();
         calculateTotalSales();
         calculateTotalPax();
+        initializeCalendar();
         document.querySelectorAll('input, textarea').forEach(input => {
             input.addEventListener('input', () => {
                 saveFormData();
@@ -949,7 +868,6 @@ function initializeForm() {
                 calculateTotalPax();
             });
         });
-        // Ensure extra crew buttons have event listeners
         document.querySelector('.add-crew-button').addEventListener('click', addExtraCrew);
         document.querySelectorAll('.remove-crew-button').forEach(button => {
             button.addEventListener('click', () => {
