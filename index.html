@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Flight Report">
     <meta name="description" content="Flight report form for offline use">
@@ -13,8 +13,9 @@
     <link href="./output.css" rel="stylesheet">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-    <script src="https://unpkg.com/tesseract.js@5.1.0/dist/tesseract.min.js"></script>
+    <!-- Add FullCalendar CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -26,7 +27,6 @@
             flex-direction: column;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
-            position: relative;
         }
         header {
             background: rgba(0,0,0,0.7);
@@ -231,7 +231,7 @@
         button:hover {
             background: #ff7f50;
         }
-        .add-crew-button, .remove-crew-button, .clear-form-button, .update-calendar-button {
+        .add-crew-button, .remove-crew-button, .clear-form-button {
             width: auto;
             padding: 0.4rem 0.8rem;
             font-size: 0.9rem;
@@ -250,11 +250,122 @@
         .clear-form-button:hover {
             background: #555;
         }
-        .update-calendar-button {
-            background: #32CD32;
+        .calendar-container {
+            margin: 1rem 0;
+            max-width: 95vw;
         }
-        .update-calendar-button:hover {
-            background: #228B22;
+        .fc-daygrid-day {
+            height: 100px;
+            overflow-y: auto;
+        }
+        /* Calendar styles based on legend.png */
+        .fc-day-flight { 
+            background-color: #0000FF; 
+            color: #fff; 
+        }
+        .fc-day-flight-charter { 
+            background-color: #0000FF; 
+            color: #fff; 
+        }
+        .fc-day-ad { 
+            background-color: #0000FF; 
+            color: #fff; 
+        }
+        .fc-day-hsby { 
+            background-color: #87CEEB; 
+            color: #000; 
+        }
+        .fc-day-gd { 
+            background-color: #4682B4; 
+            color: #fff; 
+        }
+        .fc-day-sd { 
+            background-color: #00008B; 
+            color: #fff; 
+        }
+        .fc-day-trng { 
+            background-color: #8A2BE2; 
+            color: #fff; 
+        }
+        .fc-day-dh { 
+            background-color: #DAA520; 
+            color: #000; 
+        }
+        .fc-day-gt { 
+            background-color: #228B22; 
+            color: #fff; 
+        }
+        .fc-day-check-in { 
+            background-color: #0000CD; 
+            background-image: linear-gradient(45deg, #00008B 25%, transparent 25%, transparent 75%, #00008B 75%, #00008B), 
+                              linear-gradient(-45deg, #00008B 25%, transparent 25%, transparent 75%, #00008B 75%, #00008B); 
+            background-size: 20px 20px; 
+            color: #fff; 
+        }
+        .fc-day-check-out { 
+            background-color: #0000CD; 
+            background-image: linear-gradient(45deg, #00008B 25%, transparent 25%, transparent 75%, #00008B 75%, #00008B), 
+                              linear-gradient(-45deg, #00008B 25%, transparent 25%, transparent 75%, #00008B 75%, #00008B); 
+            background-size: 20px 20px; 
+            color: #fff; 
+        }
+        .fc-day-duty { 
+            background-color: #0000FF; 
+            color: #fff; 
+        }
+        .fc-day-off { 
+            background-color: #D3D3D3; 
+            color: #000; 
+        }
+        .fc-day-available-all { 
+            background-color: #FFFF00; 
+            color: #000; 
+        }
+        .fc-day-available-early { 
+            background-color: #FFFF99; 
+            color: #000; 
+        }
+        .fc-day-available-late { 
+            background-color: #FFD700; 
+            color: #000; 
+        }
+        .fc-day-l { 
+            background-color: #D3D3D3; 
+            color: #000; 
+        }
+        .fc-day-sick { 
+            background-color: #008000; 
+            color: #fff; 
+        }
+        .fc-day-vto { 
+            background-color: #32CD32; 
+            color: #000; 
+        }
+        .fc-day-pending-sick { 
+            background-color: #008000; 
+            background-image: linear-gradient(45deg, #006400 25%, transparent 25%, transparent 75%, #006400 75%, #006400), 
+                              linear-gradient(-45deg, #006400 25%, transparent 25%, transparent 75%, #006400 75%, #006400); 
+            background-size: 20px 20px; 
+            color: #fff; 
+        }
+        .fc-day-pending-vto { 
+            background-color: #32CD32; 
+            background-image: linear-gradient(45deg, #228B22 25%, transparent 25%, transparent 75%, #228B22 75%, #228B22), 
+                              linear-gradient(-45deg, #228B22 25%, transparent 25%, transparent 75%, #228B22 75%, #228B22); 
+            background-size: 20px 20px; 
+            color: #000; 
+        }
+        #scheduleUpload, #updateCalendarBtn {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: #1e90ff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        #updateCalendarBtn {
+            background: #ff7f50;
         }
         footer {
             background: rgba(0,0,0,0.7);
@@ -294,60 +405,6 @@
             border-radius: 5px;
             z-index: 1000;
         }
-        .calendar-container {
-            margin: 1rem 0;
-            max-width: 98vw;
-            width: 100%;
-            background: rgba(255,255,255,0.2);
-            padding: 0.5rem;
-            border-radius: 10px;
-        }
-        .fc {
-            width: 100%;
-            color: #000;
-        }
-        .fc-daygrid-day {
-            height: 100px;
-            overflow-y: auto;
-            background: #fff;
-        }
-        .fc-day-hsby { background-color: #87CEEB; }
-        .fc-day-ad { background-color: #1E90FF; }
-        .fc-day-off { background-color: #D3D3D3; background-image: linear-gradient(45deg, #B0B0B0 25%, transparent 25%, transparent 75%, #B0B0B0 75%, #B0B0B0), linear-gradient(-45deg, #B0B0B0 25%, transparent 25%, transparent 75%, #B0B0B0 75%, #B0B0B0); background-size: 20px 20px; }
-        .fc-day-check-in { background-color: #FFD700; }
-        .fc-day-check-out { background-color: #FFA500; }
-        .fc-day-f { background-color: #90EE90; }
-        .fc-day-other { background-color: #FF6347; }
-        #scheduleUpload {
-            margin: 0.5rem 0;
-            padding: 0.5rem;
-            background: #1e90ff;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            display: inline-block;
-        }
-        #updateCalendarBtn {
-            display: none;
-        }
-        .datetime-display {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.7);
-            padding: 0.5rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .datetime-display svg {
-            width: 16px;
-            height: 16px;
-        }
         @media (min-width: 768px) {
             header h1 {
                 font-size: 2rem;
@@ -356,9 +413,6 @@
                 padding: 0.4rem;
             }
             .form-container {
-                max-width: 95vw;
-            }
-            .calendar-container {
                 max-width: 95vw;
             }
         }
@@ -370,16 +424,15 @@
         <h1>Flight Report</h1>
     </header>
     <main>
+        <!-- Add Calendar Section -->
+        <div class="calendar-container">
+            <div id="calendar"></div>
+            <input type="file" id="scheduleUpload" accept="image/*" onchange="handleScheduleUpload(event)">
+            <button type="button" id="updateCalendarBtn" onclick="updateCalendarWithParsedData()">Update Calendar</button>
+        </div>
         <div class="form-container">
             <form id="inflightForm" class="space-y-1">
-                <details class="form-section" open>
-                    <summary>Flight Schedule</summary>
-                    <div class="calendar-container">
-                        <div id="calendar"></div>
-                        <input type="file" id="scheduleUpload" accept="image/*">
-                        <button type="button" id="updateCalendarBtn" class="update-calendar-button" onclick="updateCalendarFromPending()">Update Calendar</button>
-                    </div>
-                </details>
+                <!-- Flight Information -->
                 <details class="form-section" open>
                     <summary>Flight Information</summary>
                     <div>
@@ -420,7 +473,7 @@
                                         <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="8"></td>
                                         <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="9"></td>
                                         <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="10"></td>
-                                        <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off" tabindex="11"></td>
+                                        <td><input type="text" class="wheel grafikchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off" tabindex="11"></td>
                                     </tr>
                                     <tr data-flight="2">
                                         <td class="flight-number-cell" onclick="toggleFlightView('2')">2</td>
@@ -454,8 +507,8 @@
                                         <td><input type="time" class="departure" tabindex="33"></td>
                                         <td><input type="time" class="arrival" tabindex="34"></td>
                                         <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="35"></td>
-                                        <td><input type="number" min="0" class="fwd-input" placeholder="0" tabindex="36"></td>
-                                        <td><input type="number" min="0" class="aft-input" placeholder="0" tabindex="37"></td>
+                                        <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="36"></td>
+                                        <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="37"></td>
                                         <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off" tabindex="38"></td>
                                     </tr>
                                 </tbody>
@@ -463,72 +516,78 @@
                         </div>
                     </div>
                 </details>
+
+                <!-- Crew Information -->
                 <details class="form-section" id="crewSection">
                     <summary>Crew Information</summary>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
-                        <div>
-                            <label for="captain">Captain</label>
-                            <input type="text" id="captain" class="captain-fo-input" placeholder="e.g., J. Smith" autocomplete="off" tabindex="39">
+                    <div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                            <div>
+                                <label for="captain">Captain</label>
+                                <input type="text" id="captain" class="captain-fo-input" placeholder="e.g., J. Smith" autocomplete="off" tabindex="39">
+                            </div>
+                            <div>
+                                <label for="firstOfficer">First Officer</label>
+                                <input type="text" id="firstOfficer" class="captain-fo-input" placeholder="e.g., A. Jones" autocomplete="off" tabindex="40">
+                            </div>
                         </div>
-                        <div>
-                            <label for="firstOfficer">First Officer</label>
-                            <input type="text" id="firstOfficer" class="captain-fo-input" placeholder="e.g., A. Jones" autocomplete="off" tabindex="40">
+                        <table id="crewTable">
+                            <thead>
+                                <tr>
+                                    <th>Crew</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>No. 1</td>
+                                    <td><input type="text" class="crewcode crew-input" id="crewcode1" placeholder="e.g., C123" autocomplete="off" tabindex="41"></td>
+                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., M. Brown" autocomplete="off" tabindex="42"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>No. 2</td>
+                                    <td><input type="text" class="crewcode crew-input" id="crewcode2" placeholder="e.g., C124" autocomplete="off" tabindex="43"></td>
+                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., S. Davis" autocomplete="off" tabindex="44"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>No. 3</td>
+                                    <td><input type="text" class="crewcode crew-input" id="crewcode3" placeholder="e.g., C125" autocomplete="off" tabindex="45"></td>
+                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., L. Wilson" autocomplete="off" tabindex="46"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>No. 4</td>
+                                    <td><input type="text" class="crewcode crew-input" id="crewcode4" placeholder="e.g., C126" autocomplete="off" tabindex="47"></td>
+                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., R. Taylor" autocomplete="off" tabindex="48"></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="extra-crew" id="extraCrew1">
+                                    <td>Extra 1</td>
+                                    <td><input type="text" class="crewcode crew-input" id="crewcode5" placeholder="e.g., C127" autocomplete="off" tabindex="49"></td>
+                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., T. Lee" autocomplete="off" tabindex="50"></td>
+                                    <td><button type="button" class="remove-crew-button" tabindex="51">Remove</button></td>
+                                </tr>
+                                <tr class="extra-crew" id="extraCrew2">
+                                    <td>Extra 2</td>
+                                    <td><input type="text" class="crewcode crew-input" id="crewcode6" placeholder="e.g., C128" autocomplete="off" tabindex="52"></td>
+                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., K. Clark" autocomplete="off" tabindex="53"></td>
+                                    <td><button type="button" class="remove-crew-button" tabindex="54">Remove</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="add-crew-button" tabindex="55">Add Extra Crew</button>
+                        <div style="margin-top: 0.8rem;">
+                            <label for="description">Description</label>
+                            <textarea id="description" rows="4" placeholder="e.g., crew notes, incidents" autocomplete="off" tabindex="56"></textarea>
                         </div>
-                    </div>
-                    <table id="crewTable">
-                        <thead>
-                            <tr>
-                                <th>Crew</th>
-                                <th>Code</th>
-                                <th>Name</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="cell-name">No. 1</td>
-                                <td><input type="text" class="crewcode crew-input" id="crewcode1" placeholder="e.g., C123" autocomplete="off" tabindex="41"></td>
-                                <td><input type="text" class="crewName crew-input" placeholder="e.g., M. Brown" autocomplete="off" tabindex="42"></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td class="cell-name">No. 2</td>
-                                <td><input type="text" class="crewcode crew-input" id="crewcode2" placeholder="e.g., C124" autocomplete="off" tabindex="43"></td>
-                                <td><input type="text" class="crewName crew-input" placeholder="e.g., S. Davis" autocomplete="off" tabindex="44"></td>
-                                <td></td></td>
-                            </tr>
-                            <tr>
-                                <td class="cell-name">No. 3</td>
-                                <td><input type="text" class="crewcode crew-input" id="crewcode3" placeholder="e.g., C125" autocomplete="off" tabindex="45"></td>
-                                <td><input type="text" class="crewName crew-input" placeholder="e.g., L. Wilson" autocomplete="off" tabindex="46"></td>
-                                <td></td></td>
-                            </tr>
-                            <tr>
-                                <td class="cell-name">No. 4</td>
-                                <td><input type="text" class="crewcode crew-input" id="e.g., C126" id="crewcode4" placeholder="e.g., C126" autocomplete="off" tabindex="47"></td>
-                                <td><input type="text" class="crewName crew-input" placeholder="e.g., R. Taylor" autocomplete="off" tabindex="48"></td>
-                                <td></td></td>
-                            </tr>
-                            <tr class="extra-crew" id="extraCrew1">
-                                <td class="cell-name">Extra 1</td>
-                                <td><input type="text" class="crewcode crew-input" id="crewcode5" placeholder="e.g., C127" autocomplete="off" tabindex="49"></td>
-                                <td><input type="text" class="crewName crew-input" placeholder="e.g., T. Lee" autocomplete="off" tabindex="50"></td>
-                                <td><button type="button" class="remove-crew-button" tabindex="51">Remove</button></td>
-                            </tr>
-                            <tr class="extra-crew" id="extraCrew2">
-                                <td class="extra-name">Extra 2</td>
-                                <td><input type="text" class="crewcode crew-input" id="crewcode6" placeholder="e.g., C128" autocomplete="off" tabindex="52"></td>
-                                <td><input type="text" class="crewName crew-input" placeholder="e.g., K. Clark" autocomplete="off" tabindex="53"></td>
-                                <td><button type="button" class="remove-crew-button" tabindex="54">Remove</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <button type="button" class="add-crew-button" tabindex="55">Add Extra Crew</button>
-                    <div style="margin-top: 0.8rem;">
-                        <label for="description">Description</label>
-                        <textarea id="description" rows="4" placeholder="e.g., crew notes, incidents" autocomplete="off" tabindex="56"></textarea>
                     </div>
                 </details>
+
+                <!-- Product Inventory Section -->
                 <details class="form-section" id="stockSection" open>
                     <summary>Product Inventory</summary>
                     <div>
@@ -543,57 +602,53 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="name">H&C Panini</td>
+                                    <td>H&C Panini</td>
                                     <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="57"></td>
                                     <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="58"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
-                                    <td class="name-cell">C&M Panini</td>
+                                    <td>C&M Panini</td>
                                     <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="59"></td>
                                     <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="60"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
-                                    <td class="cell">Choco. Croissant</td>
+                                    <td>Choco. Croissant</td>
                                     <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="61"></td>
                                     <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="62"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
-                                    <td class="cell">H&C Croissant</td>
+                                    <td>H&C Croissant</td>
                                     <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="63"></td>
-                                    <td><input type="number" min="0" class="close small-input" placeholder="0" id="64" tabindex="64">
-                                    </td>
+                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="64"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
-                                    <td class="cell">Cheese T</td>
+                                    <td>Cheese T</td>
                                     <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="65"></td>
                                     <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="66"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
-                                <tr>
-                                    <td class="cell"Pizza</td>
+                                    <td>Pizza</td>
                                     <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="67"></td>
                                     <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="68"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                                 <tr>
-                                    <td class="cell"Bacon B</td>
+                                    <td>Bacon B</td>
                                     <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="69"></td>
                                     <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="70"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
-                                </tr>
                                 <tr>
-                                    <td class="cell"F Sandwich</td>
+                                    <td>F Sandwich</td>
                                     <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="71"></td>
-                                    <td><input type="number" min="0" class="close small-input" placeholder="0" id="72"></td>
+                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="72"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
-                            </tr>
                             </tbody>
                         </table>
                         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;">
@@ -603,33 +658,35 @@
                             </div>
                             <div>
                                 <label for="greenSeal">Green Seal</label>
-                                <input type="text" id="greenSeal" placeholder="e.g., G67890" class="seal-input" autocomplete="off" tabindex="74">
+                                <input type="text" id="greenSeal" class="seal-input" placeholder="e.g., G67890" autocomplete="off" tabindex="74">
                             </div>
                             <div>
                                 <label for="metalSeal">Metal Seal</label>
-                                <input type="text" id="metalSeal" placeholder="e.g., M11223" class="seal-input" autocomplete="off" tabindex="75">
+                                <input type="text" id="metalSeal" class="seal-input" placeholder="e.g., M11223" autocomplete="off" tabindex="75">
                             </div>
+                        </div>
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-top: 4px;">
                             <div>
                                 <label for="kettles" class="equipment-label">Kettles</label>
-                                <input type="number" min="0" id="kettles" class="small-input" placeholder="0" tabindex="76">
+                                <input type="number" id="kettles" min="0" class="small-input" placeholder="0" tabindex="76">
                             </div>
                             <div>
                                 <label for="cupholder" class="equipment-label">Cupholder</label>
-                                <input type="number" min="0" id="cupholder" class="small-input" placeholder="0" tabindex="77">
+                                <input type="number" id="cupholder" min="0" class="small-input" placeholder="0" tabindex="77">
                             </div>
                             <div>
                                 <label for="babyWarmer" class="equipment-label">Baby Warmer</label>
-                                <input type="number" min="0" id="babyWarmer" class="small-input" placeholder="0" tabindex="78">
+                                <input type="number" id="babyWarmer" min="0" class="small-input" placeholder="0" tabindex="78">
                             </div>
                             <div>
-                            <div>
                                 <label for="coolerBag" class="equipment-label">Cooler Bag</label>
-                                <input type="number" min="0" id="coolerBag" class="small-input" placeholder="0" tabindex="79">
+                                <input type="number" id="coolerBag" min="0" class="small-input" placeholder="0" tabindex="79">
                             </div>
                         </div>
                     </div>
                 </details>
+
+                <!-- Duty-Free Inventory Section -->
                 <details class="form-section" id="dutyFreeSection">
                     <summary>Duty-Free Inventory</summary>
                     <div>
@@ -643,44 +700,40 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                </tr>
                                 <tr>
-                                    <td class="cell">Marlboro Gold</td>
+                                    <td>Marlboro Gold</td>
                                     <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="80"></td>
                                     <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="81"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
-                                </tr>
                                 <tr>
-                                    <td class="cell">Marlboro Red</td>
+                                    <td>Marlboro Red</td>
                                     <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="82"></td>
                                     <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="83"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
-                                </tr>
                                 <tr>
-                                    <td class="cell">Lambert</td>
+                                    <td>Lambert</td>
                                     <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="84"></td>
                                     <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="85"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
-                                </tr>
                                 <tr>
-                                    <td class="cell">Amber Leaf</td>
+                                    <td>Amber Leaf</td>
                                     <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="86"></td>
                                     <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="87"></td>
                                     <td class="difference-cell"></td>
                                 </tr>
                             </tbody>
-                            </tr>
                         </table>
-                    <div style="margin-top: 0.8rem;">
-                        <div>
+                        <div style="margin-top: 0.8rem;">
                             <label for="dutyFreeMetalSeal">Metal Seal</label>
                             <input type="text" id="dutyFreeMetalSeal" class="seal-input" placeholder="e.g., M44556" autocomplete="off" tabindex="88">
                         </div>
                     </div>
                 </details>
+
+                <!-- Sales and Totals -->
                 <details class="form-section" id="salesSection">
                     <summary>Sales and Totals</summary>
                     <div>
@@ -738,6 +791,7 @@
                         </div>
                     </div>
                 </details>
+
                 <button type="button" id="submitBtn" onclick="handleFormSubmission()" tabindex="96">Submit Report</button>
                 <button type="button" class="clear-form-button" onclick="clearFormData()" tabindex="97">Clear Form</button>
             </form>
@@ -746,80 +800,6 @@
     <footer>
         <p>Flight Report © 2025</p>
     </footer>
-    <div class="datetime-display">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span id="currentDateTime"></span>
-    </div>
-
-    <script>
-        let calendar = null;
-
-        function initializeCalendar() {
-            var calendarEl = document.getElementById('calendar');
-            if (!calendarEl) {
-                console.error('Calendar element not found');
-                return;
-            }
-            calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                height: 'auto',
-                events: JSON.parse(localStorage.getItem('flightSchedule') || '[]'),
-                dayCellContent: function(arg) {
-                    return arg.dayNumberText.replace(' ', '');
-                },
-                eventDidMount: function(info) {
-                    var flightType = info.event.title.toUpperCase().replace(/[^A-Z-]+/g, '');
-                    if (info.el) {
-                        info.el.classList.add('fc-day-' + flightType.toLowerCase());
-                    }
-                },
-                eventContent: function(arg) {
-                    return { html: `<div>${arg.event.title}</div>` };
-                },
-                eventClick: function(info) {
-                    var dateStr = info.event.start.toISOString().split('T')[0];
-                    if (scheduleData[dateStr]) {
-                        var [year, month, day] = dateStr.split('-').map(Number);
-                        showDayDetails(day, month, year, scheduleData[dateStr].details);
-                    }
-                }
-            });
-            calendar.render();
-            window.calendar = calendar;
-            console.log('Calendar initialized');
-        }
-
-        function updateDateTime() {
-            var now = new Date();
-            var options = {
-                timeZone: 'Europe/Madrid',
-                weekday: 'short',
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            };
-            var formatter = new Intl.DateTimeFormat('es-ES', options);
-            var formattedDate = formatter.format(now).replace(/(\w+),/, '$1, ').replace(/\b(\d)\b/g, '0$1');
-            var datetimeDisplay = document.getElementById('currentDateTime');
-            if (datetimeDisplay) {
-                datetimeDisplay.textContent = formattedDate;
-            } else {
-                console.error('DateTime display element not found');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeCalendar();
-            updateDateTime();
-            setInterval(updateDateTime, 60000);
-            console.log('DOM fully loaded, initializing components');
-        });
-    </script>
     <script src="script.js"></script>
 </body>
 </html>
