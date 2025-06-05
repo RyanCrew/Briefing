@@ -13,6 +13,7 @@
     <link href="./output.css" rel="stylesheet">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -24,6 +25,7 @@
             flex-direction: column;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
+            position: relative;
         }
         header {
             background: rgba(0,0,0,0.7);
@@ -228,7 +230,7 @@
         button:hover {
             background: #ff7f50;
         }
-        .add-crew-button, .remove-crew-button, .clear-form-button {
+        .add-crew-button, .remove-crew-button, .clear-form-button, .update-calendar-button {
             width: auto;
             padding: 0.4rem 0.8rem;
             font-size: 0.9rem;
@@ -247,27 +249,11 @@
         .clear-form-button:hover {
             background: #555;
         }
-	/* Existing styles remain unchanged */
-        .calendar-container {
-            margin: 1rem 0;
-            max-width: 95vw;
+        .update-calendar-button {
+            background: #32CD32;
         }
-        .fc-daygrid-day {
-            height: 100px;
-            overflow-y: auto;
-        }
-        .fc-day-hsby { background-color: #87CEEB; }
-        .fc-day-ad { background-color: #1E90FF; }
-        .fc-day-off { background-color: #D3D3D3; background-image: linear-gradient(45deg, #B0B0B0 25%, transparent 25%, transparent 75%, #B0B0B0 75%, #B0B0B0), linear-gradient(-45deg, #B0B0B0 25%, transparent 25%, transparent 75%, #B0B0B0 75%, #B0B0B0); background-size: 20px 20px; }
-        /* Add more fc-day- classes for other flight types as needed */
-        #scheduleUpload {
-            margin: 0.5rem 0;
-            padding: 0.5rem;
-            background: #1e90ff;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
+        .update-calendar-button:hover {
+            background: #228B22;
         }
         footer {
             background: rgba(0,0,0,0.7);
@@ -307,6 +293,58 @@
             border-radius: 5px;
             z-index: 1000;
         }
+        .calendar-container {
+            margin: 1rem 0;
+            max-width: 98vw;
+            width: 100%;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem;
+            border-radius: 10px;
+        }
+        .fc {
+            width: 100%;
+            color: #000;
+        }
+        .fc-daygrid-day {
+            height: 100px;
+            overflow-y: auto;
+            background: #fff;
+        }
+        .fc-day-hsby { background-color: #87CEEB; }
+        .fc-day-ad { background-color: #1E90FF; }
+        .fc-day-off { background-color: #D3D3D3; background-image: linear-gradient(45deg, #B0B0B0 25%, transparent 25%, transparent 75%, #B0B0B0 75%, #B0B0B0), linear-gradient(-45deg, #B0B0B0 25%, transparent 25%, transparent 75%, #B0B0B0 75%, #B0B0B0); background-size: 20px 20px; }
+        .fc-day-check-in { background-color: #FFD700; }
+        .fc-day-check-out { background-color: #FFA500; }
+        #scheduleUpload {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: #1e90ff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        #updateCalendarBtn {
+            display: none;
+        }
+        .datetime-display {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .datetime-display svg {
+            width: 16px;
+            height: 16px;
+        }
         @media (min-width: 768px) {
             header h1 {
                 font-size: 2rem;
@@ -315,6 +353,9 @@
                 padding: 0.4rem;
             }
             .form-container {
+                max-width: 95vw;
+            }
+            .calendar-container {
                 max-width: 95vw;
             }
         }
@@ -328,7 +369,14 @@
     <main>
         <div class="form-container">
             <form id="inflightForm" class="space-y-1">
-                <!-- Flight Information -->
+                <details class="form-section" open>
+                    <summary>Flight Schedule</summary>
+                    <div class="calendar-container">
+                        <div id="calendar"></div>
+                        <input type="file" id="scheduleUpload" accept="image/*">
+                        <button type="button" id="updateCalendarBtn" class="update-calendar-button" onclick="updateCalendarFromPending()">Update Calendar</button>
+                    </div>
+                </details>
                 <details class="form-section" open>
                     <summary>Flight Information</summary>
                     <div>
@@ -412,8 +460,6 @@
                         </div>
                     </div>
                 </details>
-
-                <!-- Crew Information -->
                 <details class="form-section" id="crewSection">
                     <summary>Crew Information</summary>
                     <div>
@@ -482,8 +528,6 @@
                         </div>
                     </div>
                 </details>
-
-                <!-- Product Inventory Section -->
                 <details class="form-section" id="stockSection" open>
                     <summary>Product Inventory</summary>
                     <div>
@@ -581,8 +625,6 @@
                         </div>
                     </div>
                 </details>
-
-                <!-- Duty-Free Inventory Section -->
                 <details class="form-section" id="dutyFreeSection">
                     <summary>Duty-Free Inventory</summary>
                     <div>
@@ -628,8 +670,6 @@
                         </div>
                     </div>
                 </details>
-
-                <!-- Sales and Totals -->
                 <details class="form-section" id="salesSection">
                     <summary>Sales and Totals</summary>
                     <div>
@@ -687,7 +727,6 @@
                         </div>
                     </div>
                 </details>
-
                 <button type="button" id="submitBtn" onclick="handleFormSubmission()" tabindex="96">Submit Report</button>
                 <button type="button" class="clear-form-button" onclick="clearFormData()" tabindex="97">Clear Form</button>
             </form>
@@ -696,69 +735,93 @@
     <footer>
         <p>Flight Report © 2025</p>
     </footer>
+    <div class="datetime-display">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span id="currentDateTime"></span>
+    </div>
 
     <script>
-	// Existing scripts remain unchanged
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeForm();
-            initializeCalendar();
-        });
+        if ('serviceWorker' in navigator) {
+            document.addEventListener('DOMContentLoaded', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Error registering Service Worker:', error);
+                    });
+            });
+        }
+
+        let pendingSchedule = null;
 
         function initializeCalendar() {
             var calendarEl = document.getElementById('calendar');
+            if (!calendarEl) {
+                console.error('Calendar element not found');
+                return;
+            }
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                height: 'auto',
                 events: JSON.parse(localStorage.getItem('flightSchedule') || '[]'),
                 dayCellContent: function(arg) {
                     return arg.dayNumberText.replace(' ', '');
                 },
                 eventDidMount: function(info) {
-                    var flightType = info.event.title.toUpperCase();
+                    var flightType = info.event.title.toUpperCase().replace(/[^A-Z-]/g, '');
                     if (info.el) {
                         info.el.classList.add('fc-day-' + flightType.toLowerCase());
                     }
                 }
             });
             calendar.render();
-            window.calendar = calendar; // Make calendar globally accessible
+            window.calendar = calendar;
         }
 
-        function updateSchedule(event) {
+        document.getElementById('scheduleUpload').addEventListener('change', function(event) {
             var file = event.target.files[0];
             if (file) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    // Here you would typically use OCR or manual parsing
-                    // For this example, we'll simulate parsing the image
-                    var scheduleData = parseScheduleImage(e.target.result);
-                    updateCalendar(scheduleData);
+                    pendingSchedule = parseScheduleImage(e.target.result);
+                    document.getElementById('updateCalendarBtn').style.display = 'inline-block';
+                    showNotification('Schedule uploaded. Click "Update Calendar" to apply changes.');
                 };
                 reader.readAsDataURL(file);
             }
-        }
+        });
 
         function parseScheduleImage(imageData) {
-            // This is a placeholder for image parsing (e.g., using Tesseract.js)
-            // For now, we'll simulate parsing based on the provided image
             var currentDate = new Date();
             var year = currentDate.getFullYear();
             var schedule = [];
-            // Simulate parsing the provided roster image
             var sampleData = [
                 { date: new Date(year, 5, 9), type: 'HSBY' },
                 { date: new Date(year, 5, 10), type: 'CHECK-IN' },
                 { date: new Date(year, 5, 11), type: 'AD' },
                 { date: new Date(year, 5, 12), type: 'OFF' },
-                // Add more dates as needed
             ];
             return sampleData;
+        }
+
+        function updateCalendarFromPending() {
+            if (pendingSchedule) {
+                updateCalendar(pendingSchedule);
+                document.getElementById('updateCalendarBtn').style.display = 'none';
+                pendingSchedule = null;
+                showNotification('Calendar updated successfully.');
+            }
         }
 
         function updateCalendar(newSchedule) {
             var existingSchedule = JSON.parse(localStorage.getItem('flightSchedule') || '[]');
             newSchedule.forEach(function(newEvent) {
                 var existingEventIndex = existingSchedule.findIndex(function(e) {
-                    return e.start.getTime() === newEvent.date.getTime();
+                    var existingDate = new Date(e.start);
+                    return existingDate.getTime() === newEvent.date.getTime();
                 });
                 if (existingEventIndex > -1) {
                     existingSchedule[existingEventIndex].title = newEvent.type;
@@ -776,17 +839,30 @@
             calendar.render();
             saveFormData();
         }
-        if ('serviceWorker' in navigator) {
-            document.addEventListener('DOMContentLoaded', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('Service Worker registered:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.error('Error registering Service Worker:', error);
-                    });
-            });
+
+        function updateDateTime() {
+            var now = new Date();
+            var options = {
+                timeZone: 'Europe/Madrid',
+                weekday: 'short',
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            };
+            var formatter = new Intl.DateTimeFormat('es-ES', options);
+            var formattedDate = formatter.format(now);
+            document.getElementById('currentDateTime').textContent = formattedDate;
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeForm();
+            initializeCalendar();
+            updateDateTime();
+            setInterval(updateDateTime, 60000);
+        });
     </script>
     <script src="script.js"></script>
 </body>
