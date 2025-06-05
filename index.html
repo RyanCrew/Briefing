@@ -11,9 +11,9 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/icon.png">
     <link href="./output.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.0/dist/tesseract.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -27,345 +27,52 @@
             -webkit-font-smoothing: antialiased;
             position: relative;
         }
-        header {
-            background: rgba(0,0,0,0.7);
-            padding: 0.8rem;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 1.6rem;
-        }
-        main {
-            flex: 1;
-            padding: 0.2rem;
-            margin-top: 4rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .form-container {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 0.5rem;
-            width: 100%;
-            max-width: 98vw;
-        }
-        details.form-section {
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
-            box-shadow: 0 4px 2px rgba(0,0,0,0.1);
-            margin: 0.5rem 0;
-            padding: 0.5rem;
-        }
-        details[open] summary {
-            margin-bottom: 0.8rem;
-        }
-        summary {
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            padding: 0.4rem;
-            touch-action: manipulation;
-        }
-        label {
-            display: block;
-            margin: 0.3rem 0 0.2rem;
-            color: #fff;
-            font-size: 1rem;
-        }
-        .date-ac-label {
-            font-size: 0.7rem;
-            margin-bottom: 0.1rem;
-            white-space: nowrap;
-        }
-        .equipment-label {
-            font-size: 0.65rem;
-            margin-bottom: 0.1rem;
-            white-space: nowrap;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 0.3rem;
-            border-radius: 6px;
-            border: none;
-            font-size: 0.9rem;
-            box-sizing: border-box;
-            background: #fff;
-            color: #000;
-            -webkit-appearance: none;
-            touch-action: manipulation;
-        }
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        .date-ac-input {
-            width: 100%;
-            max-width: 160px;
-            font-size: 12px;
-            height: 40px;
-            padding: 0.2rem;
-        }
-        .captain-fo-input {
-            width: 100%;
-            max-width: 160px;
-            font-size: 12px;
-            height: 40px;
-            padding: 0.4rem;
-        }
-        .sales-input {
-            padding: 0.2rem;
-            font-size: 0.75rem;
-            min-height: 40px;
-        }
-        .sales-wrapper {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-        .sales-euro {
-            position: absolute;
-            right: 0.2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #000;
-            font-size: 0.7rem;
-        }
-        .crew-input {
-            padding: 0.3rem;
-            font-size: 0.8rem;
-            min-width: 4rem;
-        }
-        .small-input {
-            padding: 0.3rem;
-            font-size: 0.8rem;
-            min-width: 4rem;
-        }
-        .route-input {
-            min-width: 5rem;
-        }
-        .duty-free-input, .seal-input {
-            padding: 0.4rem;
-            font-size: 0.8rem;
-            min-width: 3rem;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 0.8rem 0;
-            table-layout: auto;
-            font-size: 0.8rem;
-        }
-        table, th, td {
-            border: 1px solid #fff;
-        }
-        th, td {
-            padding: 0.4rem;
-            text-align: center;
-            color: #fff;
-        }
-        .flight-number-cell {
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .flight-number-cell:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        table input {
-            width: 100%;
-            padding: 0.5rem;
-            font-size: 0.9rem;
-            box-sizing: border-box;
-            background: #fff;
-            color: #000;
-        }
-        table .small-input {
-            padding: 0.3rem;
-            font-size: 0.8rem;
-            min-width: 4rem;
-        }
-        table .duty-free-input {
-            padding: 0.4rem;
-            font-size: 0.8rem;
-            min-width: 3rem;
-        }
-        table .flight-number-input {
-            min-width: 6rem;
-        }
-        table .flight-time-input {
-            min-width: 4rem;
-        }
-        table .final-pax-input {
-            min-width: 3rem;
-        }
-        table .fwd-input, table .aft-input {
-            min-width: 3rem;
-        }
-        .difference-cell {
-            background: rgba(255,255,255,0.3);
-            color: #000;
-        }
-        button {
-            width: 100%;
-            padding: 0.8rem;
-            background: #1e90ff;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background 0.2s;
-            touch-action: manipulation;
-            min-height: 40px;
-        }
-        button:hover {
-            background: #ff7f50;
-        }
-        .add-crew-button, .remove-crew-button, .clear-form-button, .update-calendar-button {
-            width: auto;
-            padding: 0.4rem 0.8rem;
-            font-size: 0.9rem;
-            margin: 0.3rem 0.3rem 0 0;
-            min-height: 32px;
-        }
-        .remove-crew-button {
-            background: #ff4d4d;
-        }
-        .remove-crew-button:hover {
-            background: #cc0000;
-        }
-        .clear-form-button {
-            background: #666;
-        }
-        .clear-form-button:hover {
-            background: #555;
-        }
-        .update-calendar-button {
-            background: #32CD32;
-        }
-        .update-calendar-button:hover {
-            background: #228B22;
-        }
-        footer {
-            background: rgba(0,0,0,0.7);
-            text-align: center;
-            padding: 0.8rem;
-            font-size: 0.8rem;
-        }
-        .table-wrapper {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        .flight-info-header {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 2px;
-        }
-        .sales-grid {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        .sales-label {
-            font-size: 0.7rem;
-            margin-bottom: 0.1rem;
-            white-space: nowrap;
-        }
-        .extra-crew {
-            display: none;
-        }
-        #notification {
-            display: none;
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: #ff4d4d;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 1000;
-        }
-        .calendar-container {
-            margin: 1rem 0;
-            max-width: 98vw;
-            width: 100%;
-            background: rgba(255,255,255,0.2);
-            padding: 0.5rem;
-            border-radius: 10px;
-        }
-        .fc {
-            width: 100%;
-            color: #000;
-        }
-        .fc-daygrid-day {
-            height: 100px;
-            overflow-y: auto;
-            background: #fff;
-        }
-        .fc-day-hsby { background-color: #87CEEB; }
-        .fc-day-ad { background-color: #1E90FF; }
-        .fc-day-off { background-color: #D3D3D3; background-image: linear-gradient(45deg, #B0B0B0 25%, transparent 25%, transparent 75%, #B0B0B0 75%, #B0B0B0), linear-gradient(-45deg, #B0B0B0 25%, transparent 25%, transparent 75%, #B0B0B0 75%, #B0B0B0); background-size: 20px 20px; }
-        .fc-day-check-in { background-color: #FFD700; }
-        .fc-day-check-out { background-color: #FFA500; }
-        #scheduleUpload {
-            margin: 0.5rem 0;
-            padding: 0.5rem;
-            background: #1e90ff;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            display: inline-block;
-        }
-        #updateCalendarBtn {
-            display: none;
-        }
-        .datetime-display {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.7);
-            padding: 0.5rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .datetime-display svg {
-            width: 16px;
-            height: 16px;
-        }
-        @media (min-width: 768px) {
-            header h1 {
-                font-size: 2rem;
-            }
-            main {
-                padding: 0.4rem;
-            }
-            .form-container {
-                max-width: 95vw;
-            }
-            .calendar-container {
-                max-width: 95vw;
-            }
-        }
+        header { background: rgba(0,0,0,0.7); padding: 0.8rem; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: fixed; top: 0; width: 100%; z-index: 10; }
+        header h1 { margin: 0; font-size: 1.6rem; }
+        main { flex: 1; padding: 0.2rem; margin-top: 4rem; display: flex; flex-direction: column; align-items: center; }
+        .form-container { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 0.5rem; width: 100%; max-width: 98vw; }
+        details.form-section { background: rgba(255,255,255,0.2); border-radius: 10px; box-shadow: 0 4px 2px rgba(0,0,0,0.1); margin: 0.5rem 0; padding: 0.5rem; }
+        details[open] summary { margin-bottom: 0.8rem; }
+        summary { font-size: 1.2rem; font-weight: bold; cursor: pointer; padding: 0.4rem; touch-action: manipulation; }
+        label { display: block; margin: 0.3rem 0 0.2rem; color: #fff; font-size: 1rem; }
+        .date-ac-label { font-size: 0.7rem; margin-bottom: 0.1rem; white-space: nowrap; }
+        input, textarea { width: 100%; padding: 0.5rem; margin-bottom: 0.3rem; border-radius: 6px; border: none; font-size: 0.9rem; box-sizing: border-box; background: #fff; color: #000; -webkit-appearance: none; touch-action: manipulation; }
+        textarea { resize: vertical; min-height: 80px; }
+        .date-ac-input { width: 100%; max-width: 160px; font-size: 12px; height: 40px; padding: 0.2rem; }
+        table { width: 100%; border-collapse: collapse; margin: 0.8rem 0; table-layout: auto; font-size: 0.8rem; }
+        table, th, td { border: 1px solid #fff; }
+        th, td { padding: 0.4rem; text-align: center; color: #fff; }
+        button { width: 100%; padding: 0.8rem; background: #1e90ff; color: #fff; border: none; border-radius: 6px; font-size: 1.1rem; cursor: pointer; transition: background 0.2s; touch-action: manipulation; min-height: 40px; }
+        button:hover { background: #ff7f50; }
+        .add-crew-button, .remove-crew-button, .clear-form-button { width: auto; padding: 0.4rem 0.8rem; font-size: 0.9rem; margin: 0.3rem 0.3rem 0 0; min-height: 32px; }
+        .remove-crew-button { background: #ff4d4d; }
+        .remove-crew-button:hover { background: #cc0000; }
+        .clear-form-button { background: #666; }
+        .clear-form-button:hover { background: #555; }
+        .update-calendar-button { background: #32CD32; }
+        .update-calendar-button:hover { background: #228B22; }
+        footer { background: rgba(0,0,0,0.7); text-align: center; padding: 0.8rem; font-size: 0.8rem; }
+        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .calendar-container { margin: 1rem 0; max-width: 98vw; width: 100%; background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 10px; }
+        .calendar-day { padding: 0.5rem; text-align: center; cursor: pointer; }
+        .day-off { background-color: #D3D3D3; background-image: linear-gradient(45deg, #B0B0B0 25%, transparent 25%, transparent 75%, #B0B0B0 75%, #B0B0B0), linear-gradient(-45deg, #B0B0B0 25%, transparent 25%, transparent 75%, #B0B0B0 75%, #B0B0B0); background-size: 20px 20px; }
+        .day-flight { background-color: #1E90FF; }
+        .day-ad { background-color: #87CEEB; }
+        .day-hsby { background-color: #FFD700; }
+        .day-other { background-color: #FFA500; }
+        .day-header { padding: 0.5rem; text-align: center; font-weight: bold; }
+        #scheduleImage { margin: 0.5rem 0; padding: 0.5rem; background: #1e90ff; color: #fff; border: none; border-radius: 6px; cursor: pointer; display: inline-block; }
+        #updateCalendarBtn { display: none; }
+        #dayPopup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); padding: 1rem; border-radius: 10px; z-index: 1000; color: #fff; }
+        #popupClose { position: absolute; top: 0.5rem; right: 0.5rem; background: #ff4d4d; border: none; border-radius: 50%; width: 1.5rem; height: 1.5rem; cursor: pointer; }
+        .datetime-display { position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); padding: 0.5rem; border-radius: 6px; font-size: 0.8rem; z-index: 1000; display: flex; align-items: center; gap: 0.5rem; }
+        .datetime-display svg { width: 16px; height: 16px; }
+        @media (min-width: 768px) { header h1 { font-size: 2rem; } main { padding: 0.4rem; } .form-container { max-width: 95vw; } .calendar-container { max-width: 95vw; } }
     </style>
 </head>
 <body>
     <div id="notification"></div>
-    <header>
-        <h1>Flight Report</h1>
-    </header>
+    <header><h1>Flight Report</h1></header>
     <main>
         <div class="form-container">
             <form id="inflightForm" class="space-y-1">
@@ -373,88 +80,23 @@
                     <summary>Flight Schedule</summary>
                     <div class="calendar-container">
                         <div id="calendar"></div>
-                        <input type="file" id="scheduleUpload" accept="image/*">
-                        <button type="button" id="updateCalendarBtn" class="update-calendar-button" onclick="updateCalendarFromPending()">Update Calendar</button>
+                        <input type="file" id="scheduleImage" accept="image/*">
+                        <button type="button" id="updateCalendarBtn" class="update-calendar-button">Update Calendar</button>
                     </div>
                 </details>
                 <details class="form-section" open>
                     <summary>Flight Information</summary>
                     <div>
-                        <div class="flight-info-header" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
-                            <div>
-                                <label class="date-ac-label" for="date">Date</label>
-                                <input type="date" id="date" class="date-ac-input" autocomplete="off" tabindex="1">
-                            </div>
-                            <div>
-                                <label class="date-ac-label" for="acReg">A/C Registration</label>
-                                <input type="text" id="acReg" placeholder="e.g., EI-123" class="date-ac-input" autocomplete="off" tabindex="2">
-                            </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                            <div><label class="date-ac-label" for="date-ac">Date</label><input type="date" id="date-ac" class="date-ac-input" autocomplete="off"></div>
+                            <div><label class="date-ac-label" for="acReg">A/C Registration</label><input type="text" id="acReg" class="date-ac-input" placeholder="e.g., EI-123" autocomplete="off"></div>
                         </div>
                         <div class="table-wrapper">
                             <table id="flightTable">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Route</th>
-                                        <th>Flight No.</th>
-                                        <th>Time</th>
-                                        <th>Departure</th>
-                                        <th>Arrival</th>
-                                        <th>Pax</th>
-                                        <th>FWD</th>
-                                        <th>AFT</th>
-                                        <th>W/C</th>
-                                    </tr>
-                                </thead>
+                                <thead><tr><th>#</th><th>Route</th><th>Flight No.</th><th>Time</th><th>Departure</th><th>Arrival</th><th>Pax</th><th>FWD</th><th>AFT</th><th>W/C</th></tr></thead>
                                 <tbody id="flightsTableBody">
-                                    <tr data-flight="1">
-                                        <td class="flight-number-cell" onclick="toggleFlightView('1')">1</td>
-                                        <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off" tabindex="3"></td>
-                                        <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1234" autocomplete="off" tabindex="4"></td>
-                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="5"></td>
-                                        <td><input type="time" class="departure" tabindex="6"></td>
-                                        <td><input type="time" class="arrival" tabindex="7"></td>
-                                        <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="8"></td>
-                                        <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="9"></td>
-                                        <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="10"></td>
-                                        <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off" tabindex="11"></td>
-                                    </tr>
-                                    <tr data-flight="2">
-                                        <td class="flight-number-cell" onclick="toggleFlightView('2')">2</td>
-                                        <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off" tabindex="12"></td>
-                                        <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1235" autocomplete="off" tabindex="13"></td>
-                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="14"></td>
-                                        <td><input type="time" class="departure" tabindex="15"></td>
-                                        <td><input type="time" class="arrival" tabindex="16"></td>
-                                        <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="17"></td>
-                                        <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="18"></td>
-                                        <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="19"></td>
-                                        <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off" tabindex="20"></td>
-                                    </tr>
-                                    <tr data-flight="3">
-                                        <td class="flight-number-cell" onclick="toggleFlightView('3')">3</td>
-                                        <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off" tabindex="21"></td>
-                                        <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1236" autocomplete="off" tabindex="22"></td>
-                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="23"></td>
-                                        <td><input type="time" class="departure" tabindex="24"></td>
-                                        <td><input type="time" class="arrival" tabindex="25"></td>
-                                        <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="26"></td>
-                                        <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="27"></td>
-                                        <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="28"></td>
-                                        <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off" tabindex="29"></td>
-                                    </tr>
-                                    <tr data-flight="4">
-                                        <td class="flight-number-cell" onclick="toggleFlightView('4')">4</td>
-                                        <td><input type="text" class="route route-input" placeholder="e.g., ALC-STN" autocomplete="off" tabindex="30"></td>
-                                        <td><input type="text" class="flightNumber flight-number-input" placeholder="e.g., FR1237" autocomplete="off" tabindex="31"></td>
-                                        <td><input type="text" class="flightTime flight-time-input" placeholder="e.g., 1:30" autocomplete="off" tabindex="32"></td>
-                                        <td><input type="time" class="departure" tabindex="33"></td>
-                                        <td><input type="time" class="arrival" tabindex="34"></td>
-                                        <td><input type="number" min="0" class="finalPax final-pax-input" placeholder="0" tabindex="35"></td>
-                                        <td><input type="number" min="0" class="fwd fwd-input" placeholder="0" tabindex="36"></td>
-                                        <td><input type="number" min="0" class="aft aft-input" placeholder="0" tabindex="37"></td>
-                                        <td><input type="text" class="wheelchair small-input" placeholder="e.g., 1C,2S,3R" autocomplete="off" tabindex="38"></td>
-                                    </tr>
+                                    <tr data-flight="1"><td class="flight-number-cell" onclick="toggleFlightView('1')">1</td><td><input type="text" class="route" placeholder="e.g., ALC-STN" autocomplete="off"></td><td><input type="text" class="flightNumber" id="flight-number" placeholder="e.g., FR1234" autocomplete="off"></td><td><input type="text" class="flightTime" placeholder="e.g., 1:30" autocomplete="off"></td><td><input type="time" class="departure" id="departure-time"></td><td><input type="time" class="arrival" id="arrival-time"></td><td><input type="number" min="0" class="finalPax" placeholder="0"></td><td><input type="number" min="0" class="fwd" placeholder="0"></td><td><input type="number" min="0" class="aft" placeholder="0"></td><td><input type="text" class="wheelchair" placeholder="e.g., 1C,2S,3R" autocomplete="off"></td></tr>
+                                    <tr data-flight="2"><td class="flight-number-cell" onclick="toggleFlightView('2')">2</td><td><input type="text" class="route" placeholder="e.g., ALC-STN" autocomplete="off"></td><td><input type="text" class="flightNumber" placeholder="e.g., FR1235" autocomplete="off"></td><td><input type="text" class="flightTime" placeholder="e.g., 1:30" autocomplete="off"></td><td><input type="time" class="departure"></td><td><input type="time" class="arrival"></td><td><input type="number" min="0" class="finalPax" placeholder="0"></td><td><input type="number" min="0" class="fwd" placeholder="0"></td><td><input type="number" min="0" class="aft" placeholder="0"></td><td><input type="text" class="wheelchair" placeholder="e.g., 1C,2S,3R" autocomplete="off"></td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -464,164 +106,36 @@
                     <summary>Crew Information</summary>
                     <div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
-                            <div>
-                                <label for="captain">Captain</label>
-                                <input type="text" id="captain" class="captain-fo-input" placeholder="e.g., J. Smith" autocomplete="off" tabindex="39">
-                            </div>
-                            <div>
-                                <label for="firstOfficer">First Officer</label>
-                                <input type="text" id="firstOfficer" class="captain-fo-input" placeholder="e.g., A. Jones" autocomplete="off" tabindex="40">
-                            </div>
+                            <div><label for="captain">Captain</label><input type="text" id="captain" class="captain-fo-input" placeholder="e.g., J. Smith" autocomplete="off"></div>
+                            <div><label for="firstOfficer">First Officer</label><input type="text" id="firstOfficer" class="captain-fo-input" placeholder="e.g., A. Jones" autocomplete="off"></div>
                         </div>
                         <table id="crewTable">
-                            <thead>
-                                <tr>
-                                    <th>Crew</th>
-                                    <th>Code</th>
-                                    <th>Name</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th>Crew</th><th>Code</th><th>Name</th><th></th></tr></thead>
                             <tbody>
-                                <tr>
-                                    <td>No. 1</td>
-                                    <td><input type="text" class="crewcode crew-input" id="crewcode1" placeholder="e.g., C123" autocomplete="off" tabindex="41"></td>
-                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., M. Brown" autocomplete="off" tabindex="42"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>No. 2</td>
-                                    <td><input type="text" class="crewcode crew-input" id="crewcode2" placeholder="e.g., C124" autocomplete="off" tabindex="43"></td>
-                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., S. Davis" autocomplete="off" tabindex="44"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>No. 3</td>
-                                    <td><input type="text" class="crewcode crew-input" id="crewcode3" placeholder="e.g., C125" autocomplete="off" tabindex="45"></td>
-                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., L. Wilson" autocomplete="off" tabindex="46"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>No. 4</td>
-                                    <td><input type="text" class="crewcode crew-input" id="crewcode4" placeholder="e.g., C126" autocomplete="off" tabindex="47"></td>
-                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., R. Taylor" autocomplete="off" tabindex="48"></td>
-                                    <td></td>
-                                </tr>
-                                <tr class="extra-crew" id="extraCrew1">
-                                    <td>Extra 1</td>
-                                    <td><input type="text" class="crewcode crew-input" id="crewcode5" placeholder="e.g., C127" autocomplete="off" tabindex="49"></td>
-                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., T. Lee" autocomplete="off" tabindex="50"></td>
-                                    <td><button type="button" class="remove-crew-button" tabindex="51">Remove</button></td>
-                                </tr>
-                                <tr class="extra-crew" id="extraCrew2">
-                                    <td>Extra 2</td>
-                                    <td><input type="text" class="crewcode crew-input" id="crewcode6" placeholder="e.g., C128" autocomplete="off" tabindex="52"></td>
-                                    <td><input type="text" class="crewName crew-input" placeholder="e.g., K. Clark" autocomplete="off" tabindex="53"></td>
-                                    <td><button type="button" class="remove-crew-button" tabindex="54">Remove</button></td>
-                                </tr>
+                                <tr><td>No. 1</td><td><input type="text" class="crewcode" id="crewcode1" placeholder="e.g., C123" autocomplete="off"></td><td><input type="text" class="crewName" placeholder="e.g., M. Brown" autocomplete="off"></td><td></td></tr>
+                                <tr><td>No. 2</td><td><input type="text" class="crewcode" id="crewcode2" placeholder="e.g., C124" autocomplete="off"></td><td><input type="text" class="crewName" placeholder="e.g., S. Davis" autocomplete="off"></td><td></td></tr>
+                                <tr class="extra-crew" id="extraCrew1"><td>Extra 1</td><td><input type="text" class="crewcode" id="crewcode5" placeholder="e.g., C127" autocomplete="off"></td><td><input type="text" class="crewName" placeholder="e.g., T. Lee" autocomplete="off"></td><td><button type="button" class="remove-crew-button">Remove</button></td></tr>
+                                <tr class="extra-crew" id="extraCrew2"><td>Extra 2</td><td><input type="text" class="crewcode" id="crewcode6" placeholder="e.g., C128" autocomplete="off"></td><td><input type="text" class="crewName" placeholder="e.g., K. Clark" autocomplete="off"></td><td><button type="button" class="remove-crew-button">Remove</button></td></tr>
                             </tbody>
                         </table>
-                        <button type="button" class="add-crew-button" tabindex="55">Add Extra Crew</button>
-                        <div style="margin-top: 0.8rem;">
-                            <label for="description">Description</label>
-                            <textarea id="description" rows="4" placeholder="e.g., crew notes, incidents" autocomplete="off" tabindex="56"></textarea>
-                        </div>
+                        <button type="button" class="add-crew-button">Add Extra Crew</button>
+                        <div style="margin-top: 0.8rem;"><label for="description">Description</label><textarea id="description" rows="4" placeholder="e.g., crew notes, incidents" autocomplete="off"></textarea></div>
                     </div>
                 </details>
                 <details class="form-section" id="stockSection" open>
                     <summary>Product Inventory</summary>
                     <div>
                         <table id="productTable">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Initial</th>
-                                    <th>Final</th>
-                                    <th>Sold</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th>Product</th><th>Initial</th><th>Final</th><th>Sold</th></tr></thead>
                             <tbody>
-                                <tr>
-                                    <td>H&C Panini</td>
-                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="57"></td>
-                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="58"></td>
-                                    <td class="difference-cell"></td>
-                                </tr>
-                                <tr>
-                                    <td>C&M Panini</td>
-                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="59"></td>
-                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="60"></td>
-                                    <td class="difference-cell"></td>
-                                </tr>
-                                <tr>
-                                    <td>Choco. Croissant</td>
-                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="61"></td>
-                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="62"></td>
-                                    <td class="difference-cell"></td>
-                                </tr>
-                                <tr>
-                                    <td>H&C Croissant</td>
-                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="63"></td>
-                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="64"></td>
-                                    <td class="difference-cell"></td>
-                                </tr>
-                                <tr>
-                                    <td>Cheese T</td>
-                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="65"></td>
-                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="66"></td>
-                                    <td class="difference-cell"></td>
-                                </tr>
-                                <tr>
-                                    <td>Pizza</td>
-                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="67"></td>
-                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="68"></td>
-                                    <td class="difference-cell"></td>
-                                </tr>
-                                <tr>
-                                    <td>Bacon B</td>
-                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="69"></td>
-                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="70"></td>
-                                    <td class="difference-cell"></td>
-                                </tr>
-                                <tr>
-                                    <td>F Sandwich</td>
-                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="71"></td>
-                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="72"></td>
-                                    <td class="difference-cell"></td>
-                                </tr>
+                                <tr><td>H&C Panini</td><td><input type="number" min="0" class="open" placeholder="0"></td><td><input type="number" min="0" class="close" placeholder="0"></td><td class="difference-cell"></td></tr>
+                                <tr><td>C&M Panini</td><td><input type="number" min="0" class="open" placeholder="0"></td><td><input type="number" min="0" class="close" placeholder="0"></td><td class="difference-cell"></td></tr>
                             </tbody>
                         </table>
                         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;">
-                            <div>
-                                <label for="yellowSeal">Yellow Seal</label>
-                                <input type="text" id="yellowSeal" class="seal-input" placeholder="e.g., Y12345" autocomplete="off" tabindex="73">
-                            </div>
-                            <div>
-                                <label for="greenSeal">Green Seal</label>
-                                <input type="text" id="greenSeal" class="seal-input" placeholder="e.g., G67890" autocomplete="off" tabindex="74">
-                            </div>
-                            <div>
-                                <label for="metalSeal">Metal Seal</label>
-                                <input type="text" id="metalSeal" class="seal-input" placeholder="e.g., M11223" autocomplete="off" tabindex="75">
-                            </div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-top: 4px;">
-                            <div>
-                                <label for="kettles" class="equipment-label">Kettles</label>
-                                <input type="number" id="kettles" min="0" class="small-input" placeholder="0" tabindex="76">
-                            </div>
-                            <div>
-                                <label for="cupholder" class="equipment-label">Cupholder</label>
-                                <input type="number" id="cupholder" min="0" class="small-input" placeholder="0" tabindex="77">
-                            </div>
-                            <div>
-                                <label for="babyWarmer" class="equipment-label">Baby Warmer</label>
-                                <input type="number" id="babyWarmer" min="0" class="small-input" placeholder="0" tabindex="78">
-                            </div>
-                            <div>
-                                <label for="coolerBag" class="equipment-label">Cooler Bag</label>
-                                <input type="number" id="coolerBag" min="0" class="small-input" placeholder="0" tabindex="79">
-                            </div>
+                            <div><label for="yellowSeal">Yellow Seal</label><input type="text" id="yellowSeal" class="seal-input" placeholder="e.g., Y12345" autocomplete="off"></div>
+                            <div><label for="greenSeal">Green Seal</label><input type="text" id="greenSeal" class="seal-input" placeholder="e.g., G67890" autocomplete="off"></div>
+                            <div><label for="metalSeal">Metal Seal</label><input type="text" id="metalSeal" class="seal-input" placeholder="e.g., M11223" autocomplete="off"></div>
                         </div>
                     </div>
                 </details>
@@ -629,272 +143,396 @@
                     <summary>Duty-Free Inventory</summary>
                     <div>
                         <table id="dutyFreeTable">
-                            <thead>
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Initial</th>
-                                    <th>Final</th>
-                                    <th>Sold</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th>Item</th><th>Initial</th><th>Final</th><th>Sold</th></tr></thead>
                             <tbody>
-                                <tr>
-                                    <td>Marlboro Gold</td>
-                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="80"></td>
-                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="81"></td>
-                                    <td class="difference-cell"></td>
-                                </tr>
-                                <tr>
-                                    <td>Marlboro Red</td>
-                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="82"></td>
-                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="83"></td>
-                                    <td class="difference-cell"></td>
-                                </tr>
-                                <tr>
-                                    <td>Lambert</td>
-                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="84"></td>
-                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="85"></td>
-                                    <td class="difference-cell"></td>
-                                </tr>
-                                <tr>
-                                    <td>Amber Leaf</td>
-                                    <td><input type="number" min="0" class="open small-input" placeholder="0" tabindex="86"></td>
-                                    <td><input type="number" min="0" class="close small-input" placeholder="0" tabindex="87"></td>
-                                    <td class="difference-cell"></td>
-                                </tr>
+                                <tr><td>Marlboro Gold</td><td><input type="number" min="0" class="open" placeholder="0"></td><td><input type="number" min="0" class="close" placeholder="0"></td><td class="difference-cell"></td></tr>
+                                <tr><td>Marlboro Red</td><td><input type="number" min="0" class="open" placeholder="0"></td><td><input type="number" min="0" class="close" placeholder="0"></td><td class="difference-cell"></td></tr>
                             </tbody>
                         </table>
-                        <div style="margin-top: 0.8rem;">
-                            <label for="dutyFreeMetalSeal">Metal Seal</label>
-                            <input type="text" id="dutyFreeMetalSeal" class="seal-input" placeholder="e.g., M44556" autocomplete="off" tabindex="88">
-                        </div>
+                        <div style="margin-top: 0.8rem;"><label for="dutyFreeMetalSeal">Metal Seal</label><input type="text" id="dutyFreeMetalSeal" class="seal-input" placeholder="e.g., M44556" autocomplete="off"></div>
                     </div>
                 </details>
                 <details class="form-section" id="salesSection">
                     <summary>Sales and Totals</summary>
                     <div>
-                        <div class="sales-grid">
-                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px;">
-                                <div>
-                                    <label id="salesLabel1" for="salesCrew1" class="sales-label">Crew 1 Sales</label>
-                                    <div class="sales-wrapper">
-                                        <input type="number" id="salesCrew1" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="89">
-                                        <span class="sales-euro">€</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label id="salesLabel2" for="salesCrew2" class="sales-label">Crew 2 Sales</label>
-                                    <div class="sales-wrapper">
-                                        <input type="number" id="salesCrew2" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="90">
-                                        <span class="sales-euro">€</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label id="salesLabel3" for="salesCrew3" class="sales-label">Crew 3 Sales</label>
-                                    <div class="sales-wrapper">
-                                        <input type="number" id="salesCrew3" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="91">
-                                        <span class="sales-euro">€</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label id="salesLabel4" for="salesCrew4" class="sales-label">Crew 4 Sales</label>
-                                    <div class="sales-wrapper">
-                                        <input type="number" id="salesCrew4" step="0.01" min="0" class="sales-input" placeholder="0.00" tabindex="92">
-                                        <span class="sales-euro">€</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 4px;">
-                                <div>
-                                    <label for="totalSales" class="sales-label">Total Sales</label>
-                                    <div class="sales-wrapper">
-                                        <input type="number" id="totalSales" step="0.01" readonly class="sales-input" placeholder="0.00" style="background: rgba(255,255,255,0.7); color: #000;" tabindex="93">
-                                        <span class="sales-euro">€</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label for="totalPax" class="sales-label">Total Pax</label>
-                                    <input type="number" id="totalPax" readonly class="sales-input" placeholder="0" style="background: rgba(255,255,255,0.7); color: #000;" tabindex="94">
-                                </div>
-                                <div>
-                                    <label for="average" class="sales-label">Average/Pax</label>
-                                    <div class="sales-wrapper">
-                                        <input type="number" id="average" step="0.01" readonly class="sales-input" placeholder="0.00" style="background: rgba(255,255,255,0.7); color: #000;" tabindex="95">
-                                        <span class="sales-euro">€</span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px;">
+                            <div><label id="salesLabel1" for="salesCrew1" class="sales-label">Crew 1 Sales</label><div class="sales-wrapper"><input type="number" id="salesCrew1" step="0.01" min="0" class="sales-input" placeholder="0.00"><span class="sales-euro">€</span></div></div>
+                            <div><label id="salesLabel2" for="salesCrew2" class="sales-label">Crew 2 Sales</label><div class="sales-wrapper"><input type="number" id="salesCrew2" step="0.01" min="0" class="sales-input" placeholder="0.00"><span class="sales-euro">€</span></div></div>
+                            <div><label id="salesLabel3" for="salesCrew3" class="sales-label">Crew 3 Sales</label><div class="sales-wrapper"><input type="number" id="salesCrew3" step="0.01" min="0" class="sales-input" placeholder="0.00"><span class="sales-euro">€</span></div></div>
+                            <div><label id="salesLabel4" for="salesCrew4" class="sales-label">Crew 4 Sales</label><div class="sales-wrapper"><input type="number" id="salesCrew4" step="0.01" min="0" class="sales-input" placeholder="0.00"><span class="sales-euro">€</span></div></div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 4px;">
+                            <div><label for="totalSales" class="sales-label">Total Sales</label><div class="sales-wrapper"><input type="number" id="totalSales" step="0.01" readonly class="sales-input" placeholder="0.00" style="background: rgba(255,255,255,0.7); color: #000;"><span class="sales-euro">€</span></div></div>
+                            <div><label for="totalPax" class="sales-label">Total Pax</label><input type="number" id="totalPax" readonly class="sales-input" placeholder="0" style="background: rgba(255,255,255,0.7); color: #000;"></div>
+                            <div><label for="average" class="sales-label">Average/Pax</label><div class="sales-wrapper"><input type="number" id="average" step="0.01" readonly class="sales-input" placeholder="0.00" style="background: rgba(255,255,255,0.7); color: #000;"><span class="sales-euro">€</span></div></div>
                         </div>
                     </div>
                 </details>
-                <button type="button" id="submitBtn" onclick="handleFormSubmission()" tabindex="96">Submit Report</button>
-                <button type="button" class="clear-form-button" onclick="clearFormData()" tabindex="97">Clear Form</button>
+                <button type="button" id="submitBtn" onclick="handleFormSubmission()">Submit Report</button>
+                <button type="button" class="clear-form-button" onclick="clearFormData()">Clear Form</button>
             </form>
         </div>
     </main>
-    <footer>
-        <p>Flight Report © 2025</p>
-    </footer>
+    <footer><p>Flight Report © 2025</p></footer>
     <div class="datetime-display">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
         <span id="currentDateTime"></span>
     </div>
+    <div id="dayPopup">
+        <button id="popupClose" onclick="closePopup()">X</button>
+        <h3 id="popupTitle"></h3>
+        <p id="popupDetails"></p>
+    </div>
 
     <script>
-        let pendingSchedule = null;
-        let calendar = null;
+        let activeFlight = null;
+        let extraCrewCount = 0;
+        let scheduleData = {
+            "2025-06-01": { type: "HSBY", details: "11:35Z - 21:00Z" },
+            "2025-06-02": { type: "AD", details: "CHECK-IN: 10:00Z, CHECK-OUT: 18:00Z" },
+            "2025-06-03": { type: "OTHER", details: "C/SICK" },
+            "2025-06-04": { type: "OFF", details: "" },
+            "2025-06-05": { type: "OFF", details: "" },
+            "2025-06-06": { type: "OFF", details: "" },
+            "2025-06-07": { type: "OFF", details: "" },
+            "2025-06-08": { type: "F", details: "CHECK-IN: 03:20Z, ALC-NQY 04:05Z-06:30Z, CHECK-OUT: 09:45Z" },
+            "2025-06-09": { type: "F", details: "CHECK-IN: 05:50Z, ALC-Z 06:35Z-09:20Z, CHECK-OUT: 13:00Z" },
+            "2025-06-10": { type: "F", details: "CHECK-IN: 03:15Z, ALC-Z 04:00Z-09:35Z, CHECK-OUT: 13:00Z" },
+            "2025-06-11": { type: "F", details: "CHECK-IN: 05:30Z, ALC-Z 06:15Z-10:05Z, CHECK-OUT: 13:40Z" },
+            "2025-06-12": { type: "F", details: "CHECK-IN: 06:05Z, ALC-Z 06:50Z-13:55Z, CHECK-OUT: Z" },
+            "2025-06-13": { type: "OFF", details: "" },
+            "2025-06-14": { type: "OFF", details: "" },
+            "2025-06-15": { type: "OFF", details: "" },
+            "2025-06-16": { type: "HSBY", details: "09:00Z - 20:00Z" },
+            "2025-06-17": { type: "HSBY", details: "08:30Z - 19:30Z" },
+            "2025-06-18": { type: "F", details: "CHECK-IN: 10:40Z, ALC-Z 11:25Z-14:10Z, CHECK-OUT: Z" },
+            "2025-06-19": { type: "F", details: "CHECK-IN: 10:25Z, ALC-Z 11:10Z-13:30Z, CHECK-OUT: Z" },
+            "2025-06-20": { type: "F", details: "CHECK-IN: 11:10Z, ALC-Z 11:55Z-16:05Z, CHECK-OUT: Z" },
+            "2025-06-21": { type: "OFF", details: "" },
+            "2025-06-22": { type: "OFF", details: "" },
+            "2025-06-23": { type: "OFF", details: "" },
+            "2025-06-24": { type: "OTHER", details: "A/L(TZ)" },
+            "2025-06-25": { type: "OTHER", details: "A/L(TZ)" },
+            "2025-06-26": { type: "OTHER", details: "A/L(TZ)" },
+            "2025-06-27": { type: "OTHER", details: "A/L(TZ)" },
+            "2025-06-28": { type: "OTHER", details: "A/L(TZ)" },
+            "2025-06-29": { type: "OFF", details: "" },
+        };
 
-        function initializeForm() {
-            console.log('Initializing form');
-            // Add basic form event listeners if needed
-            document.querySelectorAll('input, textarea').forEach(input => {
-                input.addEventListener('change', saveFormData);
-            });
-            // Add more initialization logic here if required from script.js
+        function generateCalendar(year, month) {
+            try {
+                const calendarDiv = document.getElementById('calendar');
+                if (!calendarDiv) {
+                    console.error('Calendar div not found');
+                    showNotification('Calendar container not found');
+                    return;
+                }
+                calendarDiv.innerHTML = '';
+                const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                daysOfWeek.forEach(day => {
+                    const dayHeader = document.createElement('div');
+                    dayHeader.className = 'day-header';
+                    dayHeader.textContent = day;
+                    calendarDiv.appendChild(dayHeader);
+                });
+                const firstDay = new Date(year, month - 1, 1).getDay();
+                const daysInMonth = new Date(year, month, 0).getDate();
+                const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+                for (let i = 0; i < adjustedFirstDay; i++) {
+                    const emptyDay = document.createElement('div');
+                    calendarDiv.appendChild(emptyDay);
+                }
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const dayDiv = document.createElement('div');
+                    dayDiv.className = 'calendar-day';
+                    dayDiv.textContent = day;
+                    if (scheduleData[dateStr]) {
+                        const { type } = scheduleData[dateStr];
+                        if (type === 'OFF') dayDiv.classList.add('day-off');
+                        else if (type === 'F') dayDiv.classList.add('day-flight');
+                        else if (type === 'AD') dayDiv.classList.add('day-ad');
+                        else if (type === 'HSBY') dayDiv.classList.add('day-hsby');
+                        else if (type === 'OTHER') dayDiv.classList.add('day-other');
+                        dayDiv.addEventListener('click', () => showDayDetails(day, month, year, scheduleData[dateStr].details));
+                    }
+                    calendarDiv.appendChild(dayDiv);
+                }
+            } catch (error) {
+                console.error('Error generating calendar:', error);
+                showNotification('Error generating calendar');
+            }
+        }
+
+        function showDayDetails(day, month, year, details) {
+            try {
+                const popup = document.getElementById('dayPopup');
+                const popupTitle = document.getElementById('popupTitle');
+                const popupDetails = document.getElementById('popupDetails');
+                popupTitle.textContent = `${day}/${month}/${year}`;
+                popupDetails.textContent = details || 'No details available';
+                popup.style.display = 'block';
+                const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const scheduleEntry = scheduleData[dateStr];
+                if (!scheduleEntry) return;
+                const dateField = document.getElementById('date-ac');
+                const flightNumberField = document.getElementById('flight-number');
+                const arrivalTimeField = document.getElementById('arrival-time');
+                const departureTimeField = document.getElementById('departure-time');
+                const routeField = document.querySelector('#flightsTableBody tr:first-child .route');
+                dateField.value = dateStr;
+                if (scheduleEntry.type === 'F') {
+                    const timeMatches = scheduleEntry.details.match(/(\d{2}:\d{2}Z)-(\d{2}:\d{2}Z)/g);
+                    const routeMatches = scheduleEntry.details.match(/[A-Z]{3}-[A-Z]{3}/g);
+                    const flightNumMatch = scheduleEntry.details.match(/F\s*\((.*?)\)/);
+                    if (flightNumMatch && !flightNumberField.value) flightNumberField.value = flightNumMatch[1].split(' ')[0];
+                    if (timeMatches) {
+                        const firstFlightTimes = timeMatches[0].split('-');
+                        if (!departureTimeField.value) departureTimeField.value = firstFlightTimes[0];
+                        if (!arrivalTimeField.value && timeMatches.length === 1) arrivalTimeField.value = firstFlightTimes[1];
+                        if (timeMatches.length > 1) {
+                            const lastFlightTimes = timeMatches[timeMatches.length - 1].split('-');
+                            if (!arrivalTimeField.value) arrivalTimeField.value = lastFlightTimes[1];
+                        }
+                    }
+                    if (routeMatches && !routeField.value) routeField.value = routeMatches.join(' ');
+                } else if (scheduleEntry.type === 'AD') {
+                    const checkInMatch = scheduleEntry.details.match(/CHECK-IN\s*\((\d{2}:\d{2}Z)/);
+                    const checkOutMatch = scheduleEntry.details.match(/CHECK-OUT\s*\((\d{2}:\d{2}Z)/);
+                    if (checkInMatch && !departureTimeField.value) departureTimeField.value = checkInMatch[1];
+                    if (checkOutMatch && !arrivalTimeField.value) arrivalTimeField.value = checkOutMatch[1];
+                } else if (scheduleEntry.type === 'HSBY') {
+                    const timeMatch = scheduleEntry.details.match(/(\d{2}:\d{2}Z)-(\d{2}:\d{2}Z)/);
+                    if (timeMatch) {
+                        if (!departureTimeField.value) departureTimeField.value = timeMatch[1];
+                        if (!arrivalTimeField.value) arrivalTimeField.value = timeMatch[2];
+                    }
+                }
+                [dateField, flightNumberField, arrivalTimeField, departureTimeField, routeField].forEach(field => {
+                    if (field && field.value) field.dispatchEvent(new Event('input'));
+                });
+            } catch (error) {
+                console.error('Error showing day details:', error);
+                showNotification('Error showing day details');
+            }
+        }
+
+        function closePopup() {
+            try {
+                const popup = document.getElementById('dayPopup');
+                popup.style.display = 'none';
+            } catch (error) {
+                console.error('Error closing popup:', error);
+                showNotification('Error closing popup');
+            }
+        }
+
+        async function parseScheduleImage(file) {
+            try {
+                showNotification('Processing image... This may take a moment.');
+                const result = await Tesseract.recognize(
+                    file,
+                    'eng',
+                    { logger: m => console.log(m) }
+                );
+                const text = result.data.text;
+                console.log('Raw OCR Text:', text);
+                const lines = text.split('\n').filter(line => line.trim());
+                let currentDate = null;
+                scheduleData = {};
+                for (let line of lines) {
+                    line = line.trim().replace(/\s+/g, ' ');
+                    const dateMatch = line.match(/^(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{2})/i);
+                    if (dateMatch) {
+                        const day = parseInt(dateMatch[1], 10);
+                        const monthName = dateMatch[2].substring(0, 3).toLowerCase();
+                        const month = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'].indexOf(monthName) + 1;
+                        const year = parseInt(dateMatch[3], 10) + 2000;
+                        currentDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                        continue;
+                    }
+                    if (currentDate) {
+                        let type = 'OFF';
+                        let details = line;
+                        if (line.includes('OFF')) { type = 'OFF'; details = ''; }
+                        else if (line.includes('HSBY')) { type = 'HSBY'; const timeMatch = line.match(/(\d{2}:\d{2}Z)\s*-\s*(\d{2}:\d{2}Z)/); details = timeMatch ? `${timeMatch[1]} - ${timeMatch[2]}` : line.replace('HSBY', '').trim(); }
+                        else if (line.includes('CHECK-IN') || line.includes('CHECK-OUT')) { type = 'AD'; details = line; }
+                        else if (line.includes('F') && !line.includes('CHECK')) { type = 'F'; const flightDetails = line.replace('F', '').trim(); details = flightDetails; }
+                        else if (line.includes('C/SICK') || line.includes('A/L')) { type = 'OTHER'; details = line; }
+                        if (details || type !== 'OFF') scheduleData[currentDate] = { type, details };
+                    }
+                }
+                console.log('Parsed Schedule Data:', scheduleData);
+                generateCalendar(2025, 6);
+                showNotification('Schedule updated successfully.');
+            } catch (error) {
+                console.error('Error parsing image:', error);
+                showNotification('Error parsing image. Check console for details.');
+            }
         }
 
         function initializeCalendar() {
-            var calendarEl = document.getElementById('calendar');
-            if (!calendarEl) {
-                console.error('Calendar element not found');
-                return;
-            }
-            calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                height: 'auto',
-                events: JSON.parse(localStorage.getItem('flightSchedule') || '[]'),
-                dayCellContent: function(arg) {
-                    return arg.dayNumberText.replace(' ', '');
-                },
-                eventDidMount: function(info) {
-                    var flightType = info.event.title.toUpperCase().replace(/[^A-Z-]/g, '');
-                    if (info.el) {
-                        info.el.classList.add('fc-day-' + flightType.toLowerCase());
-                    }
-                },
-                eventContent: function(arg) {
-                    return { html: `<div>${arg.event.title}</div>` };
+            try {
+                generateCalendar(2025, 6);
+                const imageInput = document.getElementById('scheduleImage');
+                const updateButton = document.getElementById('updateCalendarBtn');
+                if (!updateButton) {
+                    console.error('Update Calendar button not found');
+                    return;
                 }
-            });
-            calendar.render();
-            window.calendar = calendar;
-            console.log('Calendar initialized');
-        }
-
-        document.getElementById('scheduleUpload').addEventListener('change', function(event) {
-            var file = event.target.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    pendingSchedule = parseScheduleImage(e.target.result);
-                    document.getElementById('updateCalendarBtn').style.display = 'inline-block';
-                    showNotification('Schedule uploaded. Click "Update Calendar" to apply changes.');
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        function parseScheduleImage(imageData) {
-            var currentDate = new Date();
-            var year = currentDate.getFullYear();
-            var schedule = [
-                { date: new Date(year, 5, 9), type: 'HSBY' },
-                { date: new Date(year, 5, 10), type: 'CHECK-IN' },
-                { date: new Date(year, 5, 11), type: 'AD' },
-                { date: new Date(year, 5, 12), type: 'OFF' },
-            ];
-            return schedule.map(item => ({
-                date: item.date,
-                type: item.type
-            }));
-        }
-
-        function updateCalendarFromPending() {
-            if (pendingSchedule && calendar) {
-                updateCalendar(pendingSchedule);
-                document.getElementById('updateCalendarBtn').style.display = 'none';
-                pendingSchedule = null;
-                showNotification('Calendar updated successfully.');
-            } else {
-                console.error('Calendar not initialized or no pending schedule');
-                showNotification('Error updating calendar. Please try again.');
-            }
-        }
-
-        function updateCalendar(newSchedule) {
-            if (!calendar) {
-                console.error('Calendar instance not available');
-                return;
-            }
-            var existingSchedule = JSON.parse(localStorage.getItem('flightSchedule') || '[]');
-            newSchedule.forEach(function(newEvent) {
-                var existingEventIndex = existingSchedule.findIndex(function(e) {
-                    var existingDate = new Date(e.start);
-                    return existingDate.toDateString() === newEvent.date.toDateString();
+                updateButton.addEventListener('click', async () => {
+                    const file = imageInput.files[0];
+                    if (file) {
+                        await parseScheduleImage(file);
+                        updateButton.style.display = 'none';
+                    } else {
+                        showNotification('Please select a schedule image first.');
+                    }
                 });
-                if (existingEventIndex > -1) {
-                    existingSchedule[existingEventIndex].title = newEvent.type;
-                } else {
-                    existingSchedule.push({
-                        title: newEvent.type,
-                        start: newEvent.date,
-                        allDay: true
+                imageInput.addEventListener('change', () => {
+                    updateButton.style.display = 'inline-block';
+                });
+            } catch (error) {
+                console.error('Error initializing calendar:', error);
+                showNotification('Error initializing calendar');
+            }
+        }
+
+        function initializeForm() {
+            try {
+                loadFormData();
+                calculateDifference();
+                updateSalesLabels();
+                calculateTotalSales();
+                calculateTotalPax();
+                initializeCalendar();
+                document.querySelectorAll('input, textarea').forEach(input => {
+                    input.addEventListener('input', () => {
+                        saveFormData();
+                        calculateTotalSales();
+                        calculateTotalPax();
+                    });
+                });
+                document.querySelector('.add-crew-button').addEventListener('click', addExtraCrew);
+                document.querySelectorAll('.remove-crew-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const index = button.closest('tr').id.replace('extraCrew', '');
+                        removeExtraCrew(index);
+                    });
+                });
+                const dateField = document.getElementById('date-ac');
+                if (dateField) {
+                    dateField.addEventListener('change', () => {
+                        const selectedDate = dateField.value;
+                        if (scheduleData[selectedDate]) {
+                            const [year, month, day] = selectedDate.split('-').map(Number);
+                            showDayDetails(day, month, year, scheduleData[selectedDate].details);
+                        }
                     });
                 }
-            });
-            localStorage.setItem('flightSchedule', JSON.stringify(existingSchedule));
-            calendar.removeAllEvents();
-            calendar.addEventSource(existingSchedule);
-            calendar.render();
-            console.log('Calendar updated with new events');
-        }
-
-        function updateDateTime() {
-            var now = new Date();
-            var options = {
-                timeZone: 'Europe/Madrid',
-                weekday: 'short',
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            };
-            var formatter = new Intl.DateTimeFormat('es-ES', options);
-            var formattedDate = formatter.format(now).replace(/(\w+),/, '$1, ').replace(/\b(\d)\b/g, '0$1');
-            var datetimeDisplay = document.getElementById('currentDateTime');
-            if (datetimeDisplay) {
-                datetimeDisplay.textContent = formattedDate;
-            } else {
-                console.error('DateTime display element not found');
+                console.log('Form initialized');
+            } catch (error) {
+                console.error('Error initializing form:', error);
+                showNotification('Error initializing form');
             }
         }
 
-        function saveFormData() {
-            // Placeholder for saving form data (implement as needed)
-            console.log('Form data saved');
+        function showNotification(message, duration = 3000) {
+            console.log('Notification:', message);
+            const notification = document.getElementById('notification');
+            if (notification) {
+                notification.textContent = message;
+                notification.style.display = 'block';
+                setTimeout(() => { notification.style.display = 'none'; }, duration);
+            } else { console.error('Notification element not found'); }
         }
 
-        function showNotification(message) {
-            var notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.style.display = 'block';
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
+        function collectFormData() {
+            try {
+                const crewData = [];
+                for (let i = 1; i <= 4; i++) {
+                    const crewCode = document.getElementById(`crewcode${i}`);
+                    const crewName = document.querySelector(`#crewTable tbody tr:nth-child(${i}) .crewName`);
+                    crewData.push({ code: crewCode ? crewCode.value || '' : '', name: crewName ? crewName.value || '' : '', });
+                }
+                for (let i = 1; i <= 2; i++) {
+                    const extraCrewRow = document.getElementById(`extraCrew${i}`);
+                    if (extraCrewRow && extraCrewRow.style.display === 'table-row') {
+                        crewData.push({
+                            code: extraCrewRow.querySelector('.crewcode').value || '',
+                            name: extraCrewRow.querySelector('.crewName').value || '',
+                        });
+                    }
+                }
+                return {
+                    date: document.getElementById('date-ac').value || '',
+                    acReg: document.getElementById('acReg').value || '',
+                    flights: Array.from(document.querySelectorAll('#flightsTableBody tr')).map(row => ({
+                        route: row.querySelector('.route').value || '',
+                        flightNumber: row.querySelector('.flightNumber').value || '',
+                        time: row.querySelector('.flightTime').value || '',
+                        departure: row.querySelector('.departure').value || '',
+                        arrival: row.querySelector('.arrival').value || '',
+                        finalPax: row.querySelector('.finalPax').value || '0',
+                        fwd: row.querySelector('.fwd').value || '',
+                        aft: row.querySelector('.aft').value || '',
+                        wheelchair: row.querySelector('.wheelchair').value || '',
+                    })),
+                    captain: document.getElementById('captain').value || '',
+                    firstOfficer: document.getElementById('firstOfficer').value || '',
+                    crew: crewData,
+                    description: document.getElementById('description').value || '',
+                    products: Array.from(document.querySelectorAll('#productTable tbody tr')).map(row => ({
+                        name: row.cells[0].textContent || '',
+                        open: row.querySelector('.open').value || '',
+                        close: row.querySelector('.close').value || '',
+                        sold: row.querySelector('.difference-cell').textContent || '',
+                    })),
+                    seals: {
+                        yellow: document.getElementById('yellowSeal').value || '',
+                        green: document.getElementById('greenSeal').value || '',
+                        metal: document.getElementById('metalSeal').value || '',
+                    },
+                    dutyFreeProducts: Array.from(document.querySelectorAll('#dutyFreeTable tbody tr')).map(row => ({
+                        name: row.cells[0].textContent || '',
+                        open: row.querySelector('.open').value || '',
+                        close: row.querySelector('.close').value || '',
+                        sold: row.querySelector('.difference-cell').textContent || '',
+                    })),
+                    dutyFreeSeal: document.getElementById('dutyFreeMetalSeal').value || '',
+                    salesForm: {
+                        crew1: document.getElementById('salesCrew1').value || '0',
+                        crew2: document.getElementById('salesCrew2').value || '0',
+                        crew3: document.getElementById('salesCrew3').value || '0',
+                        crew4: document.getElementById('salesCrew4').value || '0',
+                        total: document.getElementById('totalSales').value || '0',
+                        average: document.getElementById('average').value || '0',
+                    },
+                    totalPax: document.getElementById('totalPax').value || '0',
+                };
+            } catch (error) {
+                console.error('Error collecting form data:', error);
+                showNotification('Error collecting form data');
+                throw error;
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeForm();
-            initializeCalendar();
-            updateDateTime();
-            setInterval(updateDateTime, 60000);
-            console.log('DOM fully loaded, initializing components');
-        });
+        function saveFormData() { try { const formData = collectFormData(); localStorage.setItem('flightReportData', JSON.stringify(formData)); localStorage.setItem('extraCrewCount', extraCrewCount); console.log('Form data saved'); } catch (error) { console.error('Error saving form:', error); showNotification('Error saving form data'); } }
+        function loadFormData() { try { const savedData = localStorage.getItem('flightReportData'); const savedExtraCrew = localStorage.getItem('extraCrewCount'); if (savedData) { const data = JSON.parse(savedData); document.getElementById('date-ac').value = data.date || ''; document.getElementById('acReg').value = data.acReg || ''; document.querySelectorAll('#flightsTableBody tr').forEach((row, i) => { if (data.flights[i]) { row.querySelector('.route').value = data.flights[i].route || ''; row.querySelector('.flightNumber').value = data.flights[i].flightNumber || ''; row.querySelector('.flightTime').value = data.flights[i].time || ''; row.querySelector('.departure').value = data.flights[i].departure || ''; row.querySelector('.arrival').value = data.flights[i].arrival || ''; row.querySelector('.finalPax').value = data.flights[i].finalPax || ''; row.querySelector('.fwd').value = data.flights[i].fwd || ''; row.querySelector('.aft').value = data.flights[i].aft || ''; row.querySelector('.wheelchair').value = data.flights[i].wheelchair || ''; } }); document.getElementById('captain').value = data.captain || ''; document.getElementById('firstOfficer').value = data.firstOfficer || ''; data.crew.forEach((crew, i) => { if (i < 4) { document.getElementById(`crewcode${i + 1}`).value = crew.code || ''; document.querySelector(`#crewTable tbody tr:nth-child(${i + 1}) .crewName`).value = crew.name || ''; } else { const extraRow = document.getElementById(`extraCrew${i - 3}`); if (extraRow) { extraRow.style.display = 'table-row'; extraRow.querySelector('.crewcode').value = crew.code || ''; extraRow.querySelector('.crewName').value = crew.name || ''; } } }); document.getElementById('description').value = data.description || ''; document.querySelectorAll('#productTable tbody tr').forEach((row, i) => { if (data.products[i]) { row.querySelector('.open').value = data.products[i].open || ''; row.querySelector('.close').value = data.products[i].close || ''; } }); document.getElementById('yellowSeal').value = data.seals.yellow || ''; document.getElementById('greenSeal').value = data.seals.green || ''; document.getElementById('metalSeal').value = data.seals.metal || ''; document.querySelectorAll('#dutyFreeTable tbody tr').forEach((row, i) => { if (data.dutyFreeProducts[i]) { row.querySelector('.open').value = data.dutyFreeProducts[i].open || ''; row.querySelector('.close').value = data.dutyFreeProducts[i].close || ''; } }); document.getElementById('dutyFreeMetalSeal').value = data.dutyFreeSeal || ''; document.getElementById('salesCrew1').value = data.salesForm.crew1 || '0'; document.getElementById('salesCrew2').value = data.salesForm.crew2 || '0'; document.getElementById('salesCrew3').value = data.salesForm.crew3 || '0'; document.getElementById('salesCrew4').value = data.salesForm.crew4 || '0'; document.getElementById('totalSales').value = data.salesForm.total || '0'; document.getElementById('totalPax').value = data.totalPax || '0'; document.getElementById('average').value = data.salesForm.average || '0'; if (savedExtraCrew) { extraCrewCount = parseInt(savedExtraCrew) || 0; for (let i = 1; i <= extraCrewCount; i++) { const extraRow = document.getElementById(`extraCrew${i}`); if (extraRow) extraRow.style.display = 'table-row'; } if (extraCrewCount >= 2) document.querySelector('.add-crew-button').style.display = 'none'; } console.log('Form data loaded'); } } catch (error) { console.error('Error loading form:', error); showNotification('Error loading saved data'); } }
+        function clearFormData() { try { document.getElementById('inflightForm').reset(); document.querySelectorAll('.difference-cell').forEach(cell => { cell.textContent = ''; }); document.querySelectorAll('.extra-crew').forEach(row => { row.querySelectorAll('input').forEach(input => input.value = ''); row.style.display = 'none'; }); extraCrewCount = 0; document.querySelector('.add-crew-button').style.display = 'inline-block'; localStorage.clear(); updateSalesLabels(); calculateTotalSales(); calculateTotalPax(); showNotification('Form cleared'); console.log('Form cleared'); } catch (error) { console.error('Error clearing form:', error); showNotification('Error clearing form'); } }
+        function toggleFlightView(flightNumber) { try { const flightRows = document.querySelectorAll('#flightsTableBody tr'); const flightInfoHeader = document.querySelector('.flight-info-header'); const stockSection = document.getElementById('stockSection'); const dutyFreeSection = document.getElementById('dutyFreeSection'); const salesSection = document.getElementById('salesSection'); const crewSection = document.getElementById('crewSection'); if (activeFlight === flightNumber) { activeFlight = null; flightRows.forEach(row => row.style.display = 'table-row'); flightInfoHeader.style.display = 'grid'; stockSection.style.display = 'block'; dutyFreeSection.style.display = 'block'; salesSection.style.display = 'block'; crewSection.style.display = 'block'; } else { activeFlight = flightNumber; flightRows.forEach(row => { row.style.display = row.dataset.flight === flightNumber ? 'table-row' : 'none'; }); flightInfoHeader.style.display = 'none'; stockSection.style.display = 'none'; dutyFreeSection.style.display = 'none'; salesSection.style.display = 'none'; crewSection.style.display = 'block'; } saveFormData(); console.log('Flight view toggled:', activeFlight); } catch (error) { console.error('Error toggling flight:', error); showNotification('Error toggling flight view'); } }
+        function addExtraCrew() { try { if (extraCrewCount >= 2) { showNotification('Maximum extra crew reached'); return; } extraCrewCount++; const extraRow = document.getElementById(`extraCrew${extraCrewCount}`); if (extraRow) { extraRow.style.display = 'table-row'; extraRow.querySelectorAll('input').forEach(input => { input.addEventListener('input', () => { saveFormData(); updateSalesLabels(); }); }); showNotification(`Added extra crew ${extraCrewCount}`); if (extraCrewCount === 2) document.querySelector('.add-crew-button').style.display = 'none'; saveFormData(); console.log('Extra crew added:', extraCrewCount); } else { extraCrewCount--; showNotification('Error adding crew'); console.error('Extra crew row not found'); } } catch (error) { console.error('Error adding extra crew:', error); showNotification('Error adding extra crew'); } }
+        function removeExtraCrew(index) { try { const extraRow = document.getElementById(`extraCrew${index}`); if (extraRow) { extraRow.style.display = 'none'; extraRow.querySelectorAll('input').forEach(input => input.value = ''); extraCrewCount--; document.querySelector('.add-crew-button').style.display = 'inline-block'; saveFormData(); updateSalesLabels(); showNotification(`Removed extra crew ${index}`); console.log('Extra crew removed:', index); } else { showNotification('Error removing crew'); console.error('Extra crew row not found'); } } catch (error) { console.error('Error removing extra crew:', error); showNotification('Error removing extra crew'); } }
+        function calculateDifference() { try { ['productTable', 'dutyFreeTable'].forEach(tableId => { const table = document.getElementById(tableId); if (table) { table.querySelectorAll('tbody tr').forEach(row => { const openInput = row.querySelector('.open'); const closeInput = row.querySelector('.close'); const soldCell = row.querySelector('.difference-cell'); if (openInput && closeInput && soldCell) { const openValue = parseInt(openInput.value) || 0; const closeValue = parseInt(closeInput.value) || 0; soldCell.textContent = openValue - closeValue >= 0 ? openValue - closeValue : 0; openInput.addEventListener('input', () => { const newOpen = parseInt(openInput.value) || 0; const newClose = parseInt(closeInput.value) || 0; soldCell.textContent = newOpen - newClose >= 0 ? newOpen - newClose : 0; saveFormData(); }); closeInput.addEventListener('input', () => { const newOpen = parseInt(openInput.value) || 0; const newClose = parseInt(closeInput.value) || 0; soldCell.textContent = newOpen - newClose >= 0 ? newOpen - newClose : 0; saveFormData(); }); } }); } }); console.log('Inventory differences calculated'); } catch (error) { console.error('Error calculating differences:', error); showNotification('Error updating inventory'); } }
+        function updateSalesLabels() { try { for (let i = 1; i <= 4; i++) { const crewCode = document.getElementById(`crewcode${i}`); const salesLabel = document.getElementById(`salesLabel${i}`); if (crewCode && salesLabel) { const code = crewCode.value.trim() || `Crew ${i}`; salesLabel.textContent = `${code} Sales`; crewCode.addEventListener('input', () => { salesLabel.textContent = `${crewCode.value.trim() || `Crew ${i}`} Sales`; saveFormData(); }); } } for (let i = 1; i <= extraCrewCount; i++) { const crewCode = document.getElementById(`crewcode${i + 4}`); if (crewCode) crewCode.addEventListener('input', saveFormData); } console.log('Updated sales labels'); } catch (error) { console.error('Error updating sales labels:', error); showNotification('Error updating sales labels'); } }
+        function calculateTotalSales() { try { const salesInputs = [document.getElementById('salesCrew1'), document.getElementById('salesCrew2'), document.getElementById('salesCrew3'), document.getElementById('salesCrew4')].filter(input => input); const totalSalesInput = document.getElementById('totalSales'); const totalPaxInput = document.getElementById('totalPax'); const averageInput = document.getElementById('average'); if (totalSalesInput && totalPaxInput && averageInput) { const total = salesInputs.reduce((sum, input) => { const value = parseFloat(input.value) || 0; return sum + (value >= 0 ? value : 0); }, 0); totalSalesInput.value = total.toFixed(2); const totalPax = parseInt(totalPaxInput.value) || 0; averageInput.value = totalPax > 0 ? (total / totalPax).toFixed(2) : '0.00'; salesInputs.forEach(input => { input.addEventListener('input', () => { const newTotal = salesInputs.reduce((sum, input) => { const value = parseFloat(input.value) || 0; return sum + (value >= 0 ? value : 0); }, 0); totalSalesInput.value = newTotal.toFixed(2); const newTotalPax = parseInt(totalPaxInput.value) || 0; averageInput.value = newTotalPax > 0 ? (newTotal / newTotalPax).toFixed(2) : '0.00'; saveFormData(); }); }); console.log('Calculated total sales:', total); } else { showNotification('Error: Missing sales elements'); console.error('Missing sales elements'); } } catch (error) { console.error('Error calculating total sales:', error); showNotification('Error calculating total sales'); } }
+        function calculateTotalPax() { try { const paxInputs = document.querySelectorAll('.finalPax'); const totalPaxInput = document.getElementById('totalPax'); const averageInput = document.getElementById('average'); const totalSalesInput = document.getElementById('totalSales'); if (totalPaxInput && averageInput && totalSalesInput) { const totalPax = Array.from(paxInputs).reduce((sum, input) => { const value = parseInt(input.value) || 0; return sum + (value >= 0 ? value : 0); }, 0); totalPaxInput.value = totalPax; const totalSales = parseFloat(totalSalesInput.value) || 0; averageInput.value = totalPax > 0 ? (totalSales / totalPax).toFixed(2) : '0.00'; paxInputs.forEach(input => { input.addEventListener('input', () => { const newTotalPax = Array.from(paxInputs).reduce((sum, input) => { const value = parseInt(input.value) || 0; return sum + (value >= 0 ? value : 0); }, 0); totalPaxInput.value = newTotalPax; const newTotalSales = parseFloat(totalSalesInput.value) || 0; averageInput.value = newTotalPax > 0 ? (newTotalSales / newTotalPax).toFixed(2) : '0.00'; saveFormData(); }); }); console.log('Calculated total Pax:', totalPax); } else { showNotification('Error: Missing pax element'); console.error('Missing pax element'); } } catch (error) { console.error('Error calculating total pax:', error); showNotification('Error calculating total pax'); } }
+        function generatePDF(formData) { try { if (!window.jspdf) throw new Error('jsPDF library not loaded'); const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.setFontSize(16); doc.text('Flight Report', 10, 10); doc.setFontSize(12); doc.text(`Date: ${formData.date || 'N/A'}`, 10, 20); doc.text(`Aircraft: ${formData.acReg || ''}`, 100, 20); doc.text('Flight Information', 10, 30); doc.autoTable({ head: [['#', 'Route', 'Flight No.', 'Time', 'Dep.', 'Arr.', 'Pax', 'FWD', 'AFT', 'W/C']], body: formData.flights.map((flight, index) => [index + 1, flight.route || '', flight.flightNumber || '', flight.time || '', flight.departure || '', flight.arrival || '', flight.finalPax || '0', flight.fwd || '', flight.aft || '', flight.wheelchair || '',]), startY: 35, theme: 'grid', headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 }, bodyStyles: { fontSize: 10 }, columnStyles: { 0: { cellWidth: 10 }, 1: { cellWidth: 25 }, 2: { cellWidth: 25 }, 3: { cellWidth: 20 }, 4: { cellWidth: 20 }, 5: { cellWidth: 20 }, 6: { cellWidth: 15 }, 7: { cellWidth: 15 }, 8: { cellWidth: 15 }, 9: { cellWidth: 20 }, }, }); let y = doc.lastAutoTable.finalY + 10; doc.text('Crew Information', 10, y); doc.text(`Captain: ${formData.captain || ''}`, 10, y + 5); doc.text(`First Officer: ${formData.firstOfficer || ''}`, 100, y + 5); doc.autoTable({ head: [['Crew', 'Name', 'Code']], body: formData.crew.map((crew, index) => [index < 4 ? `No. ${index + 1}` : `Extra ${index - 3 + 1}`, crew.name || '', crew.code || '',]), startY: y + 10, theme: 'grid', headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 }, bodyStyles: { fontSize: 10 }, }); y = doc.lastAutoTable.finalY + 10; doc.text('Description', 10, y); doc.text(formData.description || 'N/A', 10, y + 5); y += 15; doc.text('Product Inventory', 10, y); doc.autoTable({ head: [['Product', 'Initial', 'Final', 'Sold']], body: formData.products.map(item => [item.name || '', item.open || '', item.close || '', item.sold || '',]), startY: y + 5, theme: 'grid', headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 }, bodyStyles: { fontSize: 10 }, }); y = doc.lastAutoTable.finalY + 10; doc.text(`Seals - Yellow: ${formData.seals.yellow || ''}, Green: ${formData.seals.green || ''}, Metal: ${formData.seals.metal || ''}`, 10, y); y += 10; doc.text('Duty-Free Inventory', 10, y); doc.autoTable({ head: [['Item', 'Initial', 'Final', 'Sold']], body: formData.dutyFreeProducts.map(item => [item.name || '', item.open || '', item.close || '', item.sold || '',]), startY: y + 5, theme: 'grid', headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 }, bodyStyles: { fontSize: 10 }, }); y = doc.lastAutoTable.finalY + 10; doc.text(`Duty-Free Seal: ${formData.dutyFreeSeal || ''}`, 10, y); y += 10; doc.text('Sales and Totals', 10, y); doc.autoTable({ head: [['Crew', 'Sales (€)']], body: [[`${document.getElementById('crewcode1').value || 'Crew 1'}`, formData.salesForm.crew1 || '0'], [`${document.getElementById('crewcode2').value || 'Crew 2'}`, formData.salesForm.crew2 || '0'], [`${document.getElementById('crewcode3').value || 'Crew 3'}`, formData.salesForm.crew3 || '0'], [`${document.getElementById('crewcode4').value || 'Crew 4'}`, formData.salesForm.crew4 || '0']], startY: y + 5, theme: 'grid', headStyles: { fillColor: [30, 144, 255], textColor: [255, 255, 255], fontSize: 10 }, bodyStyles: { fontSize: 10 }, }); y = doc.lastAutoTable.finalY + 5; doc.text(`Total Sales: ${formData.salesForm.total || '0.00'} €`, 10, y); doc.text(`Total Pax: ${formData.totalPax || '0'}`, 100, y); doc.text(`Average: ${formData.salesForm.average || '0.00'} €`, 150, y); return doc; } catch (error) { console.error('Error generating PDF:', error); showNotification('Error generating PDF'); throw error; } }
+        function handleFormSubmission() { try { console.log('Submitting form'); const formData = collectFormData(); const pdfDoc = generatePDF(formData); const pdfBlob = pdfDoc.output('blob'); const pdfUrl = URL.createObjectURL(pdfBlob); const downloadLink = document.createElement('a'); downloadLink.href = pdfUrl; downloadLink.download = `Flight_Report_${formData.date || 'Untitled'}.pdf`; document.body.appendChild(downloadLink); setTimeout(() => { downloadLink.click(); document.body.removeChild(downloadLink); URL.revokeObjectURL(pdfUrl); showNotification('Report generated successfully'); console.log('PDF downloaded'); }, 100); } catch (error) { console.error('Error submitting form:', error); showNotification('Error: ' + error.message); } }
+        function updateDateTime() { var now = new Date(); var options = { timeZone: 'Europe/Madrid', weekday: 'short', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }; var formatter = new Intl.DateTimeFormat('es-ES', options); var formattedDate = formatter.format(now).replace(/(\w+),/, '$1, ').replace(/\b(\d)\b/g, '0$1'); var datetimeDisplay = document.getElementById('currentDateTime'); if (datetimeDisplay) datetimeDisplay.textContent = formattedDate; else console.error('DateTime display element not found'); }
+        document.addEventListener('DOMContentLoaded', () => { initializeForm(); updateDateTime(); setInterval(updateDateTime, 60000); console.log('DOM fully loaded, initializing components'); });
     </script>
-    <!-- <script src="script.js"></script> -->
 </body>
 </html>
