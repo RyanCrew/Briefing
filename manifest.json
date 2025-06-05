@@ -1,13 +1,13 @@
 {
     "name": "Flight Report",
     "description": "Flight report form for offline use",
-    "start_url": "/",
+    "start_url": "/Inflight-Report/",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#1e90ff",
     "icons": [
         {
-            "src": "/icon.png",
+            "src": "/Inflight-Report/icon.png",
             "sizes": "192x192",
             "type": "image/png"
         }
