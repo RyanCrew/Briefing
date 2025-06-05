@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Flight Report">
     <meta name="description" content="Flight report form for offline use">
@@ -743,19 +743,17 @@
     </div>
 
     <script>
-        if ('serviceWorker' in navigator) {
-            document.addEventListener('DOMContentLoaded', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('Service Worker registered:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.error('Error registering Service Worker:', error);
-                    });
-            });
-        }
-
         let pendingSchedule = null;
+        let calendar = null;
+
+        function initializeForm() {
+            console.log('Initializing form');
+            // Add basic form event listeners if needed
+            document.querySelectorAll('input, textarea').forEach(input => {
+                input.addEventListener('change', saveFormData);
+            });
+            // Add more initialization logic here if required from script.js
+        }
 
         function initializeCalendar() {
             var calendarEl = document.getElementById('calendar');
@@ -763,7 +761,7 @@
                 console.error('Calendar element not found');
                 return;
             }
-            var calendar = new FullCalendar.Calendar(calendarEl, {
+            calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 height: 'auto',
                 events: JSON.parse(localStorage.getItem('flightSchedule') || '[]'),
@@ -801,21 +799,20 @@
         function parseScheduleImage(imageData) {
             var currentDate = new Date();
             var year = currentDate.getFullYear();
-            var schedule = [];
-            var sampleData = [
+            var schedule = [
                 { date: new Date(year, 5, 9), type: 'HSBY' },
                 { date: new Date(year, 5, 10), type: 'CHECK-IN' },
                 { date: new Date(year, 5, 11), type: 'AD' },
                 { date: new Date(year, 5, 12), type: 'OFF' },
             ];
-            return sampleData.map(item => ({
+            return schedule.map(item => ({
                 date: item.date,
                 type: item.type
             }));
         }
 
         function updateCalendarFromPending() {
-            if (pendingSchedule && window.calendar) {
+            if (pendingSchedule && calendar) {
                 updateCalendar(pendingSchedule);
                 document.getElementById('updateCalendarBtn').style.display = 'none';
                 pendingSchedule = null;
@@ -827,7 +824,7 @@
         }
 
         function updateCalendar(newSchedule) {
-            if (!window.calendar) {
+            if (!calendar) {
                 console.error('Calendar instance not available');
                 return;
             }
@@ -848,9 +845,9 @@
                 }
             });
             localStorage.setItem('flightSchedule', JSON.stringify(existingSchedule));
-            window.calendar.removeAllEvents();
-            window.calendar.addEventSource(existingSchedule);
-            window.calendar.render();
+            calendar.removeAllEvents();
+            calendar.addEventSource(existingSchedule);
+            calendar.render();
             console.log('Calendar updated with new events');
         }
 
@@ -867,7 +864,7 @@
                 hour12: false
             };
             var formatter = new Intl.DateTimeFormat('es-ES', options);
-            var formattedDate = formatter.format(now).replace(/(\w+),/, '$1, ').replace(/\b(\d)\b/g, '0$1'); // Ensure two-digit day
+            var formattedDate = formatter.format(now).replace(/(\w+),/, '$1, ').replace(/\b(\d)\b/g, '0$1');
             var datetimeDisplay = document.getElementById('currentDateTime');
             if (datetimeDisplay) {
                 datetimeDisplay.textContent = formattedDate;
@@ -876,16 +873,28 @@
             }
         }
 
+        function saveFormData() {
+            // Placeholder for saving form data (implement as needed)
+            console.log('Form data saved');
+        }
+
+        function showNotification(message) {
+            var notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             initializeForm();
             initializeCalendar();
             updateDateTime();
-            setInterval(updateDateTime, 60000); // Update every minute
+            setInterval(updateDateTime, 60000);
             console.log('DOM fully loaded, initializing components');
         });
-
-        // Existing functions from script.js (collectFormData, saveFormData, etc.) remain unchanged
     </script>
-    <script src="script.js"></script>
+    <!-- <script src="script.js"></script> -->
 </body>
 </html>
